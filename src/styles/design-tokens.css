@@ -1,0 +1,55 @@
+:root {
+  /* colors */
+  --color-dark-black-primary: #151419;
+  --color-dark-primary: #19181e;
+  --color-dark2-primary: #1d1c23;
+  --color-gray-primary: #2d2c35;
+  --color-gray-secondary: #3a3943;
+  --color-gray-tertiary: #3c3b47;
+  --color-yellow-50: #f2d55166;
+  --color-green-50: #86bd3466;
+
+  /* text colors */
+  --color-text-white-50: #ffffff80;
+  --color-text-white-100: #ffffff;
+  --color-text-gray-100: #7e7c8d;
+  
+  /* linear gradients */
+  --linear-gradient-green-primary: linear-gradient(90deg, #009018 0%, #26a63c 100%);
+  --linear-gradient-green-reverse: linear-gradient(90deg, #26a63c 0%, #009018 100%);
+  --linear-gradient-green-light: linear-gradient(90deg, rgba(0, 144, 24, 0.4) 0%, rgba(38, 166, 60, 0.4) 100%);
+  --linear-gradient-green-dark: linear-gradient(90deg, rgba(0, 144, 24, 0.15) 0%, rgba(38, 166, 60, 0.15) 100%);
+  --linear-gradient-orange-primary: linear-gradient(90deg, #d95a00 0%, #ff852f 100%);
+  --linear-gradient-orange-reverse: linear-gradient(90deg, #ff852f 0%, #d95a00 100%);
+  --linear-gradient-red-primary: linear-gradient(90deg, #e22b2e 0%, #ff5d5f 100%);
+  --linear-gradient-red-reverse: linear-gradient(90deg, #ff5d5f 0%, #e22b2e 100%);
+  --linear-gradient-purple-primary: linear-gradient(270deg, #985eff 0%, #6724dd 100%);
+  --linear-gradient-purple-reverse: linear-gradient(270deg, #6724dd 0%, #985eff 100%);
+
+  /* strokes */
+  --color-stroke-gray: #4a4753;
+  --color-stroke-blue: #3db4e0;
+  --color-stroke-light-blue: #91b1c5;
+  --color-stroke-yellow: #f2d551;
+  --color-stroke-green: #86bd34;
+
+  /* font-sizes */
+  --font-size-10: 10px;
+  --font-size-12: 12px;
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-20: 20px;
+  --font-size-22: 22px;
+  --font-size-24: 24px;
+
+  /* radius */
+  --radius-4: 4px;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-24: 24px;
+  --radius-half: 50%;
+  --radius-full: 100%;
+}
