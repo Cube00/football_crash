@@ -1,0 +1,98 @@
+.bet-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-16);
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bet-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bet-button--web {
+  min-width: 177px;
+  width: 177px;
+  height: var(--size-88);
+  font-size: var(--size-16);
+}
+
+.bet-button__label {
+  color: var(--color-text-white-100);
+  line-height: 100%;
+}
+
+.bet-button--bet {
+  background: var(--color-btn-green);
+}
+
+.bet-button--cashout {
+  background: var(--color-btn-orange);
+}
+
+.bet-button--cancel {
+  background: var(--color-btn-red);
+}
+
+.bet-button--freebet {
+  background: var(--color-btn-purple);
+}
+
+.bet-button--bet::after,
+.bet-button--cashout::after,
+.bet-button--cancel::after,
+.bet-button--freebet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.bet-button--bet::after {
+  background: var(--color-btn-green-hover);
+}
+
+.bet-button--cashout::after {
+  background: var(--color-btn-orange-hover);
+}
+
+.bet-button--cancel::after {
+  background: var(--color-btn-red-hover);
+}
+
+.bet-button--freebet::after {
+  background: var(--color-btn-purple-hover);
+}
+
+.bet-button--bet:hover::after,
+.bet-button--cashout:hover::after,
+.bet-button--cancel:hover::after,
+.bet-button--freebet:hover::after {
+  opacity: 1;
+}
+
+.bet-button__money {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+  height: var(--size-22);
+  font-size: var(--size-18);
+  font-weight: 700;
+}
+
+.bet-button__text {
+  font-size: var(--size-14);
+  font-weight: 600;
+}
