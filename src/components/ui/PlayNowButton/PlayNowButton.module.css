@@ -1,0 +1,68 @@
+.playnow-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  color: var(--color-text-white-100);
+  border-radius: var(--radius-16);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.playnow-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.playnow-button--orange {
+  background: var(--color-btn-orange);
+}
+
+.playnow-button--green {
+  background: var(--color-btn-green);
+}
+
+.playnow-button--orange::after,
+.playnow-button--green::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.playnow-button--orange::after {
+  background: var(--color-btn-orange-hover);
+}
+
+.playnow-button--green::after {
+  background: var(--color-btn-green-hover);
+}
+
+.playnow-button--orange:hover::after,
+.playnow-button--green:hover::after {
+  opacity: 1;
+}
+
+.playnow-button--web {
+  width: 175px;
+  height: var(--size-64);
+}
+
+.playnow-button--web > span {
+  font-size: var(--size-20);
+}
+
+.playnow-button--mobile > span {
+  font-size: var(--size-16);
+}
+
+.playnow-button--mobile {
+  width: 154px;
+  height: var(--size-44);
+}

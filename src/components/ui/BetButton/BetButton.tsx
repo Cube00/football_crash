@@ -1,4 +1,4 @@
-import { cx } from "../../../utils";
+import { cx } from "@/utils";
 import styles from "./BetButton.module.css";
 import type { BetButtonProps } from "./BetButton.types";
 
