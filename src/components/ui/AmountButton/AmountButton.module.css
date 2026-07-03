@@ -1,0 +1,30 @@
+.amount-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4.5px 23px;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-24);
+  background-color: var(--color-gray-primary);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.amount-button__label {
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-gray-100);
+  transition: 0.3s;
+}
+
+.amount-button:hover {
+  background-color: var(--color-gray-secondary);
+}
+
+.amount-button--active,
+.amount-button:active {
+  background-color: var(--color-gray-tertiary);
+}
