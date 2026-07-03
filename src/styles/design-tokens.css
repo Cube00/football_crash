@@ -8,6 +8,9 @@
   --color-gray-tertiary: #3c3b47;
   --color-yellow-50: #f2d55166;
   --color-green-50: #86bd3466;
+  --colro-blue-50: #3db4e033;
+  --color-lightblue-50: #91b1c533;
+  --color-gray-50: #4a475333;
 
   /* text colors */
   --color-text-white-50: #ffffff80;
@@ -94,7 +97,7 @@
   --color-stroke-light-blue: #91b1c5;
   --color-stroke-yellow: #f2d551;
   --color-stroke-green: #86bd34;
-  --color-stroke-greenClick: #51CF3E;
+  --color-stroke-greenClick: #51cf3e;
 
   /* radius */
   --radius-4: 4px;

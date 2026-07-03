@@ -1,0 +1,46 @@
+.multiplier-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 60px;
+  border-radius: var(--radius-12);
+  border: 1px solid transparent;
+  background-color: var(--color-dark-primary);
+  font-family: var(--font-family-base);
+  color: var(--color-text-white-100);
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
+}
+
+.multiplier-button__label {
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+}
+
+.multiplier-button--white {
+  border-color: var(--color-stroke-gray);
+  background-color: var(--color-gray-50);
+}
+
+.multiplier-button--lightBlue {
+  border-color: var(--color-stroke-light-blue);
+  background-color: var(--color-lightblue-50);
+}
+
+.multiplier-button--blue {
+  border-color: var(--color-stroke-blue);
+  background-color: var(--colro-blue-50);
+}
+
+.multiplier-button--yellow {
+  border-color: var(--color-stroke-yellow);
+  background-color: var(--color-yellow-50);
+}
+
+.multiplier-button--green {
+  border-color: var(--color-stroke-green);
+  background-color: var(--color-green-50);
+}
