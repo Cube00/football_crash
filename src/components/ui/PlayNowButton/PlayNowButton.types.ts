@@ -5,5 +5,4 @@ export interface PlayNowButtonProps {
   variant?: btnVariants;
   size?: Size;
   className?: string;
-
 }

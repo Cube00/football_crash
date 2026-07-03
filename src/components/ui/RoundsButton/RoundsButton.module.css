@@ -1,0 +1,74 @@
+.roundsButton-button {
+  position: relative;
+  overflow: hidden;
+  width: 100px;
+  height: 55px;
+  border-radius: var(--size-12);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-base);
+  transition: 0.3s;
+}
+
+.roundsButton-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.roundsButton-button__value {
+  font-size: var(--size-20);
+  color: var(--color-text-white-100);
+  font-weight: 700;
+  display: flex;
+  gap: 3px;
+}
+
+.roundsButton-button__value span {
+  color: var(--color-text-white-50);
+  display: block;
+}
+
+.roundsButton-button__label {
+  font-size: var(--size-12);
+  color: var(--color-text-white-100);
+  font-weight: 600;
+}
+
+.roundsButton-button--default {
+  background-color: var(--color-gray-primary);
+  border: none;
+}
+
+.roundsButton-button--click {
+  background-color: var(--color-gray-primary);
+  border: 1px solid var(--color-stroke-greenClick);
+}
+
+.roundsButton-button--default:hover {
+  background-color: var(--color-gray-tertiary);
+}
+
+.roundsButton-button--stop {
+  background: var(--color-btn-red);
+  border: none;
+}
+
+.roundsButton-button--stop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.roundsButton-button--stop::after {
+  background: var(--color-btn-red-hover);
+}
+
+.roundsButton-button--stop:hover::after {
+  opacity: 1;
+}

@@ -1,9 +1,9 @@
 import "./App.css";
-import {
-  PlayNowBtnVariants,
-  PlayNowButton,
-} from "@/components/ui/PlayNowButton";
 import { Size } from "@/constants";
+import {
+  RoundsButton,
+  RoundsButtonVariants,
+} from "./components/ui/RoundsButton";
 
 function App() {
   return (
@@ -14,10 +14,9 @@ function App() {
         gap: 14,
       }}
     >
-      <PlayNowButton variant={PlayNowBtnVariants.Orange} size={Size.Web} />
-      <PlayNowButton variant={PlayNowBtnVariants.Green} size={Size.Web} />
-      <PlayNowButton variant={PlayNowBtnVariants.Orange} size={Size.Mobile} />
-      <PlayNowButton variant={PlayNowBtnVariants.Green} size={Size.Mobile} />
+      <RoundsButton variant={RoundsButtonVariants.Stop} size={Size.Web} />
+      <RoundsButton variant={RoundsButtonVariants.Default} size={Size.Web} />
+      <RoundsButton variant={RoundsButtonVariants.Click} size={Size.Web} />
     </div>
   );
 }
