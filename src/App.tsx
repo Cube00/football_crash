@@ -1,21 +1,10 @@
 import "./App.css";
-import {
-  MultiplierButton,
-  MultiplierButtonVariant,
-} from "./components/ui/MultiplierButton";
+import { Layout } from "./components/layout";
+import { InfoSection } from "./containers/InfoSection";
+import { GameScreen } from "./containers/GameScreen";
 
 function App() {
-  return (
-    <div
-      style={{
-        padding: 30,
-        display: "flex",
-        gap: 14,
-      }}
-    >
-      <MultiplierButton label="11.50x" variant={MultiplierButtonVariant.White} />
-    </div>
-  );
+  return <Layout info={<InfoSection />} game={<GameScreen />} />;
 }
 
 export default App;

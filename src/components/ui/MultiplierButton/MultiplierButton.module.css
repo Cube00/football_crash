@@ -14,6 +14,12 @@
   transition: 0.3s;
 }
 
+.multiplier-button--large {
+  height: 32px;
+  width: 67px;
+  border-radius: var(--size-100);
+}
+
 .multiplier-button__label {
   font-size: var(--size-12);
   font-weight: 600;

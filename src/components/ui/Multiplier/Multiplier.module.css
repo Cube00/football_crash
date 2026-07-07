@@ -1,0 +1,14 @@
+.multiplier {
+  height: 48px;
+  background-color: var(--color-dark2-primary);
+  width: 100%;
+  border-radius: var(--radius-12);
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.multiplier > * {
+  /* flex: 0 0 auto; */
+}

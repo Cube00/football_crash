@@ -106,10 +106,14 @@
   --radius-12: 12px;
   --radius-16: 16px;
   --radius-24: 24px;
+  --radius-44: 44px;
+  --radius-50: 50px;
   --radius-half: 50%;
   --radius-full: 100%;
 
   /* sizes */
+  --size-4: 4px;
+  --size-8: 8px;
   --size-10: 10px;
   --size-12: 12px;
   --size-14: 14px;
@@ -127,5 +131,6 @@
   --size-72: 72px;
   --size-80: 80px;
   --size-88: 88px;
+  --size-100: 100px;
   --size-175: 175px;
 }

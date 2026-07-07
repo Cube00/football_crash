@@ -1,0 +1,31 @@
+.minus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-40);
+  height: var(--size-40);
+  border-radius: var(--radius-half);
+  border: none;
+  background-color: var(--color-gray-primary);
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
+}
+
+.minus-button:hover {
+  background-color: var(--color-gray-secondary);
+}
+
+.minus-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-stroke-blue);
+}
+
+.minus-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.minus-button__icon {
+  width: var(--size-16);
+  height: var(--size-16);
+}

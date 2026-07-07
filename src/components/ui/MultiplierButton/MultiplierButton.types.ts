@@ -6,5 +6,5 @@ export interface MultiplierButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   variant?: MultiplierButtonVariant;
-  size?: Size;
+  size?: Size | string;
 }
