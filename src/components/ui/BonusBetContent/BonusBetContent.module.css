@@ -1,0 +1,53 @@
+.bonus-bet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-24);
+  font-family: var(--font-family-base);
+  padding-bottom: var(--size-44);
+}
+
+.bonus-bet__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-16);
+  width: 100%;
+  padding: var(--size-14) var(--size-20) 6px;
+  text-align: center;
+}
+
+.bonus-bet__title {
+  color: var(--color-text-white-100);
+  font-size: var(--size-24);
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.bonus-bet__amount {
+  display: flex;
+  align-items: baseline;
+  gap: var(--size-4);
+  color: var(--color-text-white-100);
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 100%;
+  font-family: var(--font-family-base);
+}
+
+.bonus-bet__currency {
+  color: var(--color-text-gray-100);
+}
+
+.bonus-bet__note {
+  font-family: var(--font-family-base);
+  color: var(--color-text-gray-100);
+  font-size: var(--size-16);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.bonus-bet__action {
+  flex-shrink: 0;
+}

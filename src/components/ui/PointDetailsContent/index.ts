@@ -1,0 +1,1 @@
+export { PointDetailsContent } from "./PointDetailsContent";

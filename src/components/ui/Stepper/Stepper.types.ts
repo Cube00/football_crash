@@ -1,8 +1,10 @@
 import type { HTMLAttributes } from "react";
 import type { StepperSize } from "./Stepper.constants";
 
-export interface StepperProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface StepperProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   /** Controlled value. */
   value?: number;
   /** Initial value for uncontrolled usage. */

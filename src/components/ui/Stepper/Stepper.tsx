@@ -11,7 +11,13 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
 const MinusIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" width="16" height="16" aria-hidden="true">
+  <svg
+    viewBox="0 0 16 16"
+    fill="none"
+    width="16"
+    height="16"
+    aria-hidden="true"
+  >
     <path
       d="M3.33337 8H12.6667"
       stroke="currentColor"
@@ -23,7 +29,13 @@ const MinusIcon = () => (
 );
 
 const PlusIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" width="16" height="16" aria-hidden="true">
+  <svg
+    viewBox="0 0 16 16"
+    fill="none"
+    width="16"
+    height="16"
+    aria-hidden="true"
+  >
     <path
       d="M8 3.33337V12.6667M3.33337 8H12.6667"
       stroke="currentColor"
@@ -96,9 +108,7 @@ export const Stepper = ({
   };
 
   const displayValue =
-    draft !== null
-      ? draft
-      : `${currentValue.toFixed(precision)}${suffix}`;
+    draft !== null ? draft : `${currentValue.toFixed(precision)}${suffix}`;
 
   const isCompact = size === StepperSize.Compact;
   const decreaseDisabled = disabled || currentValue <= min;
@@ -106,11 +116,7 @@ export const Stepper = ({
 
   return (
     <div
-      className={cx(
-        styles["stepper"],
-        styles[`stepper--${size}`],
-        className,
-      )}
+      className={cx(styles["stepper"], styles[`stepper--${size}`], className)}
       {...rest}
     >
       {isCompact ? (

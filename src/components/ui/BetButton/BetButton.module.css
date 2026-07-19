@@ -18,8 +18,11 @@
 }
 
 .bet-button--web {
-  min-width: 177px;
+  /* 177px where there's room, but shrinkable — a min-width here would override
+     whatever basis the parent gives it and floor the whole BetArea. */
   width: 177px;
+  min-width: 0;
+  max-width: 100%;
   height: var(--size-88);
   font-size: var(--size-16);
 }

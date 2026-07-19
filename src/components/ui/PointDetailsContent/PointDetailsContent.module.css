@@ -1,0 +1,153 @@
+.point-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-16);
+  font-family: var(--font-family-base);
+}
+
+.point-details__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-16);
+  padding: var(--size-16) var(--size-16) var(--size-16) var(--size-20);
+  border: 1px solid var(--color-stroke-white-10);
+  border-radius: var(--radius-12);
+}
+
+.point-details__label {
+  color: var(--color-text-gray-100);
+  font-size: var(--size-12);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.point-details__value {
+  display: flex;
+  align-items: center;
+  gap: var(--size-8);
+  color: var(--color-text-white-100);
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.point-details__seed-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Multiplier card */
+.point-details__card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: var(--size-14) var(--size-20);
+  border: 1px solid var(--color-stroke-white-10);
+  border-radius: var(--radius-12);
+}
+
+.point-details__card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--size-16);
+}
+
+.point-details__badge {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-44);
+  height: var(--size-44);
+  border-radius: var(--radius-half);
+  background: var(--color-stroke-greenClick);
+}
+
+.point-details__badge-icon {
+  width: var(--size-24);
+  height: var(--size-24);
+  color: var(--color-text-white-100);
+}
+
+.point-details__multiplier {
+  color: var(--color-text-white-100);
+  font-size: var(--size-20);
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.point-details__card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-16);
+}
+
+.point-details__date {
+  color: var(--color-text-gray-100);
+  font-size: var(--size-12);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.point-details__hash {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4);
+  color: var(--color-text-white-100);
+  font-size: var(--size-12);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.point-details__hash-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.point-details__shield {
+  flex-shrink: 0;
+  width: var(--size-20);
+  height: var(--size-20);
+  color: var(--color-stroke-green);
+}
+
+/* Copy button */
+.point-details__copy {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-gray-100);
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.point-details__copy:hover {
+  color: var(--color-text-white-100);
+}
+
+.point-details__copy svg {
+  width: var(--size-20);
+  height: var(--size-20);
+}
+
+.point-details__link {
+  align-self: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-white-100);
+  font-family: var(--font-family-base);
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 150%;
+  text-decoration: underline;
+  cursor: pointer;
+}

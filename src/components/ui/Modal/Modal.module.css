@@ -1,0 +1,138 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modal-overlay-in 200ms ease;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: var(--color-bg-header);
+  backdrop-filter: blur(2.5px);
+  cursor: pointer;
+}
+
+.modal__sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--size-600);
+  max-height: min(var(--size-768), calc(100svh - 32px));
+  overflow: hidden;
+  background: var(--color-dark2-primary);
+  border: 1px solid var(--color-stroke-white-10);
+  border-radius: var(--radius-16);
+  backdrop-filter: blur(20px);
+  font-family: var(--font-family-base);
+  animation: modal-sheet-in 200ms ease;
+}
+
+.modal__sheet--370 {
+  max-width: var(--size-370);
+}
+.modal__sheet--542 {
+  max-width: var(--size-542);
+}
+.modal__sheet--580 {
+  max-width: var(--size-580);
+}
+.modal__sheet--768 {
+  max-width: var(--size-768);
+}
+.modal__sheet--1006 {
+  max-width: var(--size-1006);
+}
+
+.modal__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--size-24);
+  margin: var(--size-24) var(--size-24) var(--size-16);
+  background: var(--color-bg-modal-title);
+  backdrop-filter: blur(5px);
+}
+
+.modal__title {
+  font-weight: 700;
+  font-size: var(--size-18);
+  font-weight: 700;
+  font-family: var(--font-family-base);
+  line-height: 1.5;
+  color: var(--color-text-white-100);
+}
+
+.modal__close {
+  display: flex;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition: border-color 120ms ease;
+}
+
+.modal__close-icon {
+  display: block;
+  width: var(--size-24);
+  height: var(--size-24);
+  background-color: var(--color-text-gray-100);
+  -webkit-mask: url("/public/assets/icons/Close.svg") center / contain no-repeat;
+  mask: url("/public/assets/icons/Close.svg") center / contain no-repeat;
+  outline: none;
+}
+
+.modal__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 var(--size-24) var(--size-24);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+}
+.modal__content::-webkit-scrollbar {
+  width: var(--size-4);
+}
+.modal__content::-webkit-scrollbar-track {
+  background: var(--color-scroll-track);
+  border-radius: var(--radius-full);
+}
+.modal__content::-webkit-scrollbar-thumb {
+  background: var(--color-scroll-thumb);
+  border-radius: var(--radius-full);
+}
+
+@keyframes modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-sheet-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal__sheet {
+    animation: none;
+  }
+}

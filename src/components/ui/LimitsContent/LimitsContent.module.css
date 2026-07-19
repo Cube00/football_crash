@@ -1,0 +1,27 @@
+.limits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+}
+
+.limits-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-12);
+}
+
+.limits-block h2 {
+  line-height: 150%;
+  font-weight: 700;
+  font-family: var(--font-family-base);
+  font-size: var(--size-16);
+  color: var(--color-text-white-100);
+}
+
+.limits-block span {
+  line-height: 150%;
+  font-weight: 500;
+  font-family: var(--font-family-base);
+  font-size: var(--size-14);
+  color: var(--color-text-gray-100);
+}

@@ -12,7 +12,7 @@ export const MinusButton = ({ className, ...rest }: MinusButtonProps) => {
     >
       <img
         className={styles["minus-button__icon"]}
-        src="/assets/Minus.svg"
+        src="/assets/icons/Minus.svg"
         alt=""
         aria-hidden="true"
       />

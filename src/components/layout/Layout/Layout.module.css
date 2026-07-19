@@ -12,14 +12,15 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  gap: 8px;
+  gap: var(--size-8);
 }
 
 .layout__info {
-  width: 410px;
-  flex-shrink: 0;
+  /* Fluid between breakpoints: hits the design's 410px at 1440 (410/1440 =
+     28.47vw, so 29vw clamps there), easing to a 360px floor by 1280. */
+  flex: 0 0 clamp(360px, 29vw, 410px);
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .layout__game {
@@ -27,4 +28,28 @@
   min-width: 0;
   height: 100%;
   overflow: hidden;
+}
+
+/* Below 1024 the two-column shell can't hold the info panel beside the game,
+   so info stacks under it and the page scrolls. */
+@media (max-width: 1023px) {
+  .layout {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .layout__content {
+    flex-direction: column;
+  }
+
+  .layout__info {
+    flex: 0 0 auto;
+    width: 100%;
+    height: min(600px, 80vh);
+  }
+
+  .layout__game {
+    height: auto;
+    min-height: 60vh;
+  }
 }

@@ -1,0 +1,133 @@
+.bets-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.bets-list__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  flex-shrink: 0;
+  align-items: center;
+  padding: var(--size-12) var(--size-16);
+}
+
+.bets-list__head-cell {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-gray-100);
+}
+
+.bets-list__head-cell:last-child {
+  text-align: right;
+}
+
+.bets-list__rows {
+  composes: scrollbar from "@/styles/scrollbar.module.css";
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.bets-list__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--size-8);
+  height: var(--size-48);
+  padding: 0 var(--size-16);
+  border-radius: var(--radius-8);
+  background-color: var(--color-dark2-primary);
+}
+
+.bets-list__row--cashedOut {
+  background: var(--linear-gradient-green-dark);
+}
+
+.bets-list__row--cashedOut.bets-list__row--own {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 144, 24, 0.4) 0%,
+    rgba(38, 166, 60, 0.4) 100%
+  );
+}
+
+.bets-list__cell {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+}
+
+.bets-list__player {
+  color: var(--color-text-gray-100);
+}
+
+.bets-list__bet {
+  display: flex;
+  align-items: center;
+  gap: var(--size-8);
+}
+
+.bets-list__cashout {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--size-8);
+}
+
+.bets-list__date {
+  display: flex;
+  align-items: center;
+  gap: var(--size-8);
+  color: var(--color-text-gray-100);
+}
+
+.bets-list__row--cashedOut .bets-list__date {
+  color: var(--color-text-white-100);
+}
+
+.bets-list__time {
+  color: var(--color-text-gray-100);
+}
+
+.bets-list__row--cashedOut .bets-list__time {
+  color: var(--color-text-white-50);
+}
+
+.bets-list__icon {
+  width: var(--size-20);
+  height: var(--size-20);
+}
+
+.bets-list__row--pending.bets-list__row--own .bets-list__cell {
+  color: #ffbc12;
+}
+
+.bets-list__row--cashedOut .bets-list__player {
+  color: var(--color-text-white-100);
+}
+
+.bets-list__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--size-24);
+  padding: 0 var(--size-10);
+  border-radius: var(--radius-50);
+  background: linear-gradient(90deg, #009018 0%, #26a63c 100%);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+  white-space: nowrap;
+}

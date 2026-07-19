@@ -4,5 +4,16 @@ export const BET_AREA_DEFAULTS = {
   currency: "USD",
 } as const;
 
-/** Quick-add chips shown under the amount stepper. */
-export const AMOUNT_PRESETS = [2, 2, 2, 2] as const;
+/** Highest stake, applied by the "Max" chip. */
+export const MAX_BET_AMOUNT = 9999;
+
+/**
+ * Quick-select chips shown under the amount stepper. Each chip carries the
+ * text to display and the amount it sets.
+ */
+export const AMOUNT_PRESETS = [
+  { label: "2", value: 2 },
+  { label: "4", value: 4 },
+  { label: "6", value: 6 },
+  { label: "Max", value: MAX_BET_AMOUNT },
+] as const;

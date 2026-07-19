@@ -12,7 +12,7 @@ export const PlusButton = ({ className, ...rest }: PlusButtonProps) => {
     >
       <img
         className={styles["plus-button__icon"]}
-        src="/assets/Plus.svg"
+        src="/assets/icons/Plus.svg"
         alt=""
         aria-hidden="true"
       />

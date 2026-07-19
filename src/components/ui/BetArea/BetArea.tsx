@@ -23,13 +23,13 @@ export const BetArea = ({
   const [activePreset, setActivePreset] = useState<number | null>(null);
 
   const selectPreset = (preset: number, index: number) => {
-    setAmount((prev) => prev + preset);
+    setAmount(() => preset);
     setActivePreset(index);
   };
 
   return (
     <div className={cx(styles["bet-area"], className)} {...rest}>
-      <div className={styles["bet-area__left"]}>
+      <div className={styles["bet-area__top"]}>
         <div className={styles["bet-area__controls"]}>
           <Stepper
             value={amount}
@@ -44,16 +44,27 @@ export const BetArea = ({
           <div className={styles["bet-area__presets"]}>
             {AMOUNT_PRESETS.map((preset, index) => (
               <AmountButton
-                key={index}
-                label={preset.toFixed(2)}
+                key={preset.label}
+                label={preset.label}
                 active={activePreset === index}
-                onClick={() => selectPreset(preset, index)}
+                onClick={() => selectPreset(preset.value, index)}
               />
             ))}
           </div>
         </div>
 
-        <div className={styles["bet-area__toggles"]}>
+        <BetButton
+          className={styles["bet-area__bet"]}
+          variant={BetButtonVariant.Bet}
+          size={Size.Web}
+          label="Bet"
+          amount={amount.toFixed(2)}
+          currency={currency}
+        />
+      </div>
+
+      <div className={styles["bet-area__bottom"]}>
+        <div className={styles["bet-area__togglesection"]}>
           <label className={styles["bet-area__toggle"]}>
             <span className={styles["bet-area__toggle-label"]}>Auto Bet</span>
             <Toggle
@@ -61,7 +72,6 @@ export const BetArea = ({
               onChange={(event) => setAutoBet(event.target.checked)}
             />
           </label>
-
           <label className={styles["bet-area__toggle"]}>
             <span className={styles["bet-area__toggle-label"]}>
               Auto Cash Out
@@ -72,17 +82,6 @@ export const BetArea = ({
             />
           </label>
         </div>
-      </div>
-
-      <div className={styles["bet-area__rigth"]}>
-        <BetButton
-          className={styles["bet-area__bet"]}
-          variant={BetButtonVariant.Bet}
-          size={Size.Web}
-          label="Bet"
-          amount={amount.toFixed(2)}
-          currency={currency}
-        />
         <Stepper
           className={styles["bet-area__multiplier"]}
           size={StepperSize.Compact}

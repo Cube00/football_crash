@@ -1,8 +1,9 @@
 .game-screen {
+  container-type: inline-size;
+  container-name: game;
   display: flex;
   flex-direction: column;
-  align-items: space-between;
-  /* justify-content: center; */
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   background-color: var(--color-dark-black-primary);
@@ -10,9 +11,19 @@
 
 .game-betAreas {
   display: flex;
-  gap: 8px;
+  gap: var(--size-8);
   width: 100%;
   justify-content: space-between;
+}
+
+/* Two bet areas need ~870px of column (each needs 431px before its toggle row
+   is forced to wrap), so stack below 880. Keyed to the column, not the
+   viewport: when the info panel stacks away below 1024 the column widens and
+   these go back side by side on their own. */
+@container game (max-width: 880px) {
+  .game-betAreas {
+    flex-direction: column;
+  }
 }
 
 .game-canvas {

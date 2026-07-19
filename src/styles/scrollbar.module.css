@@ -1,0 +1,20 @@
+/* Shared custom scrollbar — pull into a scroll container with:
+   composes: scrollbar from "@/styles/scrollbar.module.css"; */
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: var(--size-4);
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: var(--color-scroll-track);
+  border-radius: var(--radius-full);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-scroll-thumb);
+  border-radius: var(--radius-full);
+}

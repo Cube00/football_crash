@@ -1,0 +1,54 @@
+.bonus-spin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-24);
+  font-family: var(--font-family-base);
+  padding-bottom: var(--size-44);
+}
+
+.bonus-spin__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-16);
+  width: 100%;
+  padding: var(--size-14) var(--size-20) 6px;
+  text-align: center;
+}
+
+.bonus-spin__title {
+  color: var(--color-text-white-100);
+  font-size: var(--size-24);
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.bonus-spin__amount {
+  color: var(--color-text-white-100);
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 74%;
+  font-family: var(--font-family-base);
+}
+
+.bonus-spin__label {
+  color: var(--color-text-white-100);
+  font-size: var(--size-24);
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.bonus-spin__note {
+  font-family: var(--font-family-base);
+  color: var(--color-text-gray-100);
+  font-size: var(--size-16);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+.bonus-spin__action {
+  flex-shrink: 0;
+}

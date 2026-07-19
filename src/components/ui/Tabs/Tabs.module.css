@@ -1,0 +1,63 @@
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4);
+  flex-shrink: 0;
+  height: var(--size-48);
+}
+
+.tabs--segmented {
+  padding: 0 var(--size-8);
+  border-radius: var(--radius-8);
+  background-color: var(--color-dark2-primary);
+}
+
+.tabs--text {
+  justify-content: center;
+  gap: var(--size-8);
+}
+
+.tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--size-32);
+  padding: 0 var(--size-12);
+  border: none;
+  outline: none;
+  border-radius: var(--radius-8);
+  background-color: transparent;
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tabs--segmented .tabs__tab {
+  flex: 1;
+}
+
+.tabs__label {
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+  transition: 0.3s;
+}
+
+.tabs--segmented .tabs__tab:hover {
+  background-color: var(--color-gray-secondary);
+}
+
+.tabs--segmented .tabs__tab--active,
+.tabs--segmented .tabs__tab--active:hover {
+  background-color: var(--color-gray-primary);
+}
+
+.tabs--text .tabs__label {
+  color: var(--color-text-gray-100);
+}
+
+.tabs--text .tabs__tab:hover .tabs__label,
+.tabs--text .tabs__tab--active .tabs__label {
+  color: var(--color-text-white-100);
+}
