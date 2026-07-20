@@ -30,9 +30,14 @@
   overflow: hidden;
 }
 
-/* Below 1024 the two-column shell can't hold the info panel beside the game,
-   so info stacks under it and the page scrolls. */
-@media (max-width: 1023px) {
+@media screen and (max-width: 1439px) {
+  .layout {
+    padding: 0 8px;
+  }
+} 
+
+
+@media  (max-width: 1023px) {
   .layout {
     height: auto;
     min-height: 100dvh;

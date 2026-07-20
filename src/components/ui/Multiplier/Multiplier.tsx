@@ -9,7 +9,6 @@ const randomVariant = () =>
   VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
 
 export const Multiplier = () => {
-  // Render the max set — the grid shows however many fit and clips the rest.
   const variants = useMemo(
     () => Array.from({ length: MAX_MULTIPLIERS }, randomVariant),
     [],

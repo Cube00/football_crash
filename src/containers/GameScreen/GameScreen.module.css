@@ -16,15 +16,11 @@
   justify-content: space-between;
 }
 
-/* Two bet areas need ~870px of column (each needs 431px before its toggle row
-   is forced to wrap), so stack below 880. Keyed to the column, not the
-   viewport: when the info panel stacks away below 1024 the column widens and
-   these go back side by side on their own. */
-@container game (max-width: 880px) {
+/* @container game (max-width: 880px) {
   .game-betAreas {
     flex-direction: column;
   }
-}
+} */
 
 .game-canvas {
   height: 100%;

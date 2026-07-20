@@ -1,9 +1,7 @@
-/* auto-fill lays out exactly as many pills as the row can hold at any width;
-   the rest wrap into rows the fixed height clips. No JS, no resize listener. */
 .multiplier {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  grid-auto-rows: var(--size-32);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: var(--size-4);
   width: 100%;
   height: var(--size-48);
@@ -11,10 +9,15 @@
   padding: var(--size-8);
   border-radius: var(--radius-12);
   background-color: var(--color-dark2-primary);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 
-/* MultiplierButton is fixed-width by default; here it fills its grid track. */
+.multiplier::-webkit-scrollbar {
+  display: none;
+}
+
 .multiplier > * {
-  width: 100%;
+  flex: 0 0 auto;
 }

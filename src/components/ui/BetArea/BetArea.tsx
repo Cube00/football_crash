@@ -32,6 +32,7 @@ export const BetArea = ({
       <div className={styles["bet-area__top"]}>
         <div className={styles["bet-area__controls"]}>
           <Stepper
+            className={styles["bet-area__stepper"]}
             value={amount}
             min={0}
             step={1}

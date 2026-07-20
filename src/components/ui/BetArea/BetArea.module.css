@@ -33,8 +33,6 @@
   min-width: 0;
 }
 
-/* Narrow bet area: the toggles and the multiplier stepper stop competing for
-   one line and the gaps tighten before anything clips. */
 @container bet-area (max-width: 360px) {
   .bet-area__togglesection {
     gap: var(--size-16);
@@ -92,4 +90,65 @@
 .bet-area__multiplier {
   margin-left: auto;
   width: 100%;
+}
+
+@media screen and (max-width: 1439px) {
+  .bet-area__stepper {
+    background-color: var(--color-gray-primary);
+    height: 36px;
+  }
+
+  .bet-area__stepper button {
+    background-color: var(--color-dark2-primary);
+    width: 28px;
+    height: 28px;
+  }
+
+  .bet-area__controls {
+    gap: var(--size-8);
+  }
+
+  .bet-area__multiplier {
+    width: 106px;
+    height: var(--size-24);
+    background-color: var(--color-gray-primary);
+    padding: 2px;
+  }
+
+  .bet-area__multiplier input {
+    color: var(--color-text-gray-100) !important;
+  }
+
+  .bet-area__multiplier button {
+    background-color: var(--color-dark2-primary);
+    width: var(--size-20);
+    height: var(--size-20);
+    border-radius: 100%;
+    padding: 4px;
+  }
+
+  .bet-area__togglesection {
+    gap: 6px;
+    justify-content: space-between;
+  }
+
+  .bet-area__bottom {
+    padding-top: var(--size-16);
+    border-top: 1px solid var(--color-gray-primary);
+    gap: var(--size-8);
+  }
+}
+
+@media screen and (max-width: 1279px) {
+  .bet-area__presets > * {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .bet-area__presets > * {
+    /* max-width: 44px; */
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
