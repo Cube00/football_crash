@@ -1,0 +1,34 @@
+.balance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--size-4);
+  min-width: 0;
+}
+
+.balance__label {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-gray-100);
+  white-space: nowrap;
+}
+
+.balance__value {
+  font-family: var(--font-family-base);
+  font-size: var(--size-14);
+  font-weight: 700;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 430px) {
+  .balance__label {
+    display: none;
+  }
+  .balance__value {
+    color: var(--color-stroke-greenClick);
+  }
+}

@@ -1,5 +1,7 @@
 import { Multiplier } from "@/components/ui/Multiplier";
 import { BetArea } from "@/components/ui/BetArea";
+import { GameStage } from "@/containers/GameStage";
+import { BetSlot } from "@/game/enums";
 import styles from "./GameScreen.module.css";
 
 export const GameScreen = () => {
@@ -7,11 +9,11 @@ export const GameScreen = () => {
     <div className={styles["game-screen"]}>
       <Multiplier />
       <div className={styles["game-canvas"]}>
-        <canvas></canvas>
+        <GameStage className={styles["game-phaser"]} />
       </div>
       <div className={styles["game-betAreas"]}>
-        <BetArea />
-        <BetArea />
+        <BetArea slot={BetSlot.Slot1} />
+        <BetArea slot={BetSlot.Slot2} />
       </div>
     </div>
   );

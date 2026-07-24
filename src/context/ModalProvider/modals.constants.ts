@@ -11,6 +11,7 @@ export const ModalId = {
   Archive: "archive",
   HowToPlay: "how-to-play",
   AutoBet: "auto-bet",
+  Chat: "chat",
 } as const;
 
 export type ModalId = (typeof ModalId)[keyof typeof ModalId];
@@ -26,6 +27,7 @@ export const MODAL_TITLES: Record<ModalId, string> = {
   [ModalId.Archive]: "Archive",
   [ModalId.HowToPlay]: "How To Play",
   [ModalId.AutoBet]: "Auto Bet",
+  [ModalId.Chat]: "Chat",
 };
 
 export const MODAL_WIDTHS: Partial<Record<ModalId, ModalWidth>> = {
@@ -39,4 +41,5 @@ export const MODAL_WIDTHS: Partial<Record<ModalId, ModalWidth>> = {
   [ModalId.Archive]: ModalWidth.Md,
   [ModalId.HowToPlay]: ModalWidth.Xl,
   [ModalId.AutoBet]: ModalWidth.Lg,
+  [ModalId.Chat]: ModalWidth.Md,
 };

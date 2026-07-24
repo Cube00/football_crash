@@ -5,11 +5,20 @@ import {
   BetsListVariant,
   BetStatus,
   MOCK_BETS,
+  MOCK_MY_BETS_SUMMARY,
 } from "./BetsList.constants";
 import type { BetsListProps } from "./BetsList.types";
 
+/** Formats an amount as `1.436.24` — dot-grouped thousands, two decimals. */
+const formatAmount = (value: number) => {
+  const [whole, fraction] = value.toFixed(2).split(".");
+  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${grouped}.${fraction}`;
+};
+
 export const BetsList = ({
   rows = MOCK_BETS,
+  summary = MOCK_MY_BETS_SUMMARY,
   currency = BETS_LIST_DEFAULTS.currency,
   variant = BetsListVariant.All,
   className,
@@ -27,7 +36,7 @@ export const BetsList = ({
         </span>
       </div>
 
-      <div className={styles["bets-list__rows"]}>
+      <div className={cx(styles["bets-list__rows"], styles["bets-list__authorized"])}>
         {rows.map((row) => (
           <div
             key={row.id}
@@ -92,6 +101,37 @@ export const BetsList = ({
           </div>
         ))}
       </div>
+      {isMyBets && (
+        <div className={styles["bets-list__mybetsinfo"]}>
+          <div className={styles["bets-list__summary-item"]}>
+            <span className={styles["bets-list__summary-label"]}>Bets</span>
+            <span className={styles["bets-list__summary-value"]}>
+              {summary.placed}/{summary.total}
+            </span>
+          </div>
+
+          <div className={styles["bets-list__summary-item"]}>
+            <span className={styles["bets-list__summary-label"]}>
+              Total Bets
+            </span>
+            <span className={styles["bets-list__summary-value"]}>
+              {formatAmount(summary.totalBet)} {currency}
+            </span>
+          </div>
+
+          <div
+            className={cx(
+              styles["bets-list__summary-item"],
+              styles["bets-list__summary-item--end"],
+            )}
+          >
+            <span className={styles["bets-list__summary-label"]}>Total win</span>
+            <span className={styles["bets-list__summary-value"]}>
+              {formatAmount(summary.totalWin)} {currency}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

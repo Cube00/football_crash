@@ -151,4 +151,19 @@
     padding-left: 0;
     padding-right: 0;
   }
+  .bet-area {
+    padding: var(--size-12);
+  }
+  .bet-area__stepper,
+  .bet-area__multiplier {
+    background-color: transparent;
+  }
+  .bet-area__multiplier {
+    width: 98px;
+    min-width: 90px;
+  }
+  .bet-area__stepper button,
+  .bet-area__multiplier button {
+    background-color: var(--color-gray-primary);
+  }
 }

@@ -1,0 +1,50 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  padding: var(--size-8) 0;
+  border-radius: var(--radius-8);
+  background-color: var(--color-dark-black-primary);
+  /* It floats over the beach, which is bright — the lift keeps its edge. */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--size-12);
+  width: 100%;
+  height: 34px;
+  padding: 0 var(--size-12);
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-family: var(--font-family-base);
+  /* The icon is masked with currentColor, so it follows this. */
+  color: var(--color-text-gray-100);
+  text-align: left;
+  transition: 0.3s;
+}
+
+.menu__item--action {
+  cursor: pointer;
+}
+
+.menu__item--action:hover,
+.menu__item--action:focus-visible,
+/* A live setting reads white, the way the design shows Sound switched on. */
+.menu__item--on {
+  color: var(--color-text-white-100);
+}
+
+.menu__label {
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.menu__toggle {
+  margin-left: auto;
+}

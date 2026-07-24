@@ -2,6 +2,7 @@ import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '@/utils';
 import { useBodyScrollLock, useFocusTrap, useOnEscape } from '@/hooks';
+import { playSound, Sound } from '@/game/sounds';
 import styles from './Modal.module.css';
 import type { ModalProps } from './Modal.types';
 
@@ -49,7 +50,10 @@ export function Modal({
           <button
             type="button"
             className={styles['modal__close']}
-            onClick={onClose}
+            onClick={() => {
+              playSound(Sound.SmallButton);
+              onClose();
+            }}
             aria-label={closeLabel}
           >
             <span className={styles['modal__close-icon']} aria-hidden="true" />

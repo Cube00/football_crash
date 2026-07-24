@@ -1,27 +1,29 @@
-import { useMemo } from "react";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
+import { useCrashHistory } from "@/hooks/useGame";
 import { MAX_MULTIPLIERS } from "./Multiplier.constants";
 import styles from "./Multiplier.module.css";
 
-const VARIANTS = Object.values(MultiplierButtonVariant);
-
-const randomVariant = () =>
-  VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
+/** Colour tier for a past round's crash value. Higher crash = hotter colour. */
+const variantFor = (multiplier: number): MultiplierButtonVariant => {
+  if (multiplier >= 10) return MultiplierButtonVariant.Green;
+  if (multiplier >= 5) return MultiplierButtonVariant.Yellow;
+  if (multiplier >= 3) return MultiplierButtonVariant.Blue;
+  if (multiplier >= 2) return MultiplierButtonVariant.LightBlue;
+  return MultiplierButtonVariant.White;
+};
 
 export const Multiplier = () => {
-  const variants = useMemo(
-    () => Array.from({ length: MAX_MULTIPLIERS }, randomVariant),
-    [],
-  );
+  const history = useCrashHistory();
+  const items = history.slice(0, MAX_MULTIPLIERS);
 
   return (
     <div className={styles["multiplier"]}>
-      {variants.map((variant, index) => (
+      {items.map((item) => (
         <MultiplierButton
-          key={index}
-          label="2.67"
+          key={item.id}
+          label={item.multiplier.toFixed(2)}
           size="large"
-          variant={variant}
+          variant={variantFor(item.multiplier)}
         />
       ))}
     </div>

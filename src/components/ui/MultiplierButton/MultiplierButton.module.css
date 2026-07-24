@@ -50,3 +50,11 @@
   border-color: var(--color-stroke-green);
   background-color: var(--color-green-50);
 }
+
+
+@media screen and (max-width: 430px) {
+  .multiplier-button {
+    height: 20px;
+    border-radius: 6px;
+  }
+}

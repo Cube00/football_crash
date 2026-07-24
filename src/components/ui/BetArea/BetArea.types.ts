@@ -1,10 +1,10 @@
 import type { HTMLAttributes } from "react";
+import type { BetSlot } from "@/game/enums";
 
-export interface BetAreaProps extends HTMLAttributes<HTMLDivElement> {
-  /** Currency shown on the Bet button. */
+export interface BetAreaProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "slot"> {
+  /** Which of the two independent bet slots this area controls. */
+  slot: BetSlot;
+  /** Currency label shown on the Bet button. */
   currency?: string;
-  /** Initial stake amount. */
-  defaultAmount?: number;
-  /** Initial auto cash-out multiplier. */
-  defaultMultiplier?: number;
 }

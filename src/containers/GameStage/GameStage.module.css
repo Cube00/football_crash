@@ -1,0 +1,35 @@
+.game-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-12);
+  background-color: var(--color-dark-black-primary);
+}
+
+.game-stage__scene {
+  width: 100%;
+  height: 100%;
+}
+
+/* Still mode: the same framing the animated scene uses — fill the box, crop the
+   overflow rather than letterbox it. */
+.game-stage__still {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* The HUD sits over whichever scene is running, so both modes share it. */
+.game-stage__hud {
+  position: absolute;
+  top: 12%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}

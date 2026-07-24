@@ -1,11 +1,20 @@
 import { cx } from "@/utils";
+import { playSound, Sound } from "@/game/sounds";
 import styles from "./Checkbox.module.css";
 import type { CheckboxProps } from "./Checkbox.types";
 
-export const Checkbox = ({ className, ...rest }: CheckboxProps) => {
+export const Checkbox = ({ className, onChange, ...rest }: CheckboxProps) => {
   return (
     <label className={cx(styles["checkbox"], className)}>
-      <input type="checkbox" className={styles["checkbox__input"]} {...rest} />
+      <input
+        type="checkbox"
+        className={styles["checkbox__input"]}
+        onChange={(event) => {
+          playSound(Sound.SmallButton);
+          onChange?.(event);
+        }}
+        {...rest}
+      />
       <span className={styles["checkbox__box"]}>
         <svg
           className={styles["checkbox__icon"]}

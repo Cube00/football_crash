@@ -1,0 +1,41 @@
+.menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--size-40);
+  height: var(--size-40);
+  border-radius: var(--radius-half);
+  /* Transparent so the ring below can appear without resizing the button. */
+  border: 1px solid transparent;
+  outline: none;
+  background-color: var(--color-dark2-primary);
+  /* The icon is masked with currentColor and follows this. */
+  color: var(--color-text-gray-100);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Hovered, and while the menu is open: a white ring and a white icon. */
+.menu-button:hover,
+.menu-button--open {
+  border-color: var(--color-text-white-100);
+  color: var(--color-text-white-100);
+}
+
+.menu-button:active {
+  background-color: var(--color-gray-primary);
+}
+
+.menu-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-stroke-blue);
+}
+
+.menu-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.menu-button__icon {
+  --icon-size: var(--size-20);
+}

@@ -15,8 +15,20 @@ export interface BetRow {
   own?: boolean;
 }
 
+export interface BetsSummary {
+  /** Bets placed in this round. */
+  placed: number;
+  /** Total bets available. */
+  total: number;
+  /** Total amount staked. */
+  totalBet: number;
+  /** Total amount won. */
+  totalWin: number;
+}
+
 export interface BetsListProps extends HTMLAttributes<HTMLDivElement> {
   rows?: BetRow[];
+  summary?: BetsSummary;
   currency?: string;
   variant?: BetsListVariant;
 }

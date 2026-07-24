@@ -34,10 +34,21 @@
   .layout {
     padding: 0 8px;
   }
-} 
+}
 
+/* Too narrow for a 360px sidebar, too wide to be worth stacking: the game gets
+   the whole row and the bets list waits for a bigger screen. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .layout__info {
+    display: none;
+  }
+}
 
-@media  (max-width: 1023px) {
+/* Mobile — one column: game first, bets list under it, page scrolls. The
+   sections size themselves here (the game to its canvas, the list to a capped
+   height), so nothing may stretch to a `height: 100%` of an auto-height parent
+   — that resolves to auto and collapses the Phaser canvas to nothing. */
+@media (max-width: 1023px) {
   .layout {
     height: auto;
     min-height: 100dvh;
@@ -45,16 +56,20 @@
 
   .layout__content {
     flex-direction: column;
-  }
-
-  .layout__info {
-    flex: 0 0 auto;
-    width: 100%;
-    height: min(600px, 80vh);
+    gap: var(--size-8);
+    padding-bottom: var(--size-8);
   }
 
   .layout__game {
+    order: 1;
+    flex: 0 0 auto;
     height: auto;
-    min-height: 60vh;
+  }
+
+  .layout__info {
+    order: 2;
+    flex: 0 0 auto;
+    width: 100%;
+    height: min(560px, 70vh);
   }
 }

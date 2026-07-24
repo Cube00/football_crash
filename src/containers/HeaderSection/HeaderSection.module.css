@@ -1,0 +1,17 @@
+.header-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--size-12);
+  width: 100%;
+  min-width: 0;
+  /* The menu hangs below the header, over the game canvas that follows it. */
+  z-index: 30;
+}
+
+.header-section__menu {
+  position: absolute;
+  top: calc(100% + var(--size-8));
+  right: 0;
+}

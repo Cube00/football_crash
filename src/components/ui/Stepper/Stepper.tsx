@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { cx } from "@/utils";
+import { playSound, Sound } from "@/game/sounds";
 import { MinusButton } from "../MinusButton";
 import { PlusButton } from "../PlusButton";
 import styles from "./Stepper.module.css";
@@ -76,8 +77,18 @@ export const Stepper = ({
     return clamped;
   };
 
-  const decrease = () => update(currentValue - step);
-  const increase = () => update(currentValue + step);
+  // Both layouts and the arrow keys land here, so this is the one place the
+  // step needs to click. `update` itself must stay silent — typing a value
+  // commits through it too.
+  const decrease = () => {
+    playSound(Sound.SmallButton);
+    return update(currentValue - step);
+  };
+
+  const increase = () => {
+    playSound(Sound.SmallButton);
+    return update(currentValue + step);
+  };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const raw = event.target.value;

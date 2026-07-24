@@ -1,4 +1,4 @@
-import type { BetRow } from "./BetsList.types";
+import type { BetRow, BetsSummary } from "./BetsList.types";
 
 export const BetsListVariant = {
   All: "all",
@@ -20,6 +20,13 @@ export const BETS_LIST_DEFAULTS = {
   currency: "USD",
   emptyValue: "-",
 } as const;
+
+export const MOCK_MY_BETS_SUMMARY: BetsSummary = {
+  placed: 25,
+  total: 80,
+  totalBet: 125.5,
+  totalWin: 1436.24,
+};
 
 export const MOCK_BETS: BetRow[] = [
   { id: "1", player: "G****t", bet: 20, status: BetStatus.Pending, own: true },
