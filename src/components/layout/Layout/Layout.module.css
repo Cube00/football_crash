@@ -36,14 +36,6 @@
   }
 }
 
-/* Too narrow for a 360px sidebar, too wide to be worth stacking: the game gets
-   the whole row and the bets list waits for a bigger screen. */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .layout__info {
-    display: none;
-  }
-}
-
 /* Mobile — one column: game first, bets list under it, page scrolls. The
    sections size themselves here (the game to its canvas, the list to a capped
    height), so nothing may stretch to a `height: 100%` of an auto-height parent

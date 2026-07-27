@@ -101,7 +101,7 @@ export const BetsList = ({
           </div>
         ))}
       </div>
-      {isMyBets && (
+      {true && (
         <div className={styles["bets-list__mybetsinfo"]}>
           <div className={styles["bets-list__summary-item"]}>
             <span className={styles["bets-list__summary-label"]}>Bets</span>

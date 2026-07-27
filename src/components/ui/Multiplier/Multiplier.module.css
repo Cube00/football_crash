@@ -1,4 +1,5 @@
 .multiplier {
+  position: relative;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -9,15 +10,65 @@
   padding: var(--size-8);
   border-radius: var(--radius-12);
   background-color: var(--color-dark2-primary);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
 }
 
-.multiplier::-webkit-scrollbar {
-  display: none;
+/* The inline row. Clips its own overflow as a safety net — the visible count is
+   sized to fit, but a sub-pixel rounding gap should never leak a partial pill. */
+.multiplier__row {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--size-4);
+  min-width: 0;
+  overflow: hidden;
 }
 
-.multiplier > * {
+.multiplier__toggle {
+  display: inline-flex;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-24);
+  height: var(--size-24);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-gray-100);
+  cursor: pointer;
+  outline: none;
+}
+
+.multiplier__toggle:hover,
+.multiplier__toggle--open {
+  color: var(--color-text-white-100);
+}
+
+.multiplier__chevron {
+  width: var(--size-20);
+  height: var(--size-20);
+  transition: transform 0.3s;
+}
+
+.multiplier__toggle--open .multiplier__chevron {
+  transform: rotate(180deg);
+}
+
+/* The overflow panel: a full-width block that drops down under the row and
+   spans its whole length, wrapping the hidden pills across as many rows as
+   they need. */
+.multiplier__dropdown {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4);
+  padding: var(--size-8);
+  border-radius: var(--radius-12);
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  background-color: var(--color-dark2-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }

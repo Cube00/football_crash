@@ -23,11 +23,19 @@ export const MODAL_TITLES: Record<ModalId, string> = {
   [ModalId.BonusBet]: "",
   [ModalId.BonusSpin]: "",
   [ModalId.TotalWin]: "Total Win",
-  [ModalId.BetType]: "Bet Type",
+  [ModalId.BetType]: "Free bets Management",
   [ModalId.Archive]: "Archive",
   [ModalId.HowToPlay]: "How To Play",
   [ModalId.AutoBet]: "Auto Bet",
   [ModalId.Chat]: "Chat",
+};
+
+/**
+ * Modals reached from another modal. The child shows a back arrow that returns
+ * here instead of closing the stack.
+ */
+export const MODAL_PARENTS: Partial<Record<ModalId, ModalId>> = {
+  [ModalId.Archive]: ModalId.BetType,
 };
 
 export const MODAL_WIDTHS: Partial<Record<ModalId, ModalWidth>> = {

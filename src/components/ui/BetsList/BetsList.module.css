@@ -35,10 +35,7 @@
   gap: var(--size-4);
   min-height: 0;
   overflow-y: auto;
-}
-
-.bets-list__authorized {
-  padding-bottom: 66px;
+  max-height: calc(100% - 100px);
 }
 
 .bets-list__row {

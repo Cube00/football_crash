@@ -2,6 +2,7 @@ import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '@/utils';
 import { useBodyScrollLock, useFocusTrap, useOnEscape } from '@/hooks';
+import { Icon } from '@/components/ui/Icon';
 import { playSound, Sound } from '@/game/sounds';
 import styles from './Modal.module.css';
 import type { ModalProps } from './Modal.types';
@@ -9,9 +10,11 @@ import type { ModalProps } from './Modal.types';
 export function Modal({
   isOpen,
   onClose,
+  onBack,
   title,
   children,
   closeLabel = 'Close',
+  backLabel = 'Back',
   width,
   className,
 }: ModalProps) {
@@ -44,9 +47,24 @@ export function Modal({
         tabIndex={-1}
       >
         <header className={styles['modal__header']}>
-          <h2 id={titleId} className={styles['modal__title']}>
-            {title}
-          </h2>
+          <div className={styles['modal__heading']}>
+            {onBack && (
+              <button
+                type="button"
+                className={styles['modal__back']}
+                onClick={() => {
+                  playSound(Sound.SmallButton);
+                  onBack();
+                }}
+                aria-label={backLabel}
+              >
+                <Icon src="/assets/icons/Arrow left.svg" />
+              </button>
+            )}
+            <h2 id={titleId} className={styles['modal__title']}>
+              {title}
+            </h2>
+          </div>
           <button
             type="button"
             className={styles['modal__close']}

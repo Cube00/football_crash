@@ -19,7 +19,7 @@
 /* Two bet areas side by side stop being usable once each is under ~320px —
    the stepper, the four presets and the bet button all have to fit. Keyed off
    the game column, not the viewport, since the sidebar takes a fixed slice. */
-@container game (max-width: 660px) {
+@container game (max-width: 860px) {
   .game-betAreas {
     flex-direction: column;
   }

@@ -16,7 +16,7 @@ import styles from "./HeaderSection.module.css";
 const MENU_MODALS: Partial<Record<string, ModalId>> = {
   [MenuItemId.ProvablyFair]: ModalId.ProvablyFair,
   [MenuItemId.HowToPlay]: ModalId.HowToPlay,
-  [MenuItemId.FreeBet]: ModalId.BonusBet,
+  [MenuItemId.FreeBet]: ModalId.BetType,
   [MenuItemId.Limits]: ModalId.Limits,
   [MenuItemId.Chat]: ModalId.Chat,
 };

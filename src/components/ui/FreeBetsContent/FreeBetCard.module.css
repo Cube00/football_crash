@@ -1,0 +1,107 @@
+.free-bet {
+  border: 1px solid var(--color-stroke-white-10);
+  border-radius: var(--radius-8);
+}
+
+.free-bet__head {
+  display: flex;
+  align-items: center;
+  gap: var(--size-8);
+  height: var(--size-64);
+  padding: 0 var(--size-16);
+}
+
+.free-bet__select {
+  --radio-gap: var(--size-20);
+  flex: 1;
+  min-width: 0;
+}
+
+.free-bet__fields {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: var(--size-8);
+}
+
+.free-bet__field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--size-4);
+  min-width: 0;
+}
+
+/* A card without a bet price has one column to spare, so its last value hangs
+   off the chevron rather than floating mid-row. */
+.free-bet__field:nth-child(2):last-child {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.free-bet__label {
+  font-size: var(--size-10);
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-text-gray-100);
+}
+
+.free-bet__value {
+  overflow: hidden;
+  font-size: var(--size-14);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-text-white-100);
+}
+
+.free-bet__toggle {
+  display: flex;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-white-100);
+  cursor: pointer;
+}
+
+.free-bet__toggle:hover {
+  color: var(--color-text-gray-100);
+}
+
+.free-bet__chevron {
+  transition: transform 0.3s;
+}
+
+.free-bet--expanded .free-bet__chevron {
+  transform: rotate(180deg);
+}
+
+.free-bet__details {
+  display: flex;
+  flex-direction: column;
+}
+
+.free-bet__details[hidden] {
+  display: none;
+}
+
+.free-bet__detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-16);
+  height: var(--size-48);
+  padding: 0 var(--size-16);
+  border-top: 1px solid var(--color-stroke-white-10);
+}
+
+.free-bet__detail-value {
+  font-size: var(--size-12);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-text-gray-100);
+}

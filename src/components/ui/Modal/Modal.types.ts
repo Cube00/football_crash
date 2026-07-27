@@ -20,8 +20,12 @@ export interface ModalProps {
   title: string;
   /** Body content, rendered inside the scrollable area. */
   children: ReactNode;
+  /** Shows a back arrow left of the title. Omit for top-level modals. */
+  onBack?: () => void;
   /** Accessible label for the close button. */
   closeLabel?: string;
+  /** Accessible label for the back button. */
+  backLabel?: string;
   /** Max width of the sheet. Defaults to 600px when omitted. */
   width?: ModalWidth;
   /** Extra class for the modal container (the sheet). */

@@ -6,16 +6,6 @@ interface PhaserGameProps {
   className?: string;
 }
 
-/**
- * Single shared Phaser game, held at module scope.
- *
- * React StrictMode runs effects twice in dev (setup → cleanup → setup) on the
- * same DOM node. Creating/destroying a Phaser game on that cycle would spawn a
- * second game whose teardown *globally* unregisters the Spine `add.spine`
- * factory — breaking the survivor. So we reuse one game and debounce teardown:
- * a remount within the window cancels the pending destroy, leaving exactly one
- * game. On a real unmount the timer fires and the game is destroyed.
- */
 let sharedGame: Game | null = null;
 let destroyTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -37,14 +27,10 @@ export const PhaserGame = ({ className }: PhaserGameProps) => {
       sharedGame.canvas &&
       sharedGame.canvas.parentElement !== container
     ) {
-      // Re-attach the existing canvas if the container node changed.
       container.appendChild(sharedGame.canvas);
     }
     const game = sharedGame;
 
-    // Device pixels in, CSS pixels out — `zoom` divides the backing store back
-    // down to the container's size. The zoom is re-checked because dragging the
-    // window to a display with a different pixel density changes the ratio.
     const applySize = () => {
       const { clientWidth, clientHeight } = container;
       if (clientWidth <= 0 || clientHeight <= 0) return;
