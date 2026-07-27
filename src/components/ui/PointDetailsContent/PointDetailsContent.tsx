@@ -1,8 +1,10 @@
 import styles from "./PointDetailsContent.module.css";
+import type { PointDetailsContentProps } from "./PointDetailsContent.types";
 
-export const PointDetailsContent = () => {
-  const roundId = "1153219";
-  const multiplier = "24.53x";
+export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
+  const roundId = point?.roundId ?? "1153219";
+  const multiplier = `${(point?.multiplier ?? 24.53).toFixed(2)}x`;
+  // Not on the round yet — placeholders until the rounds API lands.
   const date = "01 Feb, 2025  4:00";
   const hash = "5435a2567s424k12310afed4";
   const serverSeed = "5435a2567s424k12310afed4459sa21467s";

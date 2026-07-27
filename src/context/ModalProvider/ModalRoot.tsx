@@ -7,7 +7,7 @@ import {
   MODAL_TITLES,
   MODAL_WIDTHS,
 } from "./modals.constants";
-import type { ModalContextValue } from "./ModalProvider.types";
+import type { ModalContextValue, ModalPayload } from "./ModalProvider.types";
 import { ProbablyFairContent } from "@/components/ui/ProbablyFairContent";
 import { LimitsContent } from "@/components/ui/LimitsContent";
 import { PointDetailsContent } from "@/components/ui/PointDetailsContent";
@@ -18,10 +18,16 @@ import { ArchiveContent } from "@/components/ui/ArchiveContent";
 
 interface ModalRootProps extends ModalContextValue {
   activeModal: ModalId | null;
+  payload?: ModalPayload;
 }
 
 /** Renders the currently active modal and its content. */
-export function ModalRoot({ activeModal, open, close }: ModalRootProps) {
+export function ModalRoot({
+  activeModal,
+  payload,
+  open,
+  close,
+}: ModalRootProps) {
   if (activeModal === null) return null;
 
   let content: ReactNode;
@@ -33,7 +39,7 @@ export function ModalRoot({ activeModal, open, close }: ModalRootProps) {
       content = <LimitsContent />;
       break;
     case ModalId.PointDetails:
-      content = <PointDetailsContent />;
+      content = <PointDetailsContent point={payload} />;
       break;
     case ModalId.BonusBet:
       content = <BonusBetContent />;

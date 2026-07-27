@@ -1,35 +1,82 @@
+/* Layout box. It holds the strip's slot in the column at a fixed height; the
+   sheet inside it is what you see, and it is free to grow over the stage. */
 .multiplier {
+  --pill-height: var(--size-32);
+  --pill-gap: var(--size-4);
+  --sheet-padding: var(--size-8);
+  --strip-height: calc(var(--pill-height) + var(--sheet-padding) * 2);
   position: relative;
+  width: 100%;
+  height: var(--strip-height);
+  min-height: var(--strip-height);
+}
+
+.multiplier__sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: nowrap;
-  align-items: center;
-  gap: var(--size-4);
-  width: 100%;
-  height: var(--size-48);
-  min-height: var(--size-48);
-  padding: var(--size-8);
+  /* Top, not centre: open, the chevron stays on the first row of pills. */
+  align-items: flex-start;
+  gap: var(--pill-gap);
+  padding: var(--sheet-padding);
   border-radius: var(--radius-12);
   background-color: var(--color-dark2-primary);
 }
 
-/* The inline row. Clips its own overflow as a safety net — the visible count is
-   sized to fit, but a sub-pixel rounding gap should never leak a partial pill. */
+.multiplier__sheet--open {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Closed: a single row. Clips its own overflow as a safety net — the visible
+   count is sized to fit, but a sub-pixel rounding gap should never leak a
+   partial pill. */
 .multiplier__row {
   display: flex;
   flex: 1 1 auto;
   align-items: center;
-  gap: var(--size-4);
+  gap: var(--pill-gap);
   min-width: 0;
   overflow: hidden;
 }
 
+/* Overflowing: the pills stop being fixed-width and share the row instead, so
+   the space one that didn't fit would have taken is spread over the ones that
+   did rather than left dead in front of the chevron. `--columns` is the count
+   the strip shows closed, so the unfolded rows land on those same columns and
+   the last one stays left-aligned rather than stretching across the width. */
+.multiplier__row--fill {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
+  align-content: flex-start;
+}
+
+.multiplier__row--fill > button {
+  width: auto;
+}
+
+/* Open: the same row wraps the full history across as many lines as it needs,
+   each one stopping short of the chevron's column. */
+.multiplier__row--open {
+  composes: scrollbar from "@/styles/scrollbar.module.css";
+  flex-wrap: wrap;
+  align-content: flex-start;
+  max-height: 40svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* As tall as a pill, so it lines up with the first row in both states. */
 .multiplier__toggle {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   width: var(--size-24);
-  height: var(--size-24);
+  height: var(--pill-height);
   padding: 0;
   border: none;
   background: transparent;
@@ -53,22 +100,41 @@
   transform: rotate(180deg);
 }
 
-/* The overflow panel: a full-width block that drops down under the row and
-   spans its whole length, wrapping the hidden pills across as many rows as
-   they need. */
-.multiplier__dropdown {
-  position: absolute;
-  top: calc(100%);
-  left: 0;
-  right: 0;
-  z-index: 20;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--size-4);
-  padding: var(--size-8);
-  border-radius: var(--radius-12);
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  background-color: var(--color-dark2-primary);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+/* Touch — the panel behind the pills goes away and they sit straight on the
+   screen, taller and stretched to share the row rather than a fixed width. */
+@media screen and (max-width: 1023px) {
+  .multiplier {
+    --pill-height: 36px;
+    --pill-gap: 6px;
+    --sheet-padding: 0px;
+  }
+
+  .multiplier__sheet {
+    border-radius: 0;
+    background-color: transparent;
+    z-index: 9999;
+  }
+
+  /* Open it is a panel again — the pills are over the stage, not the page. */
+  .multiplier__sheet--open {
+    margin: 0;
+    padding: 0;
+    border-radius: var(--radius-12);
+    background-color: var(--color-dark-black-primary);
+  }
+
+  .multiplier__row > button {
+    height: 21px;
+    border-radius: var(--radius-6);
+  }
+
+  .multiplier__toggle {
+    width: var(--size-22);
+    height: var(--size-20);
+  }
+
+  .multiplier__chevron {
+    width: var(--size-24);
+    height: var(--size-24);
+  }
 }

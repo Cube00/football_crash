@@ -49,7 +49,7 @@ let snapshot: GameSnapshot = {
   balance: GAME_CONFIG.startingBalance,
   crashed: false,
   lastCrash: null,
-  crashHistory: generateSeedHistory(),
+  crashHistory: generateSeedHistory(MAX_HISTORY),
   roundBets: [],
   slots: [IDLE_SLOT, IDLE_SLOT],
 };

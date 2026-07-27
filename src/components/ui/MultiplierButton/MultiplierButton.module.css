@@ -52,9 +52,11 @@
 }
 
 
+/* The large pill is the history strip's, and the strip resizes it itself from
+   `Multiplier.module.css` — this only has to cover the small one. */
 @media screen and (max-width: 430px) {
-  .multiplier-button {
-    height: 20px;
+  .multiplier-button:not(.multiplier-button--large) {
+    height: 21px;
     border-radius: 6px;
   }
 }
