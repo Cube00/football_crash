@@ -4,21 +4,21 @@ import type { ArchivedFreeBet } from "./ArchiveContent.types";
 export const ARCHIVED_FREE_BETS: readonly ArchivedFreeBet[] = [
   {
     id: "full-payout",
-    type: "Full Payout",
+    typeKey: "freeBets.types.fullPayout",
     betAmount: "10/10",
     betPrice: "0.5 USD",
     payout: "9.49 USD",
   },
   {
     id: "pure-profit",
-    type: "Pure Profit",
+    typeKey: "freeBets.types.pureProfit",
     betAmount: "10/10",
     betPrice: "0.5 USD",
     payout: "22.18 USD",
   },
   {
     id: "bonus-balance",
-    type: "Bonus Balance",
+    typeKey: "freeBets.types.bonusBalance",
     betAmount: "30 USD",
     payout: "102.40 USD",
   },

@@ -1,0 +1,172 @@
+{
+  "common": {
+    "back": "უკან",
+    "close": "დახურვა",
+    "reset": "განულება",
+    "start": "დაწყება",
+    "stop": "შეჩერება",
+    "rounds": "რაუნდი",
+    "playNow": "ითამაშე ახლავე",
+    "comingSoon": "{{title}} — მალე."
+  },
+
+  "header": {
+    "balance": "ბალანსი",
+    "menu": "მენიუ",
+    "closeMenu": "მენიუს დახურვა"
+  },
+
+  "menu": {
+    "sound": "ხმა",
+    "music": "მუსიკა",
+    "animation": "ანიმაცია",
+    "provablyFair": "დამტკიცებულად სამართლიანი",
+    "howToPlay": "როგორ ვითამაშოთ",
+    "freeBet": "უფასო ფსონი",
+    "limits": "ლიმიტები",
+    "chat": "ჩატი"
+  },
+
+  "modals": {
+    "provablyFair": "დამტკიცებულად სამართლიანი",
+    "limits": "ლიმიტები",
+    "pointDetails": "რაუნდის დეტალები",
+    "bonusBet": "",
+    "bonusSpin": "",
+    "totalWin": "ჯამური მოგება",
+    "betType": "უფასო ფსონების მართვა",
+    "archive": "არქივი",
+    "howToPlay": "როგორ ვითამაშოთ",
+    "autoBet": "ავტო ფსონი",
+    "chat": "ჩატი"
+  },
+
+  "infoTabs": {
+    "allBets": "ყველა ფსონი",
+    "myBets": "ჩემი ფსონები",
+    "stats": "სტატისტიკა"
+  },
+
+  "bet": {
+    "bet": "ფსონი",
+    "cashOut": "გატანა",
+    "cancel": "გაუქმება",
+    "waitingForNextRound": "ველოდებით შემდეგ რაუნდს",
+    "autoBet": "ავტო ფსონი",
+    "autoCashOut": "ავტო გატანა",
+    "presetMax": "მაქს."
+  },
+
+  "autoBet": {
+    "rounds": "რაუნდი",
+    "betLabel": "ფსონი:",
+    "totalLabel": "ჯამი",
+    "stopAutoPlayOn": "ავტო თამაშის შეჩერება, თუ",
+    "cashIncreasedBy": "თანხა გაიზარდა",
+    "cashDecreasedBy": "თანხა შემცირდა",
+    "singleWinExceeds": "ერთჯერადი მოგება აღემატება",
+    "stopIfCashIncreases": "შეჩერდეს, თუ თანხა გაიზრდება",
+    "stopIfCashDecreases": "შეჩერდეს, თუ თანხა შემცირდება",
+    "stopOnSingleWin": "შეჩერდეს ერთჯერად მოგებაზე",
+    "startAutoBet": "ავტო ფსონის დაწყება",
+    "stopAutoBet": "ავტო ფსონის შეჩერება",
+    "stopAutoBetRemaining": "ავტო ფსონის შეჩერება (დარჩა {{count}})"
+  },
+
+  "betsList": {
+    "player": "მოთამაშე",
+    "bet": "ფსონი ({{currency}})",
+    "cashout": "გატანა ({{currency}})",
+    "bets": "ფსონები",
+    "totalBets": "ჯამური ფსონი",
+    "totalWin": "ჯამური მოგება"
+  },
+
+  "stats": {
+    "stats": "სტატისტიკა",
+    "chart": "გრაფიკი",
+    "rounds": "რაუნდი"
+  },
+
+  "game": {
+    "nextRoundIn": "შემდეგი რაუნდი",
+    "showAllMultipliers": "ყველა კოეფიციენტის ჩვენება",
+    "hideMultipliers": "კოეფიციენტების დამალვა"
+  },
+
+  "stepper": {
+    "decrease": "შემცირება",
+    "increase": "გაზრდა"
+  },
+
+  "freeBets": {
+    "playWithRealMoney": "ითამაშე რეალური ფულით",
+    "activeFreeBets": "აქტიური უფასო ფსონები",
+    "archive": "არქივი",
+    "detailsFor": "{{type}} — დეტალები",
+    "labels": {
+      "type": "ტიპი",
+      "betAmount": "ფსონის რაოდენობა",
+      "betPrice": "ფსონის ფასი",
+      "accrued": "დარიცხვის თარიღი",
+      "minWithdrawal": "მინ. გატანა",
+      "expirationDate": "ვადის ამოწურვა"
+    },
+    "types": {
+      "fullPayout": "სრული ანაზღაურება",
+      "pureProfit": "წმინდა მოგება",
+      "bonusBalance": "ბონუს ბალანსი"
+    }
+  },
+
+  "bonus": {
+    "youGet": "შენ იღებ",
+    "freeBet": "უფასო ფსონი",
+    "availableForDays": "ბონუს ფსონი ხელმისაწვდომია {{count}} დღე"
+  },
+
+  "limits": {
+    "maximumWin": {
+      "title": "მაქსიმალური მოგება",
+      "body": "მაქსიმალური შესაძლო კოეფიციენტია შენი ფსონის 25 000x. ეს არის აბსოლუტური ზღვარი — მაშინაც კი, თუ თამაში თეორიულად ამ წერტილს გასცდება, ანაზღაურება შეიზღუდება 25 000x-ზე."
+    },
+    "minimumCashOut": {
+      "title": "მინიმალური გატანა (მხოლოდ უფასო ფსონებზე)",
+      "body": "უფასო ფსონებით თამაშისას მოქმედებს გატანის მინიმალური კოეფიციენტი (როგორც წესი 1.50x, თუმცა კონფიგურირებადია). სარეკლამო უფასო ფსონების გამოყენებისას ამ ზღვარზე დაბლა გატანა შეუძლებელია."
+    }
+  },
+
+  "provablyFair": {
+    "howItWorks": "როგორ მუშაობს",
+    "howItWorksBody": "ჩვენი Provably Fair სისტემა იყენებს რამდენიმე პარამეტრს სრული გამჭვირვალობისა და სამართლიანობის უზრუნველსაყოფად. თითოეულ რაუნდს აქვს როგორც დამალული, ისე გამჟღავნებული მდგომარეობა.",
+    "beforeRoundStarts": "რაუნდის დაწყებამდე (დამალული მდგომარეობა)",
+    "roundNumber": "რაუნდის ნომერი",
+    "serverKey": "სერვერის გასაღები",
+    "crashPoint": "ჩავარდნის წერტილი",
+    "provablyFairHash": "Provably Fair ჰეში",
+    "hidden": "დამალული",
+    "beforeGameBegins": "თამაშის დაწყებამდე მოთამაშეებს შეუძლიათ იხილონ:",
+    "roundNumberDescription": "— მიმდინარე რაუნდის იდენტიფიკატორი",
+    "provablyFairHashDescription": "— კრიპტოგრაფიული ჰეში, რომელიც ადასტურებს, რომ რაუნდის შედეგი წინასწარ იყო განსაზღვრული",
+    "note": "სერვერის გასაღები და ჩავარდნის წერტილი დამალული რჩება სამართლიანობის უზრუნველსაყოფად."
+  },
+
+  "pointDetails": {
+    "roundId": "რაუნდის ID",
+    "serverSeed": "სერვერის Seed",
+    "meaningOfProvablyFair": "რას ნიშნავს Provably Fair"
+  },
+
+  "footer": {
+    "networkConnection": "ქსელის კავშირი"
+  },
+
+  "a11y": {
+    "poweredByLogo": "Powered by ლოგო",
+    "network": "ქსელი",
+    "rocket": "რაკეტა",
+    "check": "მონიშვნა",
+    "copy": "კოპირება",
+    "verified": "დადასტურებულია"
+  }
+}

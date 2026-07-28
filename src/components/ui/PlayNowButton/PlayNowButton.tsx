@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import styles from "./PlayNowButton.module.css";
 import type { PlayNowButtonProps } from "./PlayNowButton.types";
@@ -7,6 +8,7 @@ export const PlayNowButton = ({
   size,
   className,
 }: PlayNowButtonProps) => {
+  const { t } = useTranslation();
   const classes = cx(
     styles["playnow-button"],
     styles[`playnow-button--${variant}`],
@@ -16,7 +18,7 @@ export const PlayNowButton = ({
 
   return (
     <button className={classes}>
-      <span>Play Now</span>
+      <span>{t("common.playNow")}</span>
     </button>
   );
 };

@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal } from "@/components/ui/Modal";
 import styles from "./ModalRoot.module.css";
 import {
   ModalId,
   MODAL_PARENTS,
-  MODAL_TITLES,
+  MODAL_TITLE_KEYS,
   MODAL_WIDTHS,
 } from "./modals.constants";
 import type { ModalContextValue, ModalPayload } from "./ModalProvider.types";
@@ -28,7 +29,11 @@ export function ModalRoot({
   open,
   close,
 }: ModalRootProps) {
+  const { t } = useTranslation();
+
   if (activeModal === null) return null;
+
+  const title = t(MODAL_TITLE_KEYS[activeModal]);
 
   let content: ReactNode;
   switch (activeModal) {
@@ -56,7 +61,7 @@ export function ModalRoot({
     default:
       content = (
         <p className={styles["modal-root__placeholder"]}>
-          {MODAL_TITLES[activeModal]} — coming soon.
+          {t("common.comingSoon", { title })}
         </p>
       );
   }
@@ -67,7 +72,7 @@ export function ModalRoot({
     <Modal
       key={activeModal}
       isOpen
-      title={MODAL_TITLES[activeModal]}
+      title={title}
       width={MODAL_WIDTHS[activeModal]}
       onClose={close}
       onBack={parent ? () => open(parent) : undefined}

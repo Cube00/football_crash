@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import type { TranslationKey } from "@/i18n/types";
 
 /** A row is either a setting you flip, or something you open. */
 export const MenuItemKind = {
@@ -10,7 +11,8 @@ export type MenuItemKind = (typeof MenuItemKind)[keyof typeof MenuItemKind];
 
 interface MenuItemBase {
   id: string;
-  label: string;
+  /** Translation key for the row's label; the menu resolves it when rendering. */
+  labelKey: TranslationKey;
   /** Path to a monochrome SVG; it is recoloured to match the row. */
   icon: string;
 }

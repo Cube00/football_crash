@@ -1,23 +1,18 @@
+import { useTranslation } from "react-i18next";
 import styles from "./LimitsContent.module.css";
 
 export const LimitsContent = () => {
+  const { t } = useTranslation();
+
   return (
     <div className={styles["limits"]}>
       <div className={styles["limits-block"]}>
-        <h2>Maximum Win</h2>
-        <span>
-          The highest possible multiplier is 25,000x your bet. This is the
-          absolute ceiling—even if the game continues beyond this point
-          (theoretically), your payout caps at 25,000x.
-        </span>
+        <h2>{t("limits.maximumWin.title")}</h2>
+        <span>{t("limits.maximumWin.body")}</span>
       </div>
       <div className={styles["limits-block"]}>
-        <h2>Minimum Cash-Out (Free Bets Only)</h2>
-        <span>
-          When playing with free bets, a minimum cash-out multiplier applies
-          (typically 1.50x, but configurable). You cannot cash out below this
-          threshold when using promotional free bets.
-        </span>
+        <h2>{t("limits.minimumCashOut.title")}</h2>
+        <span>{t("limits.minimumCashOut.body")}</span>
       </div>
     </div>
   );

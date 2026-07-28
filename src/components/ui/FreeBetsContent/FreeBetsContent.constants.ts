@@ -1,3 +1,4 @@
+import type { TranslationKey } from "@/i18n/types";
 import type { FreeBet } from "./FreeBetsContent.types";
 
 /** Radio value for staking the wallet instead of a free bet. */
@@ -6,21 +7,23 @@ export const REAL_MONEY_ID = "real-money";
 /** Shared `name`, so every row in the modal is one radio group. */
 export const FREE_BET_GROUP = "free-bet";
 
-/** Column headings above each value in a card. */
+/** Translation keys for the column headings above each value in a card. */
 export const FreeBetLabel = {
-  Type: "Type",
-  BetAmount: "Bet Amount",
-  BetPrice: "Bet Price",
-  Accrued: "Accrued",
-  MinWithdrawal: "Min.Withdrawal",
-  ExpirationDate: "Expiration Date",
-} as const;
+  Type: "freeBets.labels.type",
+  BetAmount: "freeBets.labels.betAmount",
+  BetPrice: "freeBets.labels.betPrice",
+  Accrued: "freeBets.labels.accrued",
+  MinWithdrawal: "freeBets.labels.minWithdrawal",
+  ExpirationDate: "freeBets.labels.expirationDate",
+} as const satisfies Record<string, TranslationKey>;
+
+export type FreeBetLabel = (typeof FreeBetLabel)[keyof typeof FreeBetLabel];
 
 /** Placeholder grants until the wallet API is wired up. */
 export const ACTIVE_FREE_BETS: readonly FreeBet[] = [
   {
     id: "full-payout",
-    type: "Full Payout",
+    typeKey: "freeBets.types.fullPayout",
     betAmount: "10/10",
     betPrice: "0.5 USD",
     accrued: "11 Feb, 2026 08:57",
@@ -29,7 +32,7 @@ export const ACTIVE_FREE_BETS: readonly FreeBet[] = [
   },
   {
     id: "pure-profit",
-    type: "Pure Profit",
+    typeKey: "freeBets.types.pureProfit",
     betAmount: "10/10",
     betPrice: "0.5 USD",
     accrued: "11 Feb, 2026 08:57",
@@ -38,7 +41,7 @@ export const ACTIVE_FREE_BETS: readonly FreeBet[] = [
   },
   {
     id: "bonus-balance",
-    type: "Bonus Balance",
+    typeKey: "freeBets.types.bonusBalance",
     betAmount: "30 USD",
     accrued: "11 Feb, 2026 08:57",
     minWithdrawal: "3.5x",

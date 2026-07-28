@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { Size } from "@/constants";
 import { Tabs, TabsVariant } from "../Tabs";
@@ -28,11 +29,17 @@ export const StatsContent = ({
   className,
   ...rest
 }: StatsContentProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>(StatsTab.Stats);
   const [internalRounds, setInternalRounds] = useState<number>(
     STATS_DEFAULTS.rounds,
   );
   const activeRounds = rounds ?? internalRounds;
+
+  const tabs = useMemo(
+    () => STATS_TABS.map(({ labelKey, value }) => ({ label: t(labelKey), value })),
+    [t],
+  );
 
   const selectRounds = (next: number) => {
     setInternalRounds(next);
@@ -42,7 +49,7 @@ export const StatsContent = ({
   return (
     <div className={cx(styles["stats-content"], className)} {...rest}>
       <Tabs
-        items={STATS_TABS}
+        items={tabs}
         value={activeTab}
         onValueChange={setActiveTab}
         variant={TabsVariant.Text}
@@ -64,7 +71,9 @@ export const StatsContent = ({
       )}
 
       <div className={styles["stats-content__footer"]}>
-        <span className={styles["stats-content__label"]}>Rounds</span>
+        <span className={styles["stats-content__label"]}>
+          {t("stats.rounds")}
+        </span>
 
         <div className={styles["stats-content__rounds"]}>
           {ROUNDS_OPTIONS.map((option) => (

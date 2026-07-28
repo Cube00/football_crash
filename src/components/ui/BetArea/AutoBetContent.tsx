@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import type { TranslationKey } from "@/i18n/types";
 import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
 import { Stepper, StepperSize } from "../Stepper";
@@ -21,10 +23,10 @@ type StopKey =
   | "stopOnCashDecrease"
   | "stopOnSingleWin";
 
-const STOP_FIELDS: Array<{ key: StopKey; label: string }> = [
-  { key: "stopOnCashIncrease", label: "Cash Increased by" },
-  { key: "stopOnCashDecrease", label: "Cash decreased by" },
-  { key: "stopOnSingleWin", label: "Single win exceeds" },
+const STOP_FIELDS: Array<{ key: StopKey; labelKey: TranslationKey }> = [
+  { key: "stopOnCashIncrease", labelKey: "autoBet.cashIncreasedBy" },
+  { key: "stopOnCashDecrease", labelKey: "autoBet.cashDecreasedBy" },
+  { key: "stopOnSingleWin", labelKey: "autoBet.singleWinExceeds" },
 ];
 
 /**
@@ -38,6 +40,7 @@ export const AutoBetContent = ({
   currency,
   onClose,
 }: AutoBetContentProps) => {
+  const { t } = useTranslation();
   const { config, updateConfig, isActive, reset, start, stop } = autoPlay;
   const total = betAmount * config.rounds;
 
@@ -71,20 +74,22 @@ export const AutoBetContent = ({
             }}
           >
             <span className={styles["auto-bet__round-value"]}>{option}</span>
-            <span className={styles["auto-bet__round-label"]}>Rounds</span>
+            <span className={styles["auto-bet__round-label"]}>
+              {t("autoBet.rounds")}
+            </span>
           </button>
         ))}
       </div>
 
       <div className={styles["auto-bet__summary"]}>
         <span className={styles["auto-bet__summary-item"]}>
-          Bet:{" "}
+          {t("autoBet.betLabel")}{" "}
           <span className={styles["auto-bet__amount"]}>
             {betAmount.toFixed(2)} {currency}
           </span>
         </span>
         <span className={styles["auto-bet__summary-item"]}>
-          Total{" "}
+          {t("autoBet.totalLabel")}{" "}
           <span className={styles["auto-bet__amount"]}>
             {total.toFixed(2)} {currency}
           </span>
@@ -93,15 +98,19 @@ export const AutoBetContent = ({
 
       <div className={styles["auto-bet__divider"]} />
 
-      <h3 className={styles["auto-bet__section"]}>Stop auto play on</h3>
+      <h3 className={styles["auto-bet__section"]}>
+        {t("autoBet.stopAutoPlayOn")}
+      </h3>
 
       <div className={styles["auto-bet__conditions"]}>
-        {STOP_FIELDS.map(({ key, label }) => {
+        {STOP_FIELDS.map(({ key, labelKey }) => {
           const cond = config[key];
           return (
             <div key={key} className={styles["auto-bet__card"]}>
               <div className={styles["auto-bet__card-head"]}>
-                <span className={styles["auto-bet__card-label"]}>{label}</span>
+                <span className={styles["auto-bet__card-label"]}>
+                  {t(labelKey)}
+                </span>
                 <Checkbox
                   checked={cond.enabled}
                   onChange={(e) => setStop(key, { enabled: e.target.checked })}
@@ -133,7 +142,7 @@ export const AutoBetContent = ({
             reset();
           }}
         >
-          Reset
+          {t("common.reset")}
         </button>
         <button
           type="button"
@@ -144,7 +153,7 @@ export const AutoBetContent = ({
           )}
           onClick={handleStart}
         >
-          {isActive ? "Stop" : "Start"}
+          {isActive ? t("common.stop") : t("common.start")}
         </button>
       </div>
     </div>

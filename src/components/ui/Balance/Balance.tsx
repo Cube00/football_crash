@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import styles from "./Balance.module.css";
-import { BALANCE_DEFAULTS } from "./Balance.constants";
 import type { BalanceProps } from "./Balance.types";
 
 /**
@@ -16,13 +16,17 @@ const amountFormat = new Intl.NumberFormat("en-US", {
 export const Balance = ({
   amount,
   currency,
-  label = BALANCE_DEFAULTS.label,
+  label,
   className,
   ...rest
 }: BalanceProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className={cx(styles["balance"], className)} {...rest}>
-      <span className={styles["balance__label"]}>{label}</span>
+      <span className={styles["balance__label"]}>
+        {label ?? t("header.balance")}
+      </span>
       <span className={styles["balance__value"]}>
         {amountFormat.format(amount)} {currency}
       </span>

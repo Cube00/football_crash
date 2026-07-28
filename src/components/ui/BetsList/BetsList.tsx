@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import styles from "./BetsList.module.css";
 import {
@@ -24,15 +25,20 @@ export const BetsList = ({
   className,
   ...rest
 }: BetsListProps) => {
+  const { t } = useTranslation();
   const isMyBets = variant === BetsListVariant.My;
 
   return (
     <div className={cx(styles["bets-list"], className)} {...rest}>
       <div className={styles["bets-list__head"]}>
-        <span className={styles["bets-list__head-cell"]}>Player</span>
-        <span className={styles["bets-list__head-cell"]}>Bet ({currency})</span>
         <span className={styles["bets-list__head-cell"]}>
-          Cashout ({currency})
+          {t("betsList.player")}
+        </span>
+        <span className={styles["bets-list__head-cell"]}>
+          {t("betsList.bet", { currency })}
+        </span>
+        <span className={styles["bets-list__head-cell"]}>
+          {t("betsList.cashout", { currency })}
         </span>
       </div>
 
@@ -94,7 +100,7 @@ export const BetsList = ({
                 <img
                   className={styles["bets-list__icon"]}
                   src="/assets/icons/Check.svg"
-                  alt="verified"
+                  alt={t("a11y.verified")}
                 />
               )}
             </span>
@@ -104,7 +110,9 @@ export const BetsList = ({
       {true && (
         <div className={styles["bets-list__mybetsinfo"]}>
           <div className={styles["bets-list__summary-item"]}>
-            <span className={styles["bets-list__summary-label"]}>Bets</span>
+            <span className={styles["bets-list__summary-label"]}>
+              {t("betsList.bets")}
+            </span>
             <span className={styles["bets-list__summary-value"]}>
               {summary.placed}/{summary.total}
             </span>
@@ -112,7 +120,7 @@ export const BetsList = ({
 
           <div className={styles["bets-list__summary-item"]}>
             <span className={styles["bets-list__summary-label"]}>
-              Total Bets
+              {t("betsList.totalBets")}
             </span>
             <span className={styles["bets-list__summary-value"]}>
               {formatAmount(summary.totalBet)} {currency}
@@ -125,7 +133,9 @@ export const BetsList = ({
               styles["bets-list__summary-item--end"],
             )}
           >
-            <span className={styles["bets-list__summary-label"]}>Total win</span>
+            <span className={styles["bets-list__summary-label"]}>
+              {t("betsList.totalWin")}
+            </span>
             <span className={styles["bets-list__summary-value"]}>
               {formatAmount(summary.totalWin)} {currency}
             </span>

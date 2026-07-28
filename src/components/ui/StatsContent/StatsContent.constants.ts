@@ -1,4 +1,4 @@
-import type { TabItem } from "../Tabs";
+import type { TranslationKey } from "@/i18n/types";
 import { MultiplierButtonVariant } from "../MultiplierButton";
 
 export const StatsTab = {
@@ -8,10 +8,11 @@ export const StatsTab = {
 
 export type StatsTab = (typeof StatsTab)[keyof typeof StatsTab];
 
-export const STATS_TABS: TabItem[] = [
-  { label: "Stats", value: StatsTab.Stats },
-  { label: "Chart", value: StatsTab.Chart },
-];
+export const STATS_TABS: ReadonlyArray<{ labelKey: TranslationKey; value: string }> =
+  [
+    { labelKey: "stats.stats", value: StatsTab.Stats },
+    { labelKey: "stats.chart", value: StatsTab.Chart },
+  ];
 
 export const ROUNDS_OPTIONS = [50, 100, 200, 300] as const;
 

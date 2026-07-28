@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs } from "@/components/ui/Tabs";
 import {
   BetsList,
@@ -31,13 +32,19 @@ const toRow = (bet: BetUpdatePayload): BetRow => ({
 });
 
 export const InfoSection = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>(InfoTab.AllBets);
   const roundBets = useRoundBets();
   const rows = useMemo(() => roundBets.map(toRow), [roundBets]);
 
+  const tabs = useMemo(
+    () => INFO_TABS.map(({ labelKey, value }) => ({ label: t(labelKey), value })),
+    [t],
+  );
+
   return (
     <div className={styles["info-section"]}>
-      <Tabs items={INFO_TABS} value={activeTab} onValueChange={setActiveTab} />
+      <Tabs items={tabs} value={activeTab} onValueChange={setActiveTab} />
 
       <div className={styles["info-section__content"]}>
         {activeTab === InfoTab.AllBets && (

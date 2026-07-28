@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import styles from "./RoundsButton.module.css";
 import type { RoundsButtonTypes } from "./RoundsButton.types";
@@ -9,6 +10,7 @@ export const RoundsButton = ({
   className,
   ...rest
 }: RoundsButtonTypes) => {
+  const { t } = useTranslation();
   const classes = cx(
     styles["roundsButton-button"],
     styles[`roundsButton-button--${variant}`],
@@ -23,12 +25,16 @@ export const RoundsButton = ({
           <span className={styles["roundsButton-button__value"]}>
             1<span>/ 10</span>
           </span>
-          <span className={styles["roundsButton-button__label"]}>Stop</span>
+          <span className={styles["roundsButton-button__label"]}>
+            {t("common.stop")}
+          </span>
         </>
       ) : (
         <>
           <span className={styles["roundsButton-button__value"]}>10</span>
-          <span className={styles["roundsButton-button__label"]}>Rounds</span>
+          <span className={styles["roundsButton-button__label"]}>
+            {t("common.rounds")}
+          </span>
         </>
       )}
     </button>

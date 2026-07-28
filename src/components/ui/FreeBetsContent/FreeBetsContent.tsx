@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Size } from "@/constants";
 import { Icon } from "@/components/ui/Icon";
 import { Radio } from "@/components/ui/Radio";
@@ -22,6 +23,7 @@ import {
  * spent ones.
  */
 export const FreeBetsContent = () => {
+  const { t } = useTranslation();
   const { open } = useModal();
   const [selected, setSelected] = useState<string>(REAL_MONEY_ID);
   // A set, not a single id: the design opens every card independently.
@@ -41,10 +43,12 @@ export const FreeBetsContent = () => {
         checked={selected === REAL_MONEY_ID}
         onChange={() => setSelected(REAL_MONEY_ID)}
       >
-        Play with real money
+        {t("freeBets.playWithRealMoney")}
       </Radio>
 
-      <h3 className={styles["free-bets__section"]}>Active Free Bets</h3>
+      <h3 className={styles["free-bets__section"]}>
+        {t("freeBets.activeFreeBets")}
+      </h3>
 
       <ul className={styles["free-bets__list"]}>
         {ACTIVE_FREE_BETS.map((bet) => (
@@ -70,7 +74,7 @@ export const FreeBetsContent = () => {
           }}
         >
           <Icon src="/assets/icons/History.svg" size={16} />
-          Archive
+          {t("freeBets.archive")}
         </button>
 
         <PlayNowButton

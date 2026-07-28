@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { Icon } from "../Icon";
 import { useCrashHistory } from "@/hooks/useGame";
@@ -38,6 +39,7 @@ const pillsThatFit = (width: number, pill: number, gap: number) =>
   Math.max(0, Math.floor((width + gap) / (pill + gap)));
 
 export const Multiplier = () => {
+  const { t } = useTranslation();
   const history = useCrashHistory();
   const items = history.slice(0, MAX_MULTIPLIERS);
 
@@ -127,7 +129,9 @@ export const Multiplier = () => {
               styles["multiplier__toggle"],
               open && styles["multiplier__toggle--open"],
             )}
-            aria-label={open ? "Hide multipliers" : "Show all multipliers"}
+            aria-label={
+              open ? t("game.hideMultipliers") : t("game.showAllMultipliers")
+            }
             aria-controls={rowId}
             aria-expanded={open}
             onClick={() => {

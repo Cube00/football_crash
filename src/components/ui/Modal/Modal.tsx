@@ -1,5 +1,6 @@
 import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { cx } from '@/utils';
 import { useBodyScrollLock, useFocusTrap, useOnEscape } from '@/hooks';
 import { Icon } from '@/components/ui/Icon';
@@ -13,11 +14,12 @@ export function Modal({
   onBack,
   title,
   children,
-  closeLabel = 'Close',
-  backLabel = 'Back',
+  closeLabel,
+  backLabel,
   width,
   className,
 }: ModalProps) {
+  const { t } = useTranslation();
   const sheetRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
@@ -56,7 +58,7 @@ export function Modal({
                   playSound(Sound.SmallButton);
                   onBack();
                 }}
-                aria-label={backLabel}
+                aria-label={backLabel ?? t('common.back')}
               >
                 <Icon src="/assets/icons/Arrow left.svg" />
               </button>
@@ -72,7 +74,7 @@ export function Modal({
               playSound(Sound.SmallButton);
               onClose();
             }}
-            aria-label={closeLabel}
+            aria-label={closeLabel ?? t('common.close')}
           >
             <span className={styles['modal__close-icon']} aria-hidden="true" />
           </button>

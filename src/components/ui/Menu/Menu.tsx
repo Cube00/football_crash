@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
 import { Icon } from "../Icon";
@@ -18,9 +19,13 @@ export const Menu = ({
   className,
   ...rest
 }: MenuProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className={cx(styles["menu"], className)} role="menu" {...rest}>
       {items.map((item) => {
+        const label = t(item.labelKey);
+
         if (item.kind === MenuItemKind.Toggle) {
           const on = Boolean(toggles[item.id]);
           return (
@@ -30,11 +35,11 @@ export const Menu = ({
               className={cx(styles["menu__item"], on && styles["menu__item--on"])}
             >
               <Icon src={iconFor(item, on)} />
-              <span className={styles["menu__label"]}>{item.label}</span>
+              <span className={styles["menu__label"]}>{label}</span>
               <Toggle
                 className={styles["menu__toggle"]}
                 checked={on}
-                aria-label={item.label}
+                aria-label={label}
                 onChange={(event) => onToggle(item.id, event.target.checked)}
               />
             </div>
@@ -53,7 +58,7 @@ export const Menu = ({
             }}
           >
             <Icon src={item.icon} />
-            <span className={styles["menu__label"]}>{item.label}</span>
+            <span className={styles["menu__label"]}>{label}</span>
           </button>
         );
       })}

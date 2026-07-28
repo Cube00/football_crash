@@ -1,8 +1,10 @@
+import type { TranslationKey } from "@/i18n/types";
+
 /** One free bet the player can stake instead of their own balance. */
 export interface FreeBet {
   id: string;
-  /** Free bet flavour, shown under the TYPE column. */
-  type: string;
+  /** Translation key for the free bet flavour, shown under the TYPE column. */
+  typeKey: TranslationKey;
   /** Bets used out of the granted total, e.g. `10/10`. */
   betAmount: string;
   /** Stake per bet. Bonus balance grants have none, so the column is dropped. */

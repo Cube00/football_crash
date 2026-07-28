@@ -1,3 +1,4 @@
+import type { TranslationKey } from "@/i18n/types";
 import { ModalWidth } from "@/components/ui/Modal";
 
 export const ModalId = {
@@ -16,18 +17,22 @@ export const ModalId = {
 
 export type ModalId = (typeof ModalId)[keyof typeof ModalId];
 
-export const MODAL_TITLES: Record<ModalId, string> = {
-  [ModalId.ProvablyFair]: "Provably Fair",
-  [ModalId.Limits]: "Limits",
-  [ModalId.PointDetails]: "Point Details",
-  [ModalId.BonusBet]: "",
-  [ModalId.BonusSpin]: "",
-  [ModalId.TotalWin]: "Total Win",
-  [ModalId.BetType]: "Free bets Management",
-  [ModalId.Archive]: "Archive",
-  [ModalId.HowToPlay]: "How To Play",
-  [ModalId.AutoBet]: "Auto Bet",
-  [ModalId.Chat]: "Chat",
+/**
+ * Heading each modal shows, as a translation key. The bonus dialogs carry their
+ * heading in their own artwork, so their key resolves to an empty string.
+ */
+export const MODAL_TITLE_KEYS: Record<ModalId, TranslationKey> = {
+  [ModalId.ProvablyFair]: "modals.provablyFair",
+  [ModalId.Limits]: "modals.limits",
+  [ModalId.PointDetails]: "modals.pointDetails",
+  [ModalId.BonusBet]: "modals.bonusBet",
+  [ModalId.BonusSpin]: "modals.bonusSpin",
+  [ModalId.TotalWin]: "modals.totalWin",
+  [ModalId.BetType]: "modals.betType",
+  [ModalId.Archive]: "modals.archive",
+  [ModalId.HowToPlay]: "modals.howToPlay",
+  [ModalId.AutoBet]: "modals.autoBet",
+  [ModalId.Chat]: "modals.chat",
 };
 
 /**

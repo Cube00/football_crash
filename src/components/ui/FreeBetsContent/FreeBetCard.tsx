@@ -1,4 +1,6 @@
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
+import type { TranslationKey } from "@/i18n/types";
 import { cx } from "@/utils";
 import { Icon } from "@/components/ui/Icon";
 import { Radio } from "@/components/ui/Radio";
@@ -21,12 +23,13 @@ export const FreeBetCard = ({
   onSelect,
   onToggle,
 }: FreeBetCardProps) => {
+  const { t } = useTranslation();
   const detailsId = useId();
 
   const details = [
-    { label: FreeBetLabel.Accrued, value: bet.accrued },
-    { label: FreeBetLabel.MinWithdrawal, value: bet.minWithdrawal },
-    { label: FreeBetLabel.ExpirationDate, value: bet.expiresAt },
+    { labelKey: FreeBetLabel.Accrued, value: bet.accrued },
+    { labelKey: FreeBetLabel.MinWithdrawal, value: bet.minWithdrawal },
+    { labelKey: FreeBetLabel.ExpirationDate, value: bet.expiresAt },
   ];
 
   return (
@@ -45,10 +48,10 @@ export const FreeBetCard = ({
           onChange={() => onSelect(bet.id)}
         >
           <span className={styles["free-bet__fields"]}>
-            <Field label={FreeBetLabel.Type} value={bet.type} />
-            <Field label={FreeBetLabel.BetAmount} value={bet.betAmount} />
+            <Field labelKey={FreeBetLabel.Type} value={t(bet.typeKey)} />
+            <Field labelKey={FreeBetLabel.BetAmount} value={bet.betAmount} />
             {bet.betPrice && (
-              <Field label={FreeBetLabel.BetPrice} value={bet.betPrice} />
+              <Field labelKey={FreeBetLabel.BetPrice} value={bet.betPrice} />
             )}
           </span>
         </Radio>
@@ -58,7 +61,7 @@ export const FreeBetCard = ({
           className={styles["free-bet__toggle"]}
           aria-expanded={expanded}
           aria-controls={detailsId}
-          aria-label={`${bet.type} details`}
+          aria-label={t("freeBets.detailsFor", { type: t(bet.typeKey) })}
           onClick={() => {
             playSound(Sound.SmallButton);
             onToggle(bet.id);
@@ -76,9 +79,9 @@ export const FreeBetCard = ({
         className={styles["free-bet__details"]}
         hidden={!expanded}
       >
-        {details.map(({ label, value }) => (
-          <div key={label} className={styles["free-bet__detail"]}>
-            <dt className={styles["free-bet__label"]}>{label}</dt>
+        {details.map(({ labelKey, value }) => (
+          <div key={labelKey} className={styles["free-bet__detail"]}>
+            <dt className={styles["free-bet__label"]}>{t(labelKey)}</dt>
             <dd className={styles["free-bet__detail-value"]}>{value}</dd>
           </div>
         ))}
@@ -87,9 +90,19 @@ export const FreeBetCard = ({
   );
 };
 
-const Field = ({ label, value }: { label: string; value: string }) => (
-  <span className={styles["free-bet__field"]}>
-    <span className={styles["free-bet__label"]}>{label}</span>
-    <span className={styles["free-bet__value"]}>{value}</span>
-  </span>
-);
+const Field = ({
+  labelKey,
+  value,
+}: {
+  labelKey: TranslationKey;
+  value: string;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <span className={styles["free-bet__field"]}>
+      <span className={styles["free-bet__label"]}>{t(labelKey)}</span>
+      <span className={styles["free-bet__value"]}>{value}</span>
+    </span>
+  );
+};

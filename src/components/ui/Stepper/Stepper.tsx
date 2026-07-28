@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
 import { MinusButton } from "../MinusButton";
@@ -61,6 +62,7 @@ export const Stepper = ({
   className,
   ...rest
 }: StepperProps) => {
+  const { t } = useTranslation();
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(() =>
     clamp(defaultValue, min, max),
@@ -133,7 +135,7 @@ export const Stepper = ({
       {isCompact ? (
         <button
           type="button"
-          aria-label="Decrease"
+          aria-label={t("stepper.decrease")}
           className={cx(
             styles["stepper__icon-button"],
             styles["stepper__icon-button--minus"],
@@ -165,7 +167,7 @@ export const Stepper = ({
       {isCompact ? (
         <button
           type="button"
-          aria-label="Increase"
+          aria-label={t("stepper.increase")}
           className={cx(
             styles["stepper__icon-button"],
             styles["stepper__icon-button--plus"],

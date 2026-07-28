@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
 import { Icon } from "../Icon";
@@ -10,6 +11,8 @@ export const MenuButton = ({
   onClick,
   ...rest
 }: MenuButtonProps) => {
+  const { t } = useTranslation();
+
   return (
     <button
       type="button"
@@ -18,7 +21,7 @@ export const MenuButton = ({
         open && styles["menu-button--open"],
         className,
       )}
-      aria-label={open ? "Close menu" : "Menu"}
+      aria-label={open ? t("header.closeMenu") : t("header.menu")}
       aria-haspopup="menu"
       aria-expanded={open}
       onClick={(event) => {

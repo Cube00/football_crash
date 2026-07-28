@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { Size } from "@/constants";
 import { Stepper, StepperSize } from "../Stepper";
@@ -24,6 +25,7 @@ export const BetArea = ({
   className,
   ...rest
 }: BetAreaProps) => {
+  const { t } = useTranslation();
   const phase = usePhase();
   const slotState = useSlot(slot);
   const balance = useBalance();
@@ -83,7 +85,7 @@ export const BetArea = ({
   // The label is always "Bet"; only the behaviour changes by phase — inside the
   // window it places now, outside it queues a pre-bet for the next round.
   let variant: BetButtonVariant = BetButtonVariant.Bet;
-  let label = "Bet";
+  let label = t("bet.bet");
   let buttonAmount: string | undefined = amount.toFixed(2);
   let buttonText: string | undefined;
   let onClick = placeBet;
@@ -92,21 +94,21 @@ export const BetArea = ({
   if (state === BetState.Active) {
     // A live flying bet — cash out (auto-play keeps running afterwards).
     variant = BetButtonVariant.Cashout;
-    label = "Cash Out";
+    label = t("bet.cashOut");
     buttonAmount = (slotState.amount * Math.max(1, multiplier)).toFixed(2);
     onClick = () => gameActions.cashout(slot);
     disabled = phase !== GamePhase.Flying;
   } else if (state === BetState.Queued) {
     // Pre-bet awaiting the next round — a cancel action with a waiting sub-line.
     variant = BetButtonVariant.Cancel;
-    label = "Cancel";
+    label = t("bet.cancel");
     buttonAmount = undefined;
-    buttonText = "Waiting for next round";
+    buttonText = t("bet.waitingForNextRound");
     onClick = autoActive ? stopAutoBet : () => gameActions.cancelBet(slot);
     disabled = false;
   } else if (state === BetState.Placed) {
     variant = BetButtonVariant.Cancel;
-    label = "Cancel";
+    label = t("bet.cancel");
     buttonAmount = slotState.amount.toFixed(2);
     onClick = autoActive ? stopAutoBet : () => gameActions.cancelBet(slot);
     disabled = !inBettingWindow;
@@ -115,9 +117,9 @@ export const BetArea = ({
     // won / just lost) — the button becomes a "stop auto-play" control rather
     // than letting a manual bet slip in.
     variant = BetButtonVariant.Cancel;
-    label = "Cancel";
+    label = t("bet.cancel");
     buttonAmount = undefined;
-    buttonText = "Waiting for next round";
+    buttonText = t("bet.waitingForNextRound");
     onClick = stopAutoBet;
     disabled = false;
   }
@@ -154,8 +156,8 @@ export const BetArea = ({
           <div className={styles["bet-area__presets"]}>
             {AMOUNT_PRESETS.map((preset, index) => (
               <AmountButton
-                key={preset.label}
-                label={preset.label}
+                key={preset.value}
+                label={preset.labelKey ? t(preset.labelKey) : preset.label!}
                 active={activePreset === index}
                 onClick={() => selectPreset(preset.value, index)}
               />
@@ -179,7 +181,9 @@ export const BetArea = ({
       <div className={styles["bet-area__bottom"]}>
         <div className={styles["bet-area__togglesection"]}>
           <label className={styles["bet-area__toggle"]}>
-            <span className={styles["bet-area__toggle-label"]}>Auto Bet</span>
+            <span className={styles["bet-area__toggle-label"]}>
+              {t("bet.autoBet")}
+            </span>
             <Toggle
               checked={showAutoModal || autoPlay.isActive}
               onChange={(event) => toggleAutoBet(event.target.checked)}
@@ -187,7 +191,7 @@ export const BetArea = ({
           </label>
           <label className={styles["bet-area__toggle"]}>
             <span className={styles["bet-area__toggle-label"]}>
-              Auto Cash Out
+              {t("bet.autoCashOut")}
             </span>
             <Toggle
               checked={autoPlay.config.autoCashOut.enabled}
@@ -212,7 +216,7 @@ export const BetArea = ({
       <Modal
         isOpen={showAutoModal}
         onClose={closeAutoModal}
-        title="Auto Bet"
+        title={t("modals.autoBet")}
         width={ModalWidth.Lg}
       >
         <AutoBetContent
