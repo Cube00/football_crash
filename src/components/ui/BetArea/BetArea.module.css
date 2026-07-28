@@ -78,6 +78,14 @@
   cursor: pointer;
 }
 
+.bet-area__toggle--disabled {
+  cursor: not-allowed;
+}
+
+.bet-area__toggle--disabled .bet-area__toggle-label {
+  opacity: 0.5;
+}
+
 .bet-area__toggle-label {
   font-family: var(--font-family-base);
   font-size: var(--size-12);

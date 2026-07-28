@@ -124,6 +124,12 @@ export const BetArea = ({
     disabled = false;
   }
 
+  // Anything but a plain "Bet" means the slot is committed — flying, placed,
+  // queued, or held by auto-play. The stake and the auto settings are what that
+  // bet was struck on, so they freeze until the round resolves; the primary
+  // button, now Cash Out or Cancel, is the only live control left.
+  const betLocked = variant !== BetButtonVariant.Bet;
+
   const toggleAutoBet = (checked: boolean) => {
     if (checked) {
       setShowAutoModal(true);
@@ -147,6 +153,7 @@ export const BetArea = ({
             value={amount}
             min={0}
             step={1}
+            disabled={betLocked}
             onValueChange={(next) => {
               setAmount(next);
               setActivePreset(null);
@@ -159,6 +166,7 @@ export const BetArea = ({
                 key={preset.value}
                 label={preset.labelKey ? t(preset.labelKey) : preset.label!}
                 active={activePreset === index}
+                disabled={betLocked}
                 onClick={() => selectPreset(preset.value, index)}
               />
             ))}
@@ -180,21 +188,33 @@ export const BetArea = ({
 
       <div className={styles["bet-area__bottom"]}>
         <div className={styles["bet-area__togglesection"]}>
-          <label className={styles["bet-area__toggle"]}>
+          <label
+            className={cx(
+              styles["bet-area__toggle"],
+              betLocked && styles["bet-area__toggle--disabled"],
+            )}
+          >
             <span className={styles["bet-area__toggle-label"]}>
               {t("bet.autoBet")}
             </span>
             <Toggle
               checked={showAutoModal || autoPlay.isActive}
+              disabled={betLocked}
               onChange={(event) => toggleAutoBet(event.target.checked)}
             />
           </label>
-          <label className={styles["bet-area__toggle"]}>
+          <label
+            className={cx(
+              styles["bet-area__toggle"],
+              betLocked && styles["bet-area__toggle--disabled"],
+            )}
+          >
             <span className={styles["bet-area__toggle-label"]}>
               {t("bet.autoCashOut")}
             </span>
             <Toggle
               checked={autoPlay.config.autoCashOut.enabled}
+              disabled={betLocked}
               onChange={(event) =>
                 setAutoCashout({ enabled: event.target.checked })
               }
@@ -209,6 +229,7 @@ export const BetArea = ({
           step={0.5}
           precision={2}
           suffix="x"
+          disabled={betLocked}
           onValueChange={(next) => setAutoCashout({ multiplier: next })}
         />
       </div>

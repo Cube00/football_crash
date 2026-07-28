@@ -20,8 +20,13 @@
   transition: 0.3s;
 }
 
-.amount-button:hover {
+.amount-button:hover:not(:disabled) {
   background-color: var(--color-gray-secondary);
+}
+
+.amount-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .amount-button--active,
