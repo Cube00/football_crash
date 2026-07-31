@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/BetsList";
 import type { BetRow } from "@/components/ui/BetsList";
 import { StatsContent } from "@/components/ui/StatsContent";
-import { useRoundBets } from "@/hooks/useGame";
+import { useBets } from "@/hooks/useGame";
 import { BetState } from "@/game/enums";
 import type { BetUpdatePayload } from "@/game/events";
 import styles from "./InfoSection.module.css";
@@ -34,8 +34,8 @@ const toRow = (bet: BetUpdatePayload): BetRow => ({
 export const InfoSection = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>(InfoTab.AllBets);
-  const roundBets = useRoundBets();
-  const rows = useMemo(() => roundBets.map(toRow), [roundBets]);
+  const bets = useBets();
+  const rows = useMemo(() => bets.map(toRow), [bets]);
 
   const tabs = useMemo(
     () => INFO_TABS.map(({ labelKey, value }) => ({ label: t(labelKey), value })),

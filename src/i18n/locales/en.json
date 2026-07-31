@@ -7,6 +7,8 @@
     "stop": "Stop",
     "rounds": "Rounds",
     "playNow": "Play Now",
+    "freeBet": "Free Bet",
+    "youWin": "You Win",
     "comingSoon": "{{title}} — coming soon."
   },
 
@@ -36,7 +38,7 @@
     "totalWin": "Total Win",
     "betType": "Free bets Management",
     "archive": "Archive",
-    "howToPlay": "How To Play",
+    "howToPlay": "How to Play",
     "autoBet": "Auto Bet",
     "chat": "Chat"
   },
@@ -136,6 +138,25 @@
     }
   },
 
+  "howToPlay": {
+    "placingBets": {
+      "title": "Placing Bets",
+      "step1": "<b>Choose your bet amount</b> using the +/- buttons or preset values (2.00, 5.00, 10.00, Max)",
+      "step2": "You can place <b>up to two independent bets</b> per round using the left and right betting panels",
+      "step3": "Press <b>BET</b> (purple button) to confirm your wager for the next comet launch",
+      "step4": "<b>You have 6</b> seconds between rounds to place bets",
+      "step5": "When the comet launches and the multiplier starts rising, <b>betting is locked</b> until the next round"
+    },
+    "cashingOut": {
+      "title": "Cashing Out",
+      "step1": "Click <b>CASH OUT</b> at any time during the match to secure your winnings",
+      "step2": "Your payout = <b>Bet Amount × Current Multiplier</b>",
+      "step3": "If you place two bets, each has its own cash-out button",
+      "step4": "If you fail to cash out before the comet explodes → <b>your bet is lost</b>",
+      "step5": "After cashing out, wait until the round ends to bet again"
+    }
+  },
+
   "provablyFair": {
     "howItWorks": "How It Works",
     "howItWorksBody": "Our Provably Fair system uses several parameters to ensure complete transparency and fairness. Each round has both hidden and revealed states.",
@@ -167,6 +188,8 @@
     "rocket": "Rocket",
     "check": "Check",
     "copy": "Copy",
-    "verified": "Verified"
+    "verified": "Verified",
+    "betPanels": "Betting panels",
+    "gameScreen": "Game screen"
   }
 }

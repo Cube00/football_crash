@@ -86,8 +86,10 @@
   --color-btn-yellow: #f2d551;
   --color-btn-yellow-hover: #e6c53f;
   --color-btn-blue-hover: #2f9ec7;
+  --color-toast-green: #356a24;
 
   /* base scales (opacity variants) */
+  --db-white-16: rgba(255, 255, 255, 0.16);
   --db-black-70: rgba(0, 0, 0, 0.7);
   --db-black-10: rgba(0, 0, 0, 0.1);
   --db-blue-70: #3db4e0;

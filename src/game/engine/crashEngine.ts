@@ -133,7 +133,7 @@ export class CrashEngine {
 
     this.phaseEndsAt = now() + ROUND_TIMINGS.bettingMs;
     EventBus.emit(GameEvent.PhaseReset);
-    EventBus.emit(GameEvent.BettingHistoryClear);
+    EventBus.emit(GameEvent.NewBettingRound);
     EventBus.emit(GameEvent.CrashState, { crashed: false });
     EventBus.emit(GameEvent.CurrentRound, { roundId: this.roundId });
     EventBus.emit(GameEvent.GamePhaseChange, this.phase);

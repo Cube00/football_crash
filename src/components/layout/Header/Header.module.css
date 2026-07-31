@@ -4,5 +4,11 @@
   flex-shrink: 0;
   width: 100%;
   height: 70px;
-  padding: 0 var(--size-16);
+  padding: 0 var(--size-8);
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    padding: 0;
+  }
 }

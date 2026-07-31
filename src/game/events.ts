@@ -21,8 +21,8 @@ export const GameEvent = {
   CrashState: "engine:crash-state",
   /** Multiplier display should reset to 1.00 for a fresh round. */
   PhaseReset: "engine:phase-reset",
-  /** The live per-round bets list should clear (new betting round). */
-  BettingHistoryClear: "engine:betting-history-clear",
+  /** A new betting round opened — the point new bets start arriving from. */
+  NewBettingRound: "engine:new-betting-round",
   /** A finished round's crash multiplier, prepended to the history pills. */
   CrashHistoryItem: "engine:crash-history-item",
   /** The current (live) round id changed, or null between rounds. */

@@ -1,5 +1,8 @@
+/* Its own stacking context, so the layers below order against each other and
+   not against the header menu or the multiplier strip that sit over the stage. */
 .game-stage {
   position: relative;
+  isolation: isolate;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -12,8 +15,6 @@
   height: 100%;
 }
 
-/* Still mode: the same framing the animated scene uses — fill the box, crop the
-   overflow rather than letterbox it. */
 .game-stage__still {
   display: block;
   width: 100%;
@@ -22,9 +23,32 @@
   object-position: center;
 }
 
-/* The HUD sits over whichever scene is running, so both modes share it. */
+/* Above the HUD: the multiplier is drawn large enough to reach the notice. */
+.game-stage__notice {
+  position: absolute;
+  z-index: 3;
+  top: var(--size-8);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.game-stage__win {
+  pointer-events: auto;
+}
+
+.game-stage__free-bet {
+  position: absolute;
+  z-index: 2;
+  right: var(--size-16);
+  bottom: var(--size-20);
+}
+
 .game-stage__hud {
   position: absolute;
+  z-index: 1;
   top: 12%;
   left: 0;
   right: 0;

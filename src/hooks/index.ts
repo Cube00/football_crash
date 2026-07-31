@@ -7,3 +7,4 @@ export { useOnClickOutside } from "./useOnClickOutside";
 export { useElementWidth } from "./useElementWidth";
 export { useAnimationEnabled, useSettings } from "./useSettings";
 export { useWindowSize } from "./useWindowSize";
+export { useWinNotification, WIN_NOTIFICATION_MS } from "./useWinNotification";

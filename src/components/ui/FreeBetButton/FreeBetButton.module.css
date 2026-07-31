@@ -1,0 +1,74 @@
+.freebet-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 139px;
+  height: var(--size-44);
+  padding: 4px;
+  border: none;
+  outline: none;
+  color: var(--color-text-white-100);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='139' height='44' fill='none'%3E%3ClinearGradient id='ring' x1='-1' y1='4.7' x2='140' y2='39.3' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='.0884' stop-color='%23ffffff'/%3E%3Cstop offset='.5979' stop-color='%23999999' stop-opacity='.4'/%3E%3C/linearGradient%3E%3Crect x='.5' y='.5' width='138' height='43' rx='21.5' stroke='url(%23ring)' stroke-dasharray='22 2'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+  cursor: pointer;
+}
+
+.freebet-button__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-4);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--size-8);
+  border-radius: var(--radius-50);
+  background: var(--color-btn-green);
+}
+
+.freebet-button__pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: var(--color-btn-green-hover);
+  transition: opacity 0.3s ease;
+}
+
+.freebet-button:hover .freebet-button__pill::after {
+  opacity: 1;
+}
+
+.freebet-button__pill > * {
+  position: relative;
+  z-index: 1;
+}
+
+.freebet-button__label {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.freebet-button__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 28px;
+  height: var(--size-16);
+  padding: 0 var(--size-4);
+  border-radius: var(--radius-50);
+  font-family: var(--font-family-base);
+  font-size: var(--size-10);
+  font-weight: 700;
+  line-height: 1;
+  background: var(--db-white-16);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 4px 0 #ffffff33 inset;
+}

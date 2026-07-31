@@ -96,12 +96,12 @@ export function startFakeBets(): () => void {
     }
   };
 
-  EventBus.on(GameEvent.BettingHistoryClear, onNewRound);
+  EventBus.on(GameEvent.NewBettingRound, onNewRound);
   EventBus.on(GameEvent.Tick, onTick);
   EventBus.on(GameEvent.CrashState, onCrash);
 
   return () => {
-    EventBus.off(GameEvent.BettingHistoryClear, onNewRound);
+    EventBus.off(GameEvent.NewBettingRound, onNewRound);
     EventBus.off(GameEvent.Tick, onTick);
     EventBus.off(GameEvent.CrashState, onCrash);
   };

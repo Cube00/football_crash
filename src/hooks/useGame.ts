@@ -38,8 +38,9 @@ export function useCrashHistory(): CrashHistoryItemPayload[] {
   return useSelector((s) => s.crashHistory);
 }
 
-export function useRoundBets(): BetUpdatePayload[] {
-  return useSelector((s) => s.roundBets);
+/** The rolling bets feed — this round's bets first, earlier rounds below. */
+export function useBets(): BetUpdatePayload[] {
+  return useSelector((s) => s.bets);
 }
 
 const slotSelectors: ReadonlyArray<(s: GameSnapshot) => SlotSnapshot> = [

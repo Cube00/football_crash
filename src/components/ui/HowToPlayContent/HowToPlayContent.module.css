@@ -1,0 +1,55 @@
+.how-to-play {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+  font-family: var(--font-family-base);
+  color: var(--color-text-white-100);
+}
+
+.how-to-play__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-12);
+}
+
+.how-to-play__title {
+  font-size: var(--size-16);
+  font-weight: 700;
+  line-height: 150%;
+}
+
+.how-to-play__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-8);
+  padding-left: var(--size-8);
+  counter-reset: step;
+  list-style: none;
+}
+
+/* Grid, not a marker: the design sets the number apart from the step in a
+   column of its own, wider than `::marker` can be pushed. */
+.how-to-play__steps li {
+  display: grid;
+  grid-template-columns: var(--size-22) 1fr;
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 150%;
+}
+
+.how-to-play__steps li::before {
+  content: counter(step) ".";
+  counter-increment: step;
+  font-weight: 700;
+}
+
+.how-to-play__steps b {
+  font-weight: 700;
+}
+
+.how-to-play__image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}

@@ -15,7 +15,7 @@ import { generateSeedHistory } from "./engine/crashHistory";
  *
  * It subscribes to the engine's {@link GameEvent} stream and folds it into an
  * immutable snapshot exposed through `useSyncExternalStore`. Sub-objects
- * (`slots[i]`, `roundBets`, `crashHistory`) keep their reference when they
+ * (`slots[i]`, `bets`, `crashHistory`) keep their reference when they
  * haven't changed, so selector hooks re-render only their own consumers.
  *
  * The live per-tick multiplier is deliberately NOT stored here — it changes
@@ -36,13 +36,25 @@ export interface GameSnapshot {
   crashed: boolean;
   lastCrash: number | null;
   crashHistory: CrashHistoryItemPayload[];
-  roundBets: BetUpdatePayload[];
+  /**
+   * The bets feed, newest first — this round's on top, earlier rounds below,
+   * oldest dropped past {@link MAX_BET_ROWS}. Rounds are not cleared between
+   * one another: the list is a scrollback, not a snapshot of the live round.
+   */
+  bets: BetUpdatePayload[];
   slots: readonly [SlotSnapshot, SlotSnapshot];
 }
 
 const IDLE_SLOT: SlotSnapshot = { state: BetState.Idle, amount: 0 };
 const MAX_HISTORY = 30;
-const MAX_ROUND_BETS = 60;
+const MAX_BET_ROWS = 100;
+
+/** States a bet can still leave — anything else is its final row. */
+const UNSETTLED: readonly BetState[] = [
+  BetState.Queued,
+  BetState.Placed,
+  BetState.Active,
+];
 
 let snapshot: GameSnapshot = {
   phase: GamePhase.BettingOpen,
@@ -50,7 +62,7 @@ let snapshot: GameSnapshot = {
   crashed: false,
   lastCrash: null,
   crashHistory: generateSeedHistory(MAX_HISTORY),
-  roundBets: [],
+  bets: [],
   slots: [IDLE_SLOT, IDLE_SLOT],
 };
 
@@ -69,12 +81,27 @@ function patchSlot(slot: BetSlot, patch: Partial<SlotSnapshot>) {
   snapshot = { ...snapshot, slots };
 }
 
-function upsertRoundBet(update: BetUpdatePayload) {
-  const rows = snapshot.roundBets.filter((r) => r.betId !== update.betId);
+/**
+ * Folds a bet update into the feed, newest first.
+ *
+ * Besides replacing the row with the same id, it drops any earlier own row for
+ * the same slot that never settled: a pre-bet is announced under a placeholder
+ * `queued-slot*` id and re-announced under the round's id once it activates, so
+ * without this the two would sit in the list as separate bets.
+ */
+function upsertBet(update: BetUpdatePayload) {
+  const stale = (row: BetUpdatePayload) =>
+    row.betId === update.betId ||
+    (!!update.own &&
+      !!row.own &&
+      row.slot === update.slot &&
+      UNSETTLED.includes(row.status));
+
+  const rows = snapshot.bets.filter((row) => !stale(row));
   if (update.status !== BetState.Idle) {
     rows.unshift(update);
   }
-  snapshot = { ...snapshot, roundBets: rows.slice(0, MAX_ROUND_BETS) };
+  snapshot = { ...snapshot, bets: rows.slice(0, MAX_BET_ROWS) };
 }
 
 // ─── Event handlers ────────────────────────────────────────────
@@ -131,14 +158,8 @@ function onCrashHistoryItem(item: CrashHistoryItemPayload) {
   notify();
 }
 
-function onBettingHistoryClear() {
-  if (snapshot.roundBets.length === 0) return;
-  snapshot = { ...snapshot, roundBets: [] };
-  notify();
-}
-
 function onBetUpdate(update: BetUpdatePayload) {
-  upsertRoundBet(update);
+  upsertBet(update);
 
   if (update.own && update.slot != null) {
     switch (update.status) {
@@ -197,7 +218,6 @@ export const gameStore = {
     EventBus.on(GameEvent.GamePhaseChange, onPhaseChange);
     EventBus.on(GameEvent.CrashState, onCrashState);
     EventBus.on(GameEvent.CrashHistoryItem, onCrashHistoryItem);
-    EventBus.on(GameEvent.BettingHistoryClear, onBettingHistoryClear);
     EventBus.on(GameEvent.BetUpdate, onBetUpdate);
     return () => gameStore.disconnect();
   },
@@ -209,7 +229,6 @@ export const gameStore = {
     EventBus.off(GameEvent.GamePhaseChange, onPhaseChange);
     EventBus.off(GameEvent.CrashState, onCrashState);
     EventBus.off(GameEvent.CrashHistoryItem, onCrashHistoryItem);
-    EventBus.off(GameEvent.BettingHistoryClear, onBettingHistoryClear);
     EventBus.off(GameEvent.BetUpdate, onBetUpdate);
   },
 

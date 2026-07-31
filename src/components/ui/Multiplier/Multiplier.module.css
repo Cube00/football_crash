@@ -109,10 +109,11 @@
     --sheet-padding: 0px;
   }
 
+  /* Keeps the base z-index: high enough to open over the stage, low enough to
+     stay under the header menu that hangs down across it. */
   .multiplier__sheet {
     border-radius: 0;
     background-color: transparent;
-    z-index: 9999;
   }
 
   /* Open it is a panel again — the pills are over the stage, not the page. */

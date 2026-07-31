@@ -17,6 +17,7 @@ import { BonusBetContent } from "@/components/ui/BonusBetContent";
 import { BonusSpinContent } from "@/components/ui/BonusSpinContent";
 import { FreeBetsContent } from "@/components/ui/FreeBetsContent";
 import { ArchiveContent } from "@/components/ui/ArchiveContent";
+import { HowToPlayContent } from "@/components/ui/HowToPlayContent";
 
 interface ModalRootProps extends ModalContextValue {
   activeModal: ModalId | null;
@@ -58,6 +59,9 @@ export function ModalRoot({
       break;
     case ModalId.Archive:
       content = <ArchiveContent />;
+      break;
+    case ModalId.HowToPlay:
+      content = <HowToPlayContent />;
       break;
     default:
       content = (
