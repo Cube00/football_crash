@@ -18,10 +18,7 @@ interface AutoBetContentProps {
   onClose: () => void;
 }
 
-type StopKey =
-  | "stopOnCashIncrease"
-  | "stopOnCashDecrease"
-  | "stopOnSingleWin";
+type StopKey = "stopOnCashIncrease" | "stopOnCashDecrease" | "stopOnSingleWin";
 
 const STOP_FIELDS: Array<{ key: StopKey; labelKey: TranslationKey }> = [
   { key: "stopOnCashIncrease", labelKey: "autoBet.cashIncreasedBy" },
@@ -112,6 +109,7 @@ export const AutoBetContent = ({
                   {t(labelKey)}
                 </span>
                 <Checkbox
+                  className={styles["auto-panel__checkbox"]}
                   checked={cond.enabled}
                   onChange={(e) => setStop(key, { enabled: e.target.checked })}
                 />

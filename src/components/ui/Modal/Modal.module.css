@@ -1,7 +1,9 @@
+/* Above every in-page layer — the multiplier strip lifts itself to 9999 on
+   touch so it can sit over the stage, and the modal has to clear that. */
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,9 +154,47 @@
   }
 }
 
+@keyframes modal-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Bottom sheet on mobile: docked to the bottom edge, full width, rounded top. */
+@media screen and (max-width: 767px) {
+  .modal--sheet {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal--sheet .modal__sheet {
+    max-width: none;
+    max-height: calc(100svh - var(--size-48));
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-radius: var(--radius-16) var(--radius-16) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: modal-sheet-up 240ms ease;
+  }
+
+  .modal__header {
+    margin: var(--size-16) var(--size-12);
+  }
+
+  .modal__content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .modal,
-  .modal__sheet {
+  .modal__sheet,
+  .modal--sheet .modal__sheet {
     animation: none;
   }
 }

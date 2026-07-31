@@ -43,6 +43,19 @@ export const MODAL_PARENTS: Partial<Record<ModalId, ModalId>> = {
   [ModalId.Archive]: ModalId.BetType,
 };
 
+/**
+ * Modals that dock to the bottom edge as a full-width sheet on mobile. The
+ * bonus dialogs keep their centered card, since their artwork is square.
+ */
+export const MOBILE_SHEET_MODALS: ModalId[] = [
+  ModalId.PointDetails,
+  ModalId.ProvablyFair,
+  ModalId.BetType,
+  ModalId.Archive,
+  ModalId.HowToPlay,
+  ModalId.AutoBet,
+];
+
 export const MODAL_WIDTHS: Partial<Record<ModalId, ModalWidth>> = {
   [ModalId.ProvablyFair]: ModalWidth.Xxl,
   [ModalId.Limits]: ModalWidth.Xl,

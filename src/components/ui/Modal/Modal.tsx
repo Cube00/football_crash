@@ -17,6 +17,7 @@ export function Modal({
   closeLabel,
   backLabel,
   width,
+  mobileSheet,
   className,
 }: ModalProps) {
   const { t } = useTranslation();
@@ -30,7 +31,9 @@ export function Modal({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className={styles['modal']}>
+    <div
+      className={cx(styles['modal'], mobileSheet && styles['modal--sheet'])}
+    >
       <div
         className={styles['modal__backdrop']}
         onClick={onClose}

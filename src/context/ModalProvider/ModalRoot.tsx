@@ -4,6 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import styles from "./ModalRoot.module.css";
 import {
   ModalId,
+  MOBILE_SHEET_MODALS,
   MODAL_PARENTS,
   MODAL_TITLE_KEYS,
   MODAL_WIDTHS,
@@ -74,6 +75,7 @@ export function ModalRoot({
       isOpen
       title={title}
       width={MODAL_WIDTHS[activeModal]}
+      mobileSheet={MOBILE_SHEET_MODALS.includes(activeModal)}
       onClose={close}
       onBack={parent ? () => open(parent) : undefined}
     >

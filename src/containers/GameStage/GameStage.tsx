@@ -14,7 +14,7 @@ import type { GameStageProps } from "./GameStage.types";
 // Lazy so the Phaser bundle stays out of the main chunk — and, with animation
 // off, never downloads at all.
 const PhaserGame = lazy(() =>
-  import("@/components/business/PhaserGame").then((m) => ({
+  import("./PhaserGame").then((m) => ({
     default: m.PhaserGame,
   })),
 );

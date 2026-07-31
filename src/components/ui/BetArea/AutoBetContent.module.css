@@ -159,7 +159,32 @@
   background: var(--color-btn-red-hover);
 }
 
-@media screen and (max-width: 640px) {
+/* Touch — the dialog is a bottom sheet, so everything that sat in a row goes
+   to a column: the presets fold into a 2×2 grid and the conditions stack. */
+@media screen and (max-width: 767px) {
+  .auto-bet {
+    gap: var(--size-16);
+  }
+
+  .auto-bet__rounds {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--size-8) var(--size-12);
+  }
+
+  .auto-bet__round {
+    padding: var(--size-12) 0;
+  }
+
+  .auto-bet__summary {
+    gap: var(--size-24);
+    font-size: var(--size-16);
+  }
+
+  .auto-bet__section {
+    font-size: var(--size-16);
+  }
+
   .auto-bet__conditions {
     flex-direction: column;
   }
@@ -167,5 +192,39 @@
   .auto-bet__button {
     flex: 1;
     min-width: 0;
+    max-width: var(--size-175);
+  }
+
+  .auto-bet__card-stepper {
+    width: 100%;
+    max-width: 100%;
+    height: 32px;
+    padding-right: var(--size-4);
+    padding-left: var(--size-4);
+  }
+
+  .auto-bet__card-stepper button {
+    width: var(--size-24);
+    height: var(--size-24);
+    border-radius: 34px;
+    background-color: var(--color-gray-primary);
+  }
+
+  .auto-panel__checkbox span {
+    background-color: transparent;
+    border-color: var(--color-stroke-white-10);
+  }
+  .auto-bet__button--reset {
+    max-width: 130px;
+    height: 44px;
+    padding: 0;
+    font-size: var(--size-14);
+  }
+
+  .auto-bet__button--start {
+    max-width: 140px;
+    height: 44px;
+    padding: 0;
+    font-size: var(--size-14);
   }
 }

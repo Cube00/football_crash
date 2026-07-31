@@ -239,6 +239,7 @@ export const BetArea = ({
         onClose={closeAutoModal}
         title={t("modals.autoBet")}
         width={ModalWidth.Lg}
+        mobileSheet
       >
         <AutoBetContent
           autoPlay={autoPlay}

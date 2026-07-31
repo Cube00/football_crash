@@ -24,7 +24,8 @@ const ROUND_CHOICES: Array<{ label: string; value: number }> = [
  */
 export const AutoBetPanel = ({ autoPlay }: AutoBetPanelProps) => {
   const { t } = useTranslation();
-  const { config, updateConfig, isActive, currentRound, start, stop } = autoPlay;
+  const { config, updateConfig, isActive, currentRound, start, stop } =
+    autoPlay;
 
   const setStop = (
     key: "stopOnCashDecrease" | "stopOnCashIncrease" | "stopOnSingleWin",
@@ -60,7 +61,9 @@ export const AutoBetPanel = ({ autoPlay }: AutoBetPanelProps) => {
   return (
     <div className={styles["auto-panel"]}>
       <div className={styles["auto-panel__rounds"]}>
-        <span className={styles["auto-panel__label"]}>{t("autoBet.rounds")}</span>
+        <span className={styles["auto-panel__label"]}>
+          {t("autoBet.rounds")}
+        </span>
         <div className={styles["auto-panel__choices"]}>
           {ROUND_CHOICES.map((choice) => (
             <AmountButton

@@ -28,6 +28,11 @@ export interface ModalProps {
   backLabel?: string;
   /** Max width of the sheet. Defaults to 600px when omitted. */
   width?: ModalWidth;
+  /**
+   * Turns the modal into a bottom sheet on mobile: full width, docked to the
+   * bottom edge and rounded on the top corners only.
+   */
+  mobileSheet?: boolean;
   /** Extra class for the modal container (the sheet). */
   className?: string;
 }
