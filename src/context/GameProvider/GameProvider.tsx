@@ -4,6 +4,7 @@ import { useAmbient } from "@/hooks";
 import { crashEngine } from "@/game/engine/crashEngine";
 import { startFakeBets } from "@/game/engine/fakeBets";
 import { gameStore } from "@/game/store";
+import { freeBetStore } from "@/game/freeBetStore";
 import { settingsStore } from "@/game/settingsStore";
 import { preloadSounds } from "@/game/sounds";
 
@@ -26,12 +27,14 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     if (settingsStore.getSnapshot().sound) preloadSounds();
 
     const disconnectStore = gameStore.connect();
+    const disconnectFreeBets = freeBetStore.connect();
     const stopFakeBets = startFakeBets();
     crashEngine.start();
 
     return () => {
       crashEngine.stop();
       stopFakeBets();
+      disconnectFreeBets();
       disconnectStore();
     };
   }, []);

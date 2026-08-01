@@ -1,0 +1,31 @@
+/* The stepper's shell without its buttons, so swapping the two keeps the row
+   the same height and the same weight on the page. */
+.free-bet-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-12);
+  width: 100%;
+  height: var(--size-48);
+  padding: 0 var(--size-16);
+  border: 1px solid var(--color-gray-primary);
+  border-radius: var(--radius-50);
+  background-color: var(--color-dark2-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--size-14);
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-text-gray-100);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.free-bet-amount:hover {
+  border-color: var(--color-stroke-gold);
+}
+
+.free-bet-amount__price,
+.free-bet-amount__count {
+  white-space: nowrap;
+}

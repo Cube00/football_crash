@@ -63,6 +63,18 @@
     #ff5d5f 0%,
     #e22b2e 100%
   );
+  --linear-gradient-gold-primary: linear-gradient(
+    90deg,
+    #ffbc12 0%,
+    #f1c34d 100%
+  );
+
+  --linear-gradient-gold-reverse: linear-gradient(
+    90deg,
+    #f1c34d 0%,
+    #ffbc12 100%
+  );
+
   --linear-gradient-purple-primary: linear-gradient(
     270deg,
     #985eff 0%,
@@ -83,6 +95,8 @@
   --color-btn-orange-hover: var(--linear-gradient-orange-reverse);
   --color-btn-purple: var(--linear-gradient-purple-primary);
   --color-btn-purple-hover: var(--linear-gradient-purple-reverse);
+  --color-btn-freebet: var(--linear-gradient-gold-primary);
+  --color-btn-freebet-hover: var(--linear-gradient-gold-reverse);
   --color-btn-yellow: #f2d551;
   --color-btn-yellow-hover: #e6c53f;
   --color-btn-blue-hover: #2f9ec7;
@@ -106,6 +120,7 @@
   --color-stroke-light-blue: #91b1c5;
   --color-stroke-yellow: #f2d551;
   --color-stroke-green: #86bd34;
+  --color-stroke-gold: #f5be44;
   --color-stroke-greenClick: #51cf3e;
 
   /* radius */

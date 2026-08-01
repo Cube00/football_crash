@@ -8,6 +8,8 @@ import type {
 } from "../events";
 import { BetSlot, BetState, GamePhase } from "../enums";
 import { CRASH, CURVE, GAME_CONFIG, ROUND_TIMINGS } from "../config";
+import { freeBetStore } from "../freeBetStore";
+import { FreeBetPayout } from "../freeBets";
 
 /**
  * Local "fake server" for the crash game.
@@ -29,7 +31,10 @@ interface EngineBet {
   currency: string;
   autoCashoutAt?: number;
   state: BetState;
+  /** Grant this bet was staked from, when it is a free bet. */
+  freeBetId?: string;
 }
+
 
 const now = () =>
   typeof performance !== "undefined" ? performance.now() : Date.now();
@@ -152,7 +157,28 @@ export class CrashEngine {
 
   /** Turns a carried-over queued pre-bet into a real placed bet (or drops it). */
   private activateQueued(slot: BetSlot, bet: EngineBet) {
-    if (bet.amount > this.balance) {
+    const freeBet = bet.freeBetId
+      ? freeBetStore.getGrant(bet.freeBetId)
+      : undefined;
+
+    if (bet.freeBetId && !freeBet) {
+      // The grant ran out while the pre-bet waited — drop it rather than
+      // silently charging the wallet for a bet the player meant to be free.
+      this.bets[slot] = null;
+      EventBus.emit(GameEvent.BetUpdate, {
+        betId: bet.betId,
+        username: "You",
+        amount: bet.amount,
+        currency: bet.currency,
+        status: BetState.Idle,
+        slot,
+        own: true,
+        freeBetId: bet.freeBetId,
+      });
+      return;
+    }
+
+    if (!freeBet && bet.amount > this.balance) {
       // Can't afford it any more — quietly drop it.
       this.bets[slot] = null;
       EventBus.emit(GameEvent.BetUpdate, {
@@ -173,7 +199,7 @@ export class CrashEngine {
       state: BetState.Placed,
     };
     this.bets[slot] = placed;
-    this.balance -= placed.amount;
+    if (!freeBet) this.balance -= placed.amount;
 
     EventBus.emit(GameEvent.BetPlaced, {
       slot,
@@ -181,6 +207,7 @@ export class CrashEngine {
       currency: placed.currency,
       betId: placed.betId,
       balance: this.balance,
+      freeBetId: placed.freeBetId,
     });
     this.emitBalance();
     EventBus.emit(GameEvent.BetUpdate, {
@@ -331,6 +358,7 @@ export class CrashEngine {
         currency: p.currency,
         autoCashoutAt: p.autoCashoutAt,
         state: BetState.Queued,
+        freeBetId: p.freeBetId,
       };
       EventBus.emit(GameEvent.BetUpdate, {
         betId: this.bets[p.slot]!.betId,
@@ -340,11 +368,17 @@ export class CrashEngine {
         status: BetState.Queued,
         slot: p.slot,
         own: true,
+        freeBetId: p.freeBetId,
       });
       return;
     }
 
-    if (p.amount > this.balance) return;
+    // A free bet spends a ticket from its grant, so the wallet is untouched —
+    // no funds check, no debit. What the grant has left is checked by the
+    // caller; a real server would re-check it here.
+    const freeBet = p.freeBetId ? freeBetStore.getGrant(p.freeBetId) : undefined;
+    if (p.freeBetId && !freeBet) return;
+    if (!freeBet && p.amount > this.balance) return;
 
     const betId = `${this.roundId}-slot${p.slot}`;
     this.bets[p.slot] = {
@@ -353,8 +387,9 @@ export class CrashEngine {
       currency: p.currency,
       autoCashoutAt: p.autoCashoutAt,
       state: BetState.Placed,
+      freeBetId: p.freeBetId,
     };
-    this.balance -= p.amount;
+    if (!freeBet) this.balance -= p.amount;
 
     EventBus.emit(GameEvent.BetPlaced, {
       slot: p.slot,
@@ -362,6 +397,7 @@ export class CrashEngine {
       currency: p.currency,
       betId,
       balance: this.balance,
+      freeBetId: p.freeBetId,
     });
     this.emitBalance();
     EventBus.emit(GameEvent.BetUpdate, {
@@ -372,6 +408,7 @@ export class CrashEngine {
       status: BetState.Placed,
       slot: p.slot,
       own: true,
+      freeBetId: p.freeBetId,
     });
   }
 
@@ -389,7 +426,13 @@ export class CrashEngine {
     // Round (not floor) to 2dp: flooring a target like 1.15 hits the classic
     // `1.15 * 100 = 114.9999…` float artefact and would short the player.
     const multiplier = Math.round(atMultiplier * 100) / 100;
-    const payout = Math.round(bet.amount * multiplier * 100) / 100;
+    // Pure profit grants keep the stake — only what it earned is credited.
+    const grant = bet.freeBetId
+      ? freeBetStore.getGrant(bet.freeBetId)
+      : undefined;
+    const factor =
+      grant?.payout === FreeBetPayout.PureProfit ? multiplier - 1 : multiplier;
+    const payout = Math.round(bet.amount * factor * 100) / 100;
     bet.state = BetState.Won;
     this.balance += payout;
 
@@ -435,6 +478,7 @@ export class CrashEngine {
         status: BetState.Idle,
         slot,
         own: true,
+        freeBetId: bet.freeBetId,
       });
       return;
     }
@@ -444,13 +488,14 @@ export class CrashEngine {
       this.phase === GamePhase.BettingClosing;
     if (bet.state !== BetState.Placed || !bettingOpen) return;
 
-    this.balance += bet.amount;
+    if (!bet.freeBetId) this.balance += bet.amount;
     this.bets[slot] = null;
 
     EventBus.emit(GameEvent.CancelBetOk, {
       slot,
       betId: bet.betId,
       balance: this.balance,
+      freeBetId: bet.freeBetId,
     });
     this.emitBalance();
     EventBus.emit(GameEvent.BetUpdate, {
@@ -461,6 +506,7 @@ export class CrashEngine {
       status: BetState.Idle,
       slot,
       own: true,
+      freeBetId: bet.freeBetId,
     });
   }
 

@@ -5,6 +5,7 @@ import { cx } from "@/utils";
 import { Icon } from "@/components/ui/Icon";
 import { Radio } from "@/components/ui/Radio";
 import { playSound, Sound } from "@/game/sounds";
+import { remainingOf } from "@/game/freeBets";
 import styles from "./FreeBetCard.module.css";
 import { FREE_BET_GROUP, FreeBetLabel } from "./FreeBetsContent.constants";
 import type { FreeBetCardProps } from "./FreeBetsContent.types";
@@ -20,15 +21,22 @@ export const FreeBetCard = ({
   bet,
   checked,
   expanded,
+  stakeable,
   onSelect,
   onToggle,
 }: FreeBetCardProps) => {
   const { t } = useTranslation();
   const detailsId = useId();
 
+  // Ticket grants count down; a lump sum has an amount instead of a tally.
+  const amount =
+    bet.price != null
+      ? `${remainingOf(bet)}/${bet.total}`
+      : `${bet.amount} ${bet.currency}`;
+
   const details = [
-    { labelKey: FreeBetLabel.Accrued, value: bet.accrued },
-    { labelKey: FreeBetLabel.MinWithdrawal, value: bet.minWithdrawal },
+    { labelKey: FreeBetLabel.Accrued, value: bet.accruedAt },
+    { labelKey: FreeBetLabel.MinWithdrawal, value: `${bet.minCashout}x` },
     { labelKey: FreeBetLabel.ExpirationDate, value: bet.expiresAt },
   ];
 
@@ -45,13 +53,17 @@ export const FreeBetCard = ({
           name={FREE_BET_GROUP}
           value={bet.id}
           checked={checked}
+          disabled={!stakeable}
           onChange={() => onSelect(bet.id)}
         >
           <span className={styles["free-bet__fields"]}>
             <Field labelKey={FreeBetLabel.Type} value={t(bet.typeKey)} />
-            <Field labelKey={FreeBetLabel.BetAmount} value={bet.betAmount} />
-            {bet.betPrice && (
-              <Field labelKey={FreeBetLabel.BetPrice} value={bet.betPrice} />
+            <Field labelKey={FreeBetLabel.BetAmount} value={amount} />
+            {bet.price != null && (
+              <Field
+                labelKey={FreeBetLabel.BetPrice}
+                value={`${bet.price} ${bet.currency}`}
+              />
             )}
           </span>
         </Radio>

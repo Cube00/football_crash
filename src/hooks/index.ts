@@ -8,3 +8,8 @@ export { useElementWidth } from "./useElementWidth";
 export { useAnimationEnabled, useSettings } from "./useSettings";
 export { useWindowSize } from "./useWindowSize";
 export { useWinNotification, WIN_NOTIFICATION_MS } from "./useWinNotification";
+export {
+  useFreeBets,
+  useActiveFreeBet,
+  useFreeBetsRemaining,
+} from "./useFreeBets";

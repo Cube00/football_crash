@@ -40,29 +40,23 @@
 
 .probably-table {
   display: flex;
-  flex-direction: column;
   padding: var(--size-16);
   background-color: var(--color-gray-primary);
   border-radius: var(--size-12);
   font-family: var(--font-family-base);
 }
 
-/* Let the row's children participate directly in the table grid so header
-   and data columns stay aligned. */
+/* A label/value pair. Desktop stacks it into a column of the table; the border
+   under each label meets its neighbours, so the four read as one rule. */
 .probably-table__row {
   display: flex;
-  width: 100%;
-  border-bottom: 1px solid var(--color-stroke-gray);
-}
-
-.probably-table__row__cels {
-  border: none;
-  display: flex;
-  width: 100%;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .probably-table__head {
   padding: 0 var(--size-8) var(--size-12);
+  border-bottom: 1px solid var(--color-stroke-gray);
   text-align: center;
   color: var(--color-text-gray-100);
   font-size: var(--size-14);
@@ -82,8 +76,45 @@
 }
 
 /* Keep the Round Number column snug to its content. */
-.probably-table__col--num {
+.probably-table__row--nowrap {
   white-space: nowrap;
+}
+
+/* Phone: one pair per row, label left and value right, ruled between rows. */
+@media screen and (max-width: 767px) {
+  .probably-table {
+    flex-direction: column;
+    padding: 0 var(--size-16);
+  }
+
+  .probably-table__row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--size-8);
+    height: 44px;
+    border-bottom: 1px solid var(--color-stroke-gray);
+  }
+
+  .probably-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .probably-table__head,
+  .probably-table__cell {
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .probably-table__head {
+    text-align: left;
+  }
+
+  .probably-table__cell {
+    text-align: right;
+  }
 }
 
 .probably-begins {

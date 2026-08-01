@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, HTMLAttributes } from "react";
 import type { BetSlot } from "@/game/enums";
 
 export interface BetAreaProps
@@ -7,4 +7,13 @@ export interface BetAreaProps
   slot: BetSlot;
   /** Currency label shown on the Bet button. */
   currency?: string;
+}
+
+export interface FreeBetAmountProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Stake per bet, already formatted for display. */
+  price: string;
+  currency: string;
+  remaining: number;
+  total: number;
 }

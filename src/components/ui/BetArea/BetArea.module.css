@@ -17,6 +17,15 @@
   width: 100%;
 }
 
+/* The frame is pulled out over the card's padding rather than added inside it,
+   so staking a grant draws a border without nudging the controls. */
+.bet-area--freebet .bet-area__top {
+  margin: calc(var(--size-8) * -1);
+  padding: var(--size-8);
+  border: 1px solid var(--color-stroke-gold);
+  border-radius: var(--radius-16);
+}
+
 .bet-area__bottom {
   display: flex;
   align-items: center;

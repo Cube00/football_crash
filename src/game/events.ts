@@ -98,6 +98,8 @@ export interface CmdPlaceBetPayload {
   currency: string;
   /** When set, the engine auto-cashes the bet once the tick reaches it. */
   autoCashoutAt?: number;
+  /** Stakes a free bet grant instead of the balance. */
+  freeBetId?: string;
 }
 
 export interface CmdCashoutPayload {
@@ -116,6 +118,8 @@ export interface BetPlacedPayload {
   currency: string;
   betId: string;
   balance: number;
+  /** The grant this bet spent a ticket from, when it was a free bet. */
+  freeBetId?: string;
 }
 
 export interface CashoutDonePayload {
@@ -132,6 +136,8 @@ export interface CancelBetOkPayload {
   slot: BetSlot;
   betId: string;
   balance: number;
+  /** Set when the cancelled bet had spent a ticket, so it can be given back. */
+  freeBetId?: string;
 }
 
 /**
@@ -153,4 +159,6 @@ export interface BetUpdatePayload {
   slot?: BetSlot;
   /** True for the current player's own bets. */
   own?: boolean;
+  /** Set when the bet was staked from a free bet grant. */
+  freeBetId?: string;
 }

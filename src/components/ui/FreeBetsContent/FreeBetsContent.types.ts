@@ -1,28 +1,13 @@
-import type { TranslationKey } from "@/i18n/types";
-
-/** One free bet the player can stake instead of their own balance. */
-export interface FreeBet {
-  id: string;
-  /** Translation key for the free bet flavour, shown under the TYPE column. */
-  typeKey: TranslationKey;
-  /** Bets used out of the granted total, e.g. `10/10`. */
-  betAmount: string;
-  /** Stake per bet. Bonus balance grants have none, so the column is dropped. */
-  betPrice?: string;
-  /** When the grant landed. */
-  accrued: string;
-  /** Multiplier the player has to reach before cashing out. */
-  minWithdrawal: string;
-  /** When the grant stops being playable. */
-  expiresAt: string;
-}
+import type { FreeBetGrant } from "@/game/freeBets";
 
 export interface FreeBetCardProps {
-  bet: FreeBet;
+  bet: FreeBetGrant;
   /** Whether this bet is the staked one. */
   checked: boolean;
   /** Whether the accrual details are open. */
   expanded: boolean;
+  /** Whether the grant can be staked round by round at all. */
+  stakeable: boolean;
   onSelect: (id: string) => void;
   onToggle: (id: string) => void;
 }

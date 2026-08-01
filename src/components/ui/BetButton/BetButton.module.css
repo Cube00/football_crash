@@ -45,7 +45,7 @@
 }
 
 .bet-button--freebet {
-  background: var(--color-btn-purple);
+  background: var(--color-btn-freebet);
 }
 
 .bet-button--bet::after,
@@ -73,7 +73,7 @@
 }
 
 .bet-button--freebet::after {
-  background: var(--color-btn-purple-hover);
+  background: var(--color-btn-freebet-hover);
 }
 
 .bet-button--bet:hover::after,

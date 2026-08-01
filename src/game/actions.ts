@@ -13,12 +13,14 @@ export const gameActions = {
     amount: number,
     currency: string,
     autoCashoutAt?: number,
+    freeBetId?: string,
   ) {
     EventBus.emit(GameEvent.CmdPlaceBet, {
       slot,
       amount,
       currency,
       autoCashoutAt,
+      freeBetId,
     });
   },
 

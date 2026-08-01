@@ -7,6 +7,7 @@ import { WinNotification } from "@/components/ui/WinNotification";
 import { useModal, ModalId } from "@/context/ModalProvider";
 import {
   useAnimationEnabled,
+  useFreeBetsRemaining,
   useWinNotification,
   WIN_NOTIFICATION_MS,
 } from "@/hooks";
@@ -15,7 +16,7 @@ import { useTick } from "@/hooks/useTick";
 import { GamePhase } from "@/game/enums";
 import { ROUND_TIMINGS } from "@/game/config";
 import styles from "./GameStage.module.css";
-import { FREE_BET_COUNT, STILL_BACKGROUND } from "./GameStage.constants";
+import { STILL_BACKGROUND } from "./GameStage.constants";
 import type { GameStageProps } from "./GameStage.types";
 
 // Lazy so the Phaser bundle stays out of the main chunk — and, with animation
@@ -43,6 +44,7 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
   const phase = usePhase();
   const { tick, remainingMs } = useTick();
   const { win, dismiss } = useWinNotification();
+  const freeBets = useFreeBetsRemaining();
 
   const betting = phase === GamePhase.BettingOpen;
 
@@ -84,11 +86,13 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
         )}
       </div>
 
-      <FreeBetButton
-        className={styles["game-stage__free-bet"]}
-        count={FREE_BET_COUNT}
-        onClick={() => open(ModalId.BetType)}
-      />
+      {freeBets > 0 && (
+        <FreeBetButton
+          className={styles["game-stage__free-bet"]}
+          count={freeBets}
+          onClick={() => open(ModalId.BetType)}
+        />
+      )}
     </div>
   );
 };

@@ -167,8 +167,8 @@
     "provablyFairHash": "Provably Fair Hash",
     "hidden": "Hidden",
     "beforeGameBegins": "Before the game begins, players can see:",
-    "roundNumberDescription": "- The current round identifier",
-    "provablyFairHashDescription": "- A cryptographic hash that proves the round outcome was predetermined",
+    "roundNumberDescription": "– The current round identifier",
+    "provablyFairHashDescription": "– A cryptographic hash that proves the round outcome was predetermined",
     "note": "The Server Key and Crash Point remain hidden to ensure fairness."
   },
 

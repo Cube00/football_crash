@@ -8,14 +8,13 @@ import {
   PlayNowBtnVariants,
 } from "@/components/ui/PlayNowButton";
 import { useModal, ModalId } from "@/context/ModalProvider";
+import { useFreeBets } from "@/hooks";
+import { freeBetStore } from "@/game/freeBetStore";
+import { isStakeable } from "@/game/freeBets";
 import { playSound, Sound } from "@/game/sounds";
 import styles from "./FreeBetsContent.module.css";
 import { FreeBetCard } from "./FreeBetCard";
-import {
-  ACTIVE_FREE_BETS,
-  FREE_BET_GROUP,
-  REAL_MONEY_ID,
-} from "./FreeBetsContent.constants";
+import { FREE_BET_GROUP, REAL_MONEY_ID } from "./FreeBetsContent.constants";
 
 /**
  * Body of the "Free bets Management" modal: pick what the next round is staked
@@ -24,8 +23,9 @@ import {
  */
 export const FreeBetsContent = () => {
   const { t } = useTranslation();
-  const { open } = useModal();
-  const [selected, setSelected] = useState<string>(REAL_MONEY_ID);
+  const { open, close } = useModal();
+  const { grants, activeId } = useFreeBets();
+  const selected = activeId ?? REAL_MONEY_ID;
   // A set, not a single id: the design opens every card independently.
   const [expanded, setExpanded] = useState<readonly string[]>([]);
 
@@ -41,7 +41,7 @@ export const FreeBetsContent = () => {
         name={FREE_BET_GROUP}
         value={REAL_MONEY_ID}
         checked={selected === REAL_MONEY_ID}
-        onChange={() => setSelected(REAL_MONEY_ID)}
+        onChange={() => freeBetStore.select(null)}
       >
         {t("freeBets.playWithRealMoney")}
       </Radio>
@@ -51,13 +51,14 @@ export const FreeBetsContent = () => {
       </h3>
 
       <ul className={styles["free-bets__list"]}>
-        {ACTIVE_FREE_BETS.map((bet) => (
-          <li key={bet.id}>
+        {grants.map((grant) => (
+          <li key={grant.id}>
             <FreeBetCard
-              bet={bet}
-              checked={selected === bet.id}
-              expanded={expanded.includes(bet.id)}
-              onSelect={setSelected}
+              bet={grant}
+              checked={selected === grant.id}
+              expanded={expanded.includes(grant.id)}
+              stakeable={isStakeable(grant)}
+              onSelect={freeBetStore.select}
               onToggle={toggle}
             />
           </li>
@@ -81,6 +82,7 @@ export const FreeBetsContent = () => {
           className={styles["free-bets__play"]}
           variant={PlayNowBtnVariants.Orange}
           size={Size.Mobile}
+          onClick={close}
         />
       </div>
     </div>

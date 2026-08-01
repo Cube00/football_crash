@@ -7,14 +7,18 @@ import { AmountButton } from "../AmountButton";
 import { BetButton, BetButtonVariant } from "../BetButton";
 import { Toggle } from "../Toggle";
 import { Modal, ModalWidth } from "../Modal";
+import { useModal, ModalId } from "@/context/ModalProvider";
 import { AutoBetContent } from "./AutoBetContent";
 import { usePhase, useSlot, useBalance } from "@/hooks/useGame";
 import { useTick } from "@/hooks/useTick";
 import { useAutoPlay } from "@/hooks/useAutoPlay";
+import { useActiveFreeBet } from "@/hooks";
 import { gameActions } from "@/game/actions";
 import { BetState, GamePhase } from "@/game/enums";
+import { FreeBetPayout, remainingOf } from "@/game/freeBets";
 import { GAME_CONFIG } from "@/game/config";
 import { loadState, saveBetAmount } from "@/game/persistence";
+import { FreeBetAmount } from "./FreeBetAmount";
 import styles from "./BetArea.module.css";
 import { AMOUNT_PRESETS, BET_AREA_DEFAULTS } from "./BetArea.constants";
 import type { BetAreaProps } from "./BetArea.types";
@@ -26,15 +30,22 @@ export const BetArea = ({
   ...rest
 }: BetAreaProps) => {
   const { t } = useTranslation();
+  const { open } = useModal();
   const phase = usePhase();
   const slotState = useSlot(slot);
   const balance = useBalance();
   const { multiplier } = useTick();
+  // Staked grant, shared by both slots — it is a choice of wallet, not of slot.
+  const freeBet = useActiveFreeBet();
 
   const [amount, setAmount] = useState(
     () => loadState().betAmounts[slot] ?? GAME_CONFIG.defaultBet,
   );
   const [activePreset, setActivePreset] = useState<number | null>(null);
+
+  const freeBetsLeft = freeBet ? remainingOf(freeBet) : 0;
+  // A staked grant dictates the stake; the player's own amount waits its turn.
+  const stake = freeBet?.price ?? amount;
   const [showAutoModal, setShowAutoModal] = useState(false);
   const closeAutoModal = () => setShowAutoModal(false);
 
@@ -46,19 +57,42 @@ export const BetArea = ({
   const amountRef = useRef(amount);
   const autoCashoutRef = useRef<number | undefined>(undefined);
 
+  const freeBetRef = useRef<string | undefined>(undefined);
+
   const placeBet = useCallback(() => {
-    gameActions.placeBet(slot, amountRef.current, currency, autoCashoutRef.current);
+    gameActions.placeBet(
+      slot,
+      amountRef.current,
+      currency,
+      autoCashoutRef.current,
+      freeBetRef.current,
+    );
   }, [slot, currency]);
 
   const autoPlay = useAutoPlay({ slot, placeBet });
 
   // Sync the refs after render (never write refs during render).
   useEffect(() => {
-    amountRef.current = amount;
+    amountRef.current = stake;
+    freeBetRef.current = freeBet ? freeBet.id : undefined;
     autoCashoutRef.current = autoPlay.config.autoCashOut.enabled
       ? autoPlay.config.autoCashOut.multiplier
       : undefined;
   });
+
+  // Auto-play started on a grant keeps spending that grant. When the grant is
+  // gone the store unstakes it, and the run has to end there — the next round
+  // would otherwise quietly reach for the player's own money.
+  const startedOnFreeBet = useRef(false);
+  const { isActive: autoRunning, stop: stopAutoPlay } = autoPlay;
+
+  useEffect(() => {
+    if (!autoRunning) {
+      startedOnFreeBet.current = Boolean(freeBet);
+      return;
+    }
+    if (startedOnFreeBet.current && !freeBet) stopAutoPlay();
+  }, [autoRunning, freeBet, stopAutoPlay]);
 
   const selectPreset = (preset: number, index: number) => {
     setAmount(preset);
@@ -80,22 +114,39 @@ export const BetArea = ({
     }
   };
 
+  // What cashing out right now would credit. Pure profit grants keep the
+  // stake, so only what it earned lands on the button.
+  const payoutAt = (at: number) => {
+    const factor = Math.max(1, at);
+    const earned =
+      freeBet?.payout === FreeBetPayout.PureProfit ? factor - 1 : factor;
+    return slotState.amount * earned;
+  };
+
   // ── Derive the primary button from phase + bet state ──
   const { state } = slotState;
   // The label is always "Bet"; only the behaviour changes by phase — inside the
   // window it places now, outside it queues a pre-bet for the next round.
-  let variant: BetButtonVariant = BetButtonVariant.Bet;
-  let label = t("bet.bet");
-  let buttonAmount: string | undefined = amount.toFixed(2);
+  // A staked grant replaces the wallet: the stake is the grant's and the only
+  // thing that can run out is the grant itself.
+  let variant: BetButtonVariant = freeBet
+    ? BetButtonVariant.Freebet
+    : BetButtonVariant.Bet;
+  let label = freeBet ? t("common.freeBet") : t("bet.bet");
+  let buttonAmount: string | undefined = freeBet
+    ? String(stake)
+    : stake.toFixed(2);
   let buttonText: string | undefined;
   let onClick = placeBet;
-  let disabled = amount <= 0 || amount > balance;
+  let disabled = freeBet
+    ? freeBetsLeft <= 0
+    : amount <= 0 || amount > balance;
 
   if (state === BetState.Active) {
     // A live flying bet — cash out (auto-play keeps running afterwards).
     variant = BetButtonVariant.Cashout;
     label = t("bet.cashOut");
-    buttonAmount = (slotState.amount * Math.max(1, multiplier)).toFixed(2);
+    buttonAmount = payoutAt(multiplier).toFixed(2);
     onClick = () => gameActions.cashout(slot);
     disabled = phase !== GamePhase.Flying;
   } else if (state === BetState.Queued) {
@@ -145,20 +196,39 @@ export const BetArea = ({
     });
 
   return (
-    <div className={cx(styles["bet-area"], className)} {...rest}>
+    <div
+      className={cx(
+        styles["bet-area"],
+        freeBet && styles["bet-area--freebet"],
+        className,
+      )}
+      {...rest}
+    >
       <div className={styles["bet-area__top"]}>
         <div className={styles["bet-area__controls"]}>
-          <Stepper
-            className={styles["bet-area__stepper"]}
-            value={amount}
-            min={0}
-            step={1}
-            disabled={betLocked}
-            onValueChange={(next) => {
-              setAmount(next);
-              setActivePreset(null);
-            }}
-          />
+          {freeBet ? (
+            <FreeBetAmount
+              className={styles["bet-area__stepper"]}
+              price={String(freeBet.price)}
+              currency={freeBet.currency}
+              remaining={freeBetsLeft}
+              total={freeBet.total}
+              aria-label={t("modals.betType")}
+              onClick={() => open(ModalId.BetType)}
+            />
+          ) : (
+            <Stepper
+              className={styles["bet-area__stepper"]}
+              value={amount}
+              min={0}
+              step={1}
+              disabled={betLocked}
+              onValueChange={(next) => {
+                setAmount(next);
+                setActivePreset(null);
+              }}
+            />
+          )}
 
           <div className={styles["bet-area__presets"]}>
             {AMOUNT_PRESETS.map((preset, index) => (
@@ -166,7 +236,7 @@ export const BetArea = ({
                 key={preset.value}
                 label={preset.labelKey ? t(preset.labelKey) : preset.label!}
                 active={activePreset === index}
-                disabled={betLocked}
+                disabled={betLocked || Boolean(freeBet)}
                 onClick={() => selectPreset(preset.value, index)}
               />
             ))}
@@ -243,7 +313,7 @@ export const BetArea = ({
       >
         <AutoBetContent
           autoPlay={autoPlay}
-          betAmount={amount}
+          betAmount={stake}
           currency={currency}
           onClose={closeAutoModal}
         />
