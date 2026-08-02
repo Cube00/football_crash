@@ -15,6 +15,16 @@ The UI is split into two sides:
 - **CSS Modules + BEM** — styling (`*.module.css`, class names as `block__element--modifier`)
 - **ESLint** — linting
 
+## Documentation
+
+| Doc | What's in it |
+| --- | --- |
+| [Architecture](docs/ARCHITECTURE.md) | how the canvas, events, engine and sprites fit together |
+| [Conventions](docs/CONVENTIONS.md) | component anatomy, styling, state, i18n, sound, a11y |
+| [UI systems](docs/UI-SYSTEMS.md) | modals, stacking order, breakpoints and container queries |
+| [Free bets](docs/FREE-BETS.md) | the grant model, ticket accounting and what's still mocked |
+| [Backend](docs/BACKEND.md) | the event contract to implement when a real server arrives |
+
 ## Architecture
 
 The project uses a layered `src/` structure that separates reusable UI, layout, state, and helpers:
