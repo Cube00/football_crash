@@ -9,6 +9,11 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  // Every browser this game supports has had these for years; transpiling down
+  // to older syntax only added bytes Lighthouse flags as legacy JavaScript.
+  build: {
+    target: 'es2022',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

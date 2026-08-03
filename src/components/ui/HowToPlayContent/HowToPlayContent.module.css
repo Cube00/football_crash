@@ -12,8 +12,33 @@
   gap: var(--size-12);
 }
 
+.how-to-play__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-8);
+}
+
 .how-to-play__title {
   font-size: var(--size-16);
+  font-weight: 700;
+  line-height: 150%;
+}
+
+.how-to-play__subtitle {
+  font-size: var(--size-14);
+  font-weight: 700;
+  line-height: 150%;
+}
+
+.how-to-play__text {
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 150%;
+  color: var(--color-text-gray-100);
+}
+
+.how-to-play__label {
+  font-size: var(--size-14);
   font-weight: 700;
   line-height: 150%;
 }
@@ -41,15 +66,50 @@
   content: counter(step) ".";
   counter-increment: step;
   font-weight: 700;
+  color: var(--color-text-white-100);
 }
 
-.how-to-play__steps b {
+.how-to-play b {
+  font-weight: 700;
+  color: var(--color-text-white-100);
+}
+
+/* The worked example: the one place the rules turn into numbers, so it sits on
+   its own card rather than reading as another paragraph. */
+.how-to-play__example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-8);
+  padding: var(--size-16);
+  border-radius: var(--radius-12);
+  background-color: var(--color-gray-primary);
+}
+
+.how-to-play__example-label {
+  font-size: var(--size-12);
+  font-weight: 700;
+  line-height: 150%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.how-to-play__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-12);
+  max-width: 260px;
+  padding: var(--size-12) var(--size-16);
+  border-radius: var(--radius-12);
+  background-color: var(--color-gray-primary);
+  font-size: var(--size-14);
   font-weight: 700;
 }
 
 .how-to-play__image {
   display: block;
-  max-width: 100%;
+  width: 100%;
   height: auto;
   margin: 0 auto;
+  border-radius: var(--radius-8);
 }

@@ -16,7 +16,10 @@ import { useTick } from "@/hooks/useTick";
 import { GamePhase } from "@/game/enums";
 import { ROUND_TIMINGS } from "@/game/config";
 import styles from "./GameStage.module.css";
-import { STILL_BACKGROUND } from "./GameStage.constants";
+import {
+  STILL_BACKGROUND,
+  STILL_BACKGROUND_SIZE,
+} from "./GameStage.constants";
 import type { GameStageProps } from "./GameStage.types";
 
 // Lazy so the Phaser bundle stays out of the main chunk — and, with animation
@@ -58,6 +61,8 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
         <img
           className={styles["game-stage__still"]}
           src={STILL_BACKGROUND}
+          width={STILL_BACKGROUND_SIZE.width}
+          height={STILL_BACKGROUND_SIZE.height}
           alt=""
         />
       )}

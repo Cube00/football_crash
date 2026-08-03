@@ -121,11 +121,11 @@ only re-renders its own consumers. The bets feed is newest-first and capped at
 
 ## The canvas
 
-Phaser sits behind a `lazy()` import, keeping its ~1.4 MB chunk out of the main
-bundle. With the menu's Animation switch off it is never fetched at all: the
-stage renders a still image, and the HUD — multiplier and countdown — is DOM
-either way. That is what makes the still mode possible; the numbers a player
-needs are never trapped inside the canvas.
+Phaser sits behind a `lazy()` import, keeping its ~1.4 MB chunk (374 KB gzipped)
+out of the main bundle. With the menu's Animation switch off it is never fetched
+at all: the stage renders a still image, and the HUD — multiplier and countdown —
+is DOM either way. That is what makes the still mode possible; the numbers a
+player needs are never trapped inside the canvas.
 
 ### Resolution
 

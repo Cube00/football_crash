@@ -49,46 +49,69 @@ export interface BonePose {
   y: number;
 }
 
-/** How each supported bone timeline reads from a posed bone and rebuilds. */
-const BONE_TIMELINES = {
-  RotateTimeline: {
+interface BoneTimelineSpec {
+  Ctor: new (
+    frameCount: number,
+    bezierCount: number,
+    boneIndex: number,
+  ) => Timeline;
+  read: (bone: PosedBone) => number[];
+  rest: (data: BoneData) => number[];
+  multiplicative: boolean;
+}
+
+/**
+ * How each supported bone timeline reads from a posed bone and rebuilds.
+ *
+ * Matched with `instanceof`, never by class name: a production build renames
+ * every class, so a name lookup finds nothing, every timeline is passed through
+ * unretargeted, and the throw plays against the donor's rest pose — the ball
+ * leaves his hand before the animation has begun. It only ever looked right in
+ * dev, where the names survive.
+ */
+const BONE_TIMELINES: readonly BoneTimelineSpec[] = [
+  {
     Ctor: RotateTimeline,
-    read: (b: PosedBone) => [b.rotation],
-    rest: (d: BoneData) => [d.rotation],
+    read: (b) => [b.rotation],
+    rest: (d) => [d.rotation],
     multiplicative: false,
   },
-  TranslateTimeline: {
+  {
     Ctor: TranslateTimeline,
-    read: (b: PosedBone) => [b.x, b.y],
-    rest: (d: BoneData) => [d.x, d.y],
+    read: (b) => [b.x, b.y],
+    rest: (d) => [d.x, d.y],
     multiplicative: false,
   },
-  TranslateXTimeline: {
+  {
     Ctor: TranslateXTimeline,
-    read: (b: PosedBone) => [b.x],
-    rest: (d: BoneData) => [d.x],
+    read: (b) => [b.x],
+    rest: (d) => [d.x],
     multiplicative: false,
   },
-  TranslateYTimeline: {
+  {
     Ctor: TranslateYTimeline,
-    read: (b: PosedBone) => [b.y],
-    rest: (d: BoneData) => [d.y],
+    read: (b) => [b.y],
+    rest: (d) => [d.y],
     multiplicative: false,
   },
-  ScaleTimeline: {
+  {
     Ctor: ScaleTimeline,
-    read: (b: PosedBone) => [b.scaleX, b.scaleY],
-    rest: (d: BoneData) => [d.scaleX, d.scaleY],
+    read: (b) => [b.scaleX, b.scaleY],
+    rest: (d) => [d.scaleX, d.scaleY],
     /** Scale timelines store factors of the setup scale, not offsets. */
     multiplicative: true,
   },
-  ShearTimeline: {
+  {
     Ctor: ShearTimeline,
-    read: (b: PosedBone) => [b.shearX, b.shearY],
-    rest: (d: BoneData) => [d.shearX, d.shearY],
+    read: (b) => [b.shearX, b.shearY],
+    rest: (d) => [d.shearX, d.shearY],
     multiplicative: false,
   },
-} as const;
+];
+
+/** The spec for a timeline, or undefined for the kinds carried over as-is. */
+const specFor = (timeline: Timeline): BoneTimelineSpec | undefined =>
+  BONE_TIMELINES.find((spec) => timeline instanceof spec.Ctor);
 
 type PosedBone = {
   rotation: number;
@@ -164,8 +187,7 @@ export function retargetAnimation(
   }
 
   const timelines = source.timelines.map((timeline) => {
-    const spec =
-      BONE_TIMELINES[timeline.constructor.name as keyof typeof BONE_TIMELINES];
+    const spec = specFor(timeline);
     if (!spec || !isBoneTimeline(timeline)) return timeline;
 
     const { boneIndex } = timeline;
@@ -178,12 +200,13 @@ export function retargetAnimation(
       const values = local.map((value, i) =>
         spec.multiplicative ? value / rest[i] : value - rest[i],
       );
-      // Ctor picks the arity; both signatures are (frame, time, ...values).
-      (rebuilt.setFrame as (f: number, t: number, ...v: number[]) => void)(
-        frame,
-        frame * step,
-        ...values,
-      );
+      // Ctor picks the arity; every signature is (frame, time, ...values).
+      const setFrame = (
+        rebuilt as unknown as {
+          setFrame: (f: number, t: number, ...v: number[]) => void;
+        }
+      ).setFrame;
+      setFrame.call(rebuilt, frame, frame * step, ...values);
     }
     return rebuilt;
   });

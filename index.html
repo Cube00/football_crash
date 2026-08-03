@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Ahead of the stylesheet that asks for them, so the faces download in
+         parallel with the app rather than after it. -->
+    <link
+      rel="preload"
+      href="/fonts/inter-tight-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/luckiest-guy-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <title>football_crash</title>
   </head>
   <body>

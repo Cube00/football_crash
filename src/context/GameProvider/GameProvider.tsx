@@ -5,8 +5,7 @@ import { crashEngine } from "@/game/engine/crashEngine";
 import { startFakeBets } from "@/game/engine/fakeBets";
 import { gameStore } from "@/game/store";
 import { freeBetStore } from "@/game/freeBetStore";
-import { settingsStore } from "@/game/settingsStore";
-import { preloadSounds } from "@/game/sounds";
+import { preloadSoundsOnFirstGesture } from "@/game/sounds";
 
 interface GameProviderProps {
   children: ReactNode;
@@ -23,8 +22,9 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   useAmbient();
 
   useEffect(() => {
-    // Fetch the click sounds now so the first one is not the one that waits.
-    if (settingsStore.getSnapshot().sound) preloadSounds();
+    // Click sounds are fetched on the first gesture, not here — see
+    // `preloadSoundsOnFirstGesture`.
+    const stopSoundWarmup = preloadSoundsOnFirstGesture();
 
     const disconnectStore = gameStore.connect();
     const disconnectFreeBets = freeBetStore.connect();
@@ -32,6 +32,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     crashEngine.start();
 
     return () => {
+      stopSoundWarmup();
       crashEngine.stop();
       stopFakeBets();
       disconnectFreeBets();

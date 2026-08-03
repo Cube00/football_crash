@@ -29,13 +29,19 @@
   line-height: 150%;
 }
 
+.probably-beforestarts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-12);
+}
+
 .probably-beforestarts__label {
   color: var(--color-text-white-100);
   font-size: var(--size-16);
   font-family: var(--font-family-base);
   font-weight: 700;
   line-height: 150%;
-  margin-bottom: var(--size-12);
+  margin-bottom: -4px;
 }
 
 .probably-table {
@@ -140,6 +146,11 @@
   list-style: disc;
 }
 
+.probably-begins__list--ordered {
+  padding-left: var(--size-22);
+  list-style: decimal;
+}
+
 .probably-begins__item {
   color: var(--color-text-gray-100);
   font-size: var(--size-14);
@@ -161,4 +172,25 @@
   font-size: var(--size-14);
   font-weight: 500;
   line-height: 150%;
+}
+
+/* The formula and the worked example are data, not prose: they get a panel and
+   a break-anywhere wrap so a 128-character hash can't push the sheet wider. */
+.probably-formula {
+  padding: var(--size-16);
+  border-radius: var(--size-12);
+  background-color: var(--color-gray-primary);
+  color: var(--color-text-gray-100);
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 150%;
+  overflow-wrap: anywhere;
+}
+
+.probably-example {
+  color: var(--color-text-gray-100);
+  font-size: var(--size-14);
+  font-weight: 500;
+  line-height: 150%;
+  overflow-wrap: anywhere;
 }

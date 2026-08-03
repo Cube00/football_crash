@@ -317,15 +317,21 @@ export class GameScene extends Scene {
       // Cover on the PHOTO's rect, not the skeleton's: the umbrellas overhang it
       // on both sides, and scaling to those wider bounds leaves the photo short
       // of the canvas edges — bare background strips down the left and right on
-      // wide viewports. Anchoring on the photo's centre keeps it centred while
-      // the overhanging props simply clip at the edges.
+      // wide viewports. The overhanging props simply clip at the edges.
+      //
+      // Horizontally centred, but anchored on the photo's BOTTOM edge, because
+      // cover has to crop something and the two axes are not interchangeable:
+      // the sand is the bottom of the photo and the boy stands at the bottom of
+      // the canvas. Cropping evenly — the obvious choice — takes that sand away
+      // on any stage wider than the photo and leaves him standing in the sea.
+      // Losing sky off the top costs nothing by comparison.
       const photo = this.beachPhotoRect ?? bounds;
       this.beach.setOrigin(
         (photo.x + photo.width / 2 - bounds.x) / bounds.width,
-        (photo.y + photo.height / 2 - bounds.y) / bounds.height,
+        (photo.y + photo.height - bounds.y) / bounds.height,
       );
       this.beach.setScale(Math.max(w / photo.width, h / photo.height));
-      this.beach.setPosition(w / 2, h / 2);
+      this.beach.setPosition(w / 2, h);
     }
 
     if (this.char) {

@@ -52,6 +52,12 @@ interface Pool {
   next: number;
 }
 
+function makeClip(sound: Sound): HTMLAudioElement {
+  const clip = new Audio(SOURCES[sound]);
+  clip.preload = "auto";
+  return clip;
+}
+
 const pools = new Map<Sound, Pool>();
 
 function pool(sound: Sound): Pool | null {
@@ -59,22 +65,39 @@ function pool(sound: Sound): Pool | null {
 
   let entry = pools.get(sound);
   if (!entry) {
-    entry = {
-      clips: Array.from({ length: VOICES }, () => {
-        const clip = new Audio(SOURCES[sound]);
-        clip.preload = "auto";
-        return clip;
-      }),
-      next: 0,
-    };
+    entry = { clips: [makeClip(sound)], next: 0 };
     pools.set(sound, entry);
   }
   return entry;
 }
 
-/** Fetches every clip up front, so the first click is not the one that waits. */
+/**
+ * Fetches every clip, so the first click is not the one that waits.
+ *
+ * Deliberately not called at boot: a browser will not play audio before the
+ * page has been interacted with anyway, so fetching a few hundred KB while the
+ * game is still painting buys nothing and competes with the canvas. The first
+ * gesture arms it — by which point the sound is allowed to play.
+ */
 export function preloadSounds() {
   for (const sound of Object.values(Sound)) pool(sound);
+}
+
+/** Warms the pools on the first pointer or key press, then gets out of the way. */
+export function preloadSoundsOnFirstGesture(): () => void {
+  const warm = () => {
+    if (settingsStore.getSnapshot().sound) preloadSounds();
+    document.removeEventListener("pointerdown", warm);
+    document.removeEventListener("keydown", warm);
+  };
+
+  document.addEventListener("pointerdown", warm, { once: true });
+  document.addEventListener("keydown", warm, { once: true });
+
+  return () => {
+    document.removeEventListener("pointerdown", warm);
+    document.removeEventListener("keydown", warm);
+  };
 }
 
 export function playSound(sound: Sound) {
@@ -82,6 +105,11 @@ export function playSound(sound: Sound) {
 
   const entry = pool(sound);
   if (!entry) return;
+
+  // Grow the pool only when a clip is still ringing — three voices' worth of
+  // downloads up front is three times the bytes for a sound played once.
+  const busy = entry.clips[entry.next].currentTime > START_AT[sound];
+  if (busy && entry.clips.length < VOICES) entry.clips.push(makeClip(sound));
 
   const clip = entry.clips[entry.next];
   entry.next = (entry.next + 1) % entry.clips.length;
@@ -140,6 +168,11 @@ function retryOnGesture() {
 
 export function setAmbientPlaying(on: boolean) {
   ambientWanted = on;
+
+  // Switching it off before it ever played: nothing to pause, and building the
+  // element here would fetch the track for a player who never asked for it.
+  if (!on && !ambientClip) return;
+
   const clip = ambient();
   if (!clip) return;
 

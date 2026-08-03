@@ -82,7 +82,7 @@ Beyond the engine itself, these are placeholders a real integration replaces:
 | `components/ui/BetsList/BetsList.constants.ts`   | `MOCK_MY_BETS`, `MOCK_BETS`, `MOCK_MY_BETS_SUMMARY` — the My Bets tab and the summary row are entirely static |
 | `components/ui/StatsContent/`                    | `MOCK_MULTIPLIERS`, `MOCK_ROUNDS` — the Stats tab       |
 | `components/ui/ArchiveContent/`                  | spent-grant history                                     |
-| `components/ui/ProbablyFairContent/`             | `HIDDEN_STATE_ROWS` — round id, server key, hash        |
+| `components/ui/ProbablyFairContent/`             | `HIDDEN_STATE_ROWS` / `REVEALED_STATE_ROWS` — round id, server key, crash point, hash, and the worked example |
 | `components/ui/PointDetailsContent/`             | seeds behind a history pill                             |
 
 The **All bets** tab is real — it's the live `bet-update` feed. **My Bets** and

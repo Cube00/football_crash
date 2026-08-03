@@ -154,6 +154,93 @@
       "step3": "If you place two bets, each has its own cash-out button",
       "step4": "If you fail to cash out before the comet explodes → <b>your bet is lost</b>",
       "step5": "After cashing out, wait until the round ends to bet again"
+    },
+    "example": {
+      "label": "Example",
+      "step1": "You bet <b>0.50 USD</b>",
+      "step2": "You cash out at <b>4.58x</b>",
+      "step3": "You win: <b>0.50 × 4.58 = 2.29 USD</b>"
+    },
+    "interface": {
+      "title": "Game Interface Components",
+      "multipliers": {
+        "title": "Top Banner — Recent Multipliers",
+        "body": "Shows the last exploded comet multipliers. Use this history to observe trends and guess when the next crash may occur."
+      },
+      "balance": {
+        "title": "Balance Display",
+        "body": "Top-right live balance display showing your available funds."
+      },
+      "panels": {
+        "title": "Betting Panels",
+        "body": "Two independent betting panels (left and right) allow you to:",
+        "step1": "Set different bet amounts",
+        "step2": "Configure auto cash-out multipliers independently",
+        "step3": "Place one or two bets simultaneously",
+        "step4": "Cancel pending bets before the round starts"
+      },
+      "buttons": {
+        "title": "Action Buttons",
+        "step1": "<b>BET (Purple):</b> Confirm your wager for the next round",
+        "step2": "<b>CANCEL (Red):</b> Remove a pending bet before the round starts",
+        "step3": "<b>CASH OUT:</b> Collect your winnings during an active round",
+        "step4": "<b>x2 Button:</b> Double your current bet amount instantly"
+      }
+    },
+    "advanced": {
+      "title": "Advanced Features",
+      "autoBet": {
+        "title": "Auto Bet",
+        "body": "Enable automatic betting by turning on the “Auto” switch. The system will place your chosen bet amount automatically each round without manual input."
+      },
+      "autoCashOut": {
+        "title": "Auto Cash-Out",
+        "body": "Set a target multiplier (e.g., 2.00x or 5.00x).",
+        "body2": "The game will automatically cash out when the comet reaches that point. Perfect for consistent and disciplined play."
+      },
+      "autoplay": {
+        "title": "Autoplay Configuration",
+        "body": "Use advanced autoplay settings for hands-free gameplay:",
+        "betSettings": "Bet Settings:",
+        "betStep1": "Number of rounds to play",
+        "betStep2": "Bet amount for each round",
+        "stopConditions": "Stop Conditions (Optional):",
+        "stopStep1": "Stop on Total Win: <b>End autoplay once total profit passes your limit</b>",
+        "stopStep2": "Stop on Total Loss: <b>Halt if losses exceed your chosen threshold</b>",
+        "stopStep3": "Stop on Single Win: <b>Stop after any bet wins above a certain amount</b>"
+      }
+    },
+    "history": {
+      "title": "Game History & Statistics",
+      "charts": {
+        "title": "History — Charts View",
+        "body": "Graphical display of past comet explosion multipliers, useful for reading volatility and patterns."
+      },
+      "list": {
+        "title": "List View",
+        "body": "A compact list of recent crash points in chronological order."
+      }
+    },
+    "liveBets": {
+      "title": "Current Round Bets (Live Bets)",
+      "body": "Real-time display of all active bets from players currently in the match:",
+      "step1": "Active players",
+      "step2": "Bet amounts",
+      "step3": "Cash-out multipliers",
+      "step4": "Who cashed out and who is still riding the comet",
+      "footer": "Adds transparency, social interaction, and competitive excitement."
+    },
+    "myHistory": {
+      "title": "My History (Personal Bet History)",
+      "body": "Your personal record includes:",
+      "step1": "<b>Bet Amount:</b> How much you wagered",
+      "step2": "<b>Multiplier:</b> What multiplier you cashed out at (or crash point if you lost)",
+      "step3": "<b>Result:</b> Win or loss",
+      "step4": "<b>Payout:</b> Total amount won",
+      "step5": "<b>Profit/Loss:</b> Net result of each bet",
+      "step6": "<b>Timestamp:</b> When each bet was placed",
+      "step7": "<b>Round ID:</b> Reference number for each game round",
+      "footer": "Filter and sort your history to track performance, review strategies, and monitor your bankroll management."
     }
   },
 
@@ -169,7 +256,22 @@
     "beforeGameBegins": "Before the game begins, players can see:",
     "roundNumberDescription": "– The current round identifier",
     "provablyFairHashDescription": "– A cryptographic hash that proves the round outcome was predetermined",
-    "note": "The Server Key and Crash Point remain hidden to ensure fairness."
+    "note": "The Server Key and Crash Point remain hidden to ensure fairness.",
+    "afterRoundEnds": "After the Round Ends (Revealed State)",
+    "onceRoundCompletes": "Once the round completes, all parameters are revealed:",
+    "serverKeyDescription": "– The random server-generated key",
+    "crashPointDescription": "– The multiplier where the round ended",
+    "hashUnchangedDescription": "– Remains the same, proving nothing changed",
+    "fourParameters": "The Four Parameters",
+    "fourParametersIntro": "Every round uses these four elements:",
+    "roundNumberParameter": "– Unique identifier for each round",
+    "serverKeyParameter": "– Random string generated by the server",
+    "crashPointParameter": "– The multiplier where the round crashes",
+    "hashParameter": "– SHA-512 hash of the combined data",
+    "verificationFormula": "Verification Formula",
+    "formula": "Provably Fair Hash = SHA512(ServerKey + \".\" + CrashPoint + \".\" + RoundNumber)",
+    "exampleTitle": "Example:",
+    "exampleBody": "SHA512(\"7k9mX2pQ4nR8wL3vB6hJ5tY.2.45.1\") = 8f3a2b9c7d1e6f4a5b8c9d2e3f4a5b6c7d8e9f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a"
   },
 
   "pointDetails": {
@@ -190,6 +292,15 @@
     "copy": "Copy",
     "verified": "Verified",
     "betPanels": "Betting panels",
-    "gameScreen": "Game screen"
+    "gameScreen": "Game screen",
+    "multiplierStrip": "Recent multipliers strip",
+    "balanceDisplay": "Balance display",
+    "betButtons": "Bet and cancel buttons",
+    "autoCashOut": "Auto cash-out settings",
+    "autoPlaySettings": "Auto play settings",
+    "historyChart": "Multiplier history chart",
+    "historyList": "Multiplier history list",
+    "allBets": "All bets list",
+    "myBets": "My bets list"
   }
 }
