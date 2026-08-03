@@ -157,14 +157,15 @@
     height: auto;
   }
 
-  /* Content-sized up to the cap, then it scrolls. `flex: 1` bases at 0, which
-     in an auto-height panel leaves nothing to grow into.
+  /* No scroller of its own here — the feed takes its full height and the page
+     scrolls it. `flex: 1` bases at 0, which in an auto-height panel leaves
+     nothing to grow into.
      The margin goes too: the bar is fixed to the viewport here rather than
      absolute inside this panel, so there is nothing at the panel's bottom to
      reserve room for — the strip desktop needs is only empty space on mobile. */
   .bets-list__rows {
-    flex: 0 1 auto;
-    max-height: var(--mobile-panel-max);
+    flex: 0 0 auto;
+    overflow-y: visible;
     margin-bottom: 0;
   }
 }

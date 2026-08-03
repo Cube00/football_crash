@@ -24,8 +24,12 @@
     height: auto;
   }
 
+  /* Nothing scrolls inside the tabs here — the panels run to their full height
+     and the page carries them — so the clip that keeps desktop's panel inside
+     its column would only cut the feed off. */
   .info-section__content {
     flex: 0 1 auto;
+    overflow: visible;
   }
 }
 

@@ -62,13 +62,14 @@
     height: auto;
   }
 
-  /* Sized by its content, not pinned to a height the content has to fill. The
-     scroller inside carries the cap (--mobile-panel-max), so a short feed takes
-     a short panel instead of leaving a block of empty rows above the fold. */
+  /* Sized by its content, not pinned to a height the content has to fill.
+     Nothing inside scrolls on its own here — the panel runs to its full height
+     and the page scrolls it, so `overflow: hidden` would only clip the feed. */
   .layout__info {
     order: 2;
     flex: 0 0 auto;
     width: 100%;
     height: auto;
+    overflow: visible;
   }
 }
