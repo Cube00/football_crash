@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import type { CSSProperties } from "react";
 import { cx } from "@/utils";
 import { CountdownBar } from "@/components/ui/CountdownBar";
 import { FreeBetButton } from "@/components/ui/FreeBetButton";
@@ -50,6 +51,7 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
   const freeBets = useFreeBetsRemaining();
 
   const betting = phase === GamePhase.BettingOpen;
+  const crashed = phase === GamePhase.Crashed;
 
   return (
     <div className={cx(styles["game-stage"], className)} {...rest}>
@@ -64,6 +66,17 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
           width={STILL_BACKGROUND_SIZE.width}
           height={STILL_BACKGROUND_SIZE.height}
           alt=""
+        />
+      )}
+
+      {/* Sits after the scene in source order, so it lays over the canvas
+          without needing a z-index of its own — and stays under the HUD, which
+          has one. */}
+      {crashed && (
+        <div
+          className={styles["game-stage__crash"]}
+          style={{ "--crash-ms": `${ROUND_TIMINGS.crashedMs}ms` } as CSSProperties}
+          aria-hidden="true"
         />
       )}
 

@@ -10,7 +10,6 @@ import type {
 } from "@esotericsoftware/spine-phaser-v3";
 import { EventBus } from "../EventBus";
 import { GameEvent } from "../events";
-import type { CrashStatePayload } from "../events";
 import { GamePhase } from "../enums";
 import {
   aimBoneTranslation,
@@ -227,7 +226,6 @@ export class GameScene extends Scene {
     this.scale.on("resize", this.layout, this);
 
     EventBus.on(GameEvent.GamePhaseChange, this.handlePhaseChange, this);
-    EventBus.on(GameEvent.CrashState, this.handleCrashState, this);
 
     this.events.once("shutdown", this.teardown, this);
     this.events.once("destroy", this.teardown, this);
@@ -547,15 +545,9 @@ export class GameScene extends Scene {
     }
   }
 
-  private handleCrashState(payload: CrashStatePayload) {
-    if (!payload.crashed) return;
-    this.cameras.main.flash(200, 226, 43, 46);
-  }
-
   private teardown() {
     this.clearHandoff();
     this.scale.off("resize", this.layout, this);
     EventBus.off(GameEvent.GamePhaseChange, this.handlePhaseChange, this);
-    EventBus.off(GameEvent.CrashState, this.handleCrashState, this);
   }
 }

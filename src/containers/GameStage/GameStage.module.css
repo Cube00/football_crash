@@ -23,6 +23,53 @@
   object-position: center;
 }
 
+/* The crash tint. It replaces a camera flash, so it is deliberately the
+   opposite shape: no spike, no decay. It eases in, holds while the round sits
+   on the crash screen, then eases back out so the stage is already clean when
+   the next betting window opens.
+   Both ends have to be soft. An edge on either one is the hard cut this
+   replaced — a tint that vanishes on a single frame reads as a flash just as
+   much as one that arrives on a single frame. `--crash-ms` spans the whole
+   phase and comes from ROUND_TIMINGS.crashedMs, so the two cannot drift. */
+.game-stage__crash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(224, 29, 43, 0) 0%,
+    rgba(224, 29, 43, 0.4) 100%
+  );
+  animation: game-stage-crash var(--crash-ms) both;
+}
+
+@keyframes game-stage-crash {
+  0% {
+    opacity: 0;
+    animation-timing-function: ease-out;
+  }
+  15% {
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+  70% {
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The fades are the effect, not decoration — without them the tint appears and
+   leaves on a single frame, which is the flash this replaced. Keep the tint for
+   the phase, drop the motion; unmounting still takes it away. */
+@media (prefers-reduced-motion: reduce) {
+  .game-stage__crash {
+    animation: none;
+  }
+}
+
 /* Above the HUD: the multiplier is drawn large enough to reach the notice. */
 .game-stage__notice {
   position: absolute;

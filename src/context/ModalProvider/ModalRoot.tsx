@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal } from "@/components/ui/Modal";
@@ -48,6 +48,30 @@ const HowToPlayContent = lazy(() =>
   import("@/components/ui/HowToPlayContent").then(named("HowToPlayContent")),
 );
 
+/**
+ * Pulls every body down once the tab falls idle.
+ *
+ * Splitting the bodies out keeps them from being parsed during load, but on its
+ * own it moves the cost to the click: the fetch starts when the player opens
+ * the dialog, so the frame paints its header over an empty body until the
+ * module lands. Fetching ahead of the click keeps both — the bodies stay out of
+ * the critical path, and the modal has its content the frame it opens.
+ */
+const prefetchContents = () => {
+  void Promise.all([
+    import("@/components/ui/ProbablyFairContent"),
+    import("@/components/ui/LimitsContent"),
+    import("@/components/ui/PointDetailsContent"),
+    import("@/components/ui/BonusBetContent"),
+    import("@/components/ui/BonusSpinContent"),
+    import("@/components/ui/FreeBetsContent"),
+    import("@/components/ui/ArchiveContent"),
+    import("@/components/ui/HowToPlayContent"),
+    // A prefetch that fails is not an error — opening the dialog retries it,
+    // and Suspense reports it there.
+  ]).catch(() => {});
+};
+
 interface ModalRootProps extends ModalContextValue {
   activeModal: ModalId | null;
   payload?: ModalPayload;
@@ -61,6 +85,17 @@ export function ModalRoot({
   close,
 }: ModalRootProps) {
   const { t } = useTranslation();
+
+  // Idle, so the bodies queue behind the game's own boot rather than racing it.
+  useEffect(() => {
+    const idle = window.requestIdleCallback;
+    if (!idle) {
+      const timer = window.setTimeout(prefetchContents, 2000);
+      return () => window.clearTimeout(timer);
+    }
+    const handle = idle(prefetchContents, { timeout: 5000 });
+    return () => window.cancelIdleCallback(handle);
+  }, []);
 
   if (activeModal === null) return null;
 
