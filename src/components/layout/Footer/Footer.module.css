@@ -36,6 +36,12 @@
   background-color: #FFFFFF1A;
 }
 
+@media screen and (max-width: 1023px) {
+  .footer {
+    display: none;
+  }
+}
+
 /* The logo and the status group need ~380px side by side; below that the footer
    becomes two rows rather than squeezing either one. */
 @media (max-width: 767px) {

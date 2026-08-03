@@ -44,6 +44,7 @@
   .layout {
     height: auto;
     min-height: 100dvh;
+    padding-bottom: var(--size-40);
   }
 
   .layout__content {

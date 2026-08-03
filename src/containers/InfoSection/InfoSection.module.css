@@ -15,3 +15,18 @@
   min-height: 0;
   overflow: hidden;
 }
+
+/* Desktop keeps the bar as a property of the bets list, where it sits inside
+   the panel and Stats has its own footer. Only the mobile bar — pinned to the
+   viewport, read as part of the screen — carries over to Stats.
+   Qualified by the container so it outranks the bar's own `display` whatever
+   order the two stylesheets land in. */
+.info-section .info-section__summary {
+  display: none;
+}
+
+@media screen and (max-width: 1023px) {
+  .info-section .info-section__summary {
+    display: grid;
+  }
+}

@@ -1,3 +1,5 @@
+import { BREAKPOINT } from "@/styles/breakpoints";
+
 /** Rounds the strip covers. As many as fit stay on the row; the chevron
     unwraps the whole set, so this is the store's history cap. */
 export const MAX_MULTIPLIERS = 30;
@@ -6,7 +8,7 @@ export const MAX_MULTIPLIERS = 30;
    with Multiplier.module.css and MultiplierButton.module.css. */
 
 /** Viewport the strip switches to its touch layout at. */
-export const TOUCH_MAX_WIDTH = 1023;
+export const TOUCH_MAX_WIDTH = BREAKPOINT.tablet;
 
 /* Once the row overflows the pills stretch to share it, so both widths below
    are minimums — how narrow a pill may get before the row drops one — not the

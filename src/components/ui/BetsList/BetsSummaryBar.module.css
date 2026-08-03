@@ -1,0 +1,52 @@
+.bets-summary-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  height: var(--bets-list-summary-height);
+  padding: 0 var(--size-16);
+  border-radius: var(--size-8);
+  background-color: var(--color-gray-primary);
+}
+
+.bets-summary-bar__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  min-width: 0;
+}
+
+.bets-summary-bar__item--end {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.bets-summary-bar__label {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  color: #656372;
+}
+
+.bets-summary-bar__value {
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 700;
+  line-height: 100%;
+  color: var(--color-text-white-100);
+  white-space: nowrap;
+}
+
+/* Pinned to the viewport rather than to whichever panel happens to hold it —
+   the totals stay put while the page scrolls past them. */
+@media screen and (max-width: 1023px) {
+  .bets-summary-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}

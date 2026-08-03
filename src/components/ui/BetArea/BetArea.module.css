@@ -162,7 +162,7 @@
   }
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1023px) {
   .bet-area__presets > * {
     /* max-width: 44px; */
     padding-left: 0;

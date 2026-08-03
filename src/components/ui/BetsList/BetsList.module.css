@@ -28,17 +28,32 @@
   text-align: right;
 }
 
+/* Takes whatever the head leaves, less the bar's reserved strip — so neither
+   the head's height nor the bar's has to be restated as a number here.
+   The strip must clear the bar's full height: the bar is out of flow at
+   `bottom: 0`, so anything less and it covers the end of the scroll range,
+   putting the last rows somewhere no amount of scrolling can reach. */
 .bets-list__rows {
   composes: scrollbar from "@/styles/scrollbar.module.css";
   display: flex;
   flex-direction: column;
   gap: var(--size-4);
+  flex: 1;
   min-height: 0;
+  margin-bottom: calc(var(--bets-list-summary-height) + var(--size-4));
   overflow-y: auto;
-  max-height: calc(100% - 100px);
+  /* The page scrolls too on mobile. Without this, flicking past the end of the
+     feed hands the momentum to the page and throws the reader off the list. */
+  overscroll-behavior: contain;
 }
 
+/* The feed runs to MAX_BET_ROWS and only ~10 are ever on screen. Being inside a
+   scroller does not spare the rest any work on its own — they are still styled
+   and laid out. This is what actually skips them, and the fixed row height is
+   what makes the placeholder size exact, so the scrollbar never lies. */
 .bets-list__row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--size-48);
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   flex-shrink: 0;
@@ -134,45 +149,5 @@
   white-space: nowrap;
 }
 
-.bets-list__mybetsinfo {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
-  width: 100%;
-  height: 56px;
-  padding: 0 var(--size-16);
-  border-radius: var(--size-8);
-  background-color: var(--color-gray-primary);
-}
-
-.bets-list__summary-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4);
-  min-width: 0;
-}
-
-.bets-list__summary-item--end {
-  align-items: flex-end;
-  text-align: right;
-}
-
-.bets-list__summary-label {
-  font-family: var(--font-family-base);
-  font-size: var(--size-12);
-  font-weight: 600;
-  line-height: 100%;
-  color: #656372;
-}
-
-.bets-list__summary-value {
-  font-family: var(--font-family-base);
-  font-size: var(--size-12);
-  font-weight: 700;
-  line-height: 100%;
-  color: var(--color-text-white-100);
-  white-space: nowrap;
-}
+/* The summary bar and its parts now live in BetsSummaryBar.module.css — the
+   Stats tab mounts the bar without a bets list around it. */

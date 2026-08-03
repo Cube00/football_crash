@@ -1,4 +1,21 @@
+/* Breakpoints are NOT tokens — custom properties do not work inside `@media`,
+   so every stylesheet repeats the number. The ladder is defined once in
+   `breakpoints.ts`; these are the only values that may appear in a `@media`:
+
+     1439  desktop  under the 1440 design width
+     1279  laptop   the sidebar tier
+     1023  tablet   one column, touch layouts
+      767  mobile   phones, modals become sheets
+      430  phone    small phones
+
+   Each is a max-width, one below the tier above it. Adding a sixth step means
+   adding it there first. */
 :root {
+  /* The summary bar's height. Global because the bar and the bets list it
+     overlays are now separate components — the list reserves the strip, the bar
+     fills it, and neither may own the number alone. */
+  --bets-list-summary-height: 56px;
+
   /* colors */
   --color-dark-black-primary: #151419;
   --color-dark-primary: #19181e;

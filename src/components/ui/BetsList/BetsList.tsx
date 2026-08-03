@@ -9,13 +9,7 @@ import {
   MOCK_MY_BETS_SUMMARY,
 } from "./BetsList.constants";
 import type { BetsListProps } from "./BetsList.types";
-
-/** Formats an amount as `1.436.24` — dot-grouped thousands, two decimals. */
-const formatAmount = (value: number) => {
-  const [whole, fraction] = value.toFixed(2).split(".");
-  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `${grouped}.${fraction}`;
-};
+import { BetsSummaryBar } from "./BetsSummaryBar";
 
 export const BetsList = ({
   rows = MOCK_BETS,
@@ -107,41 +101,8 @@ export const BetsList = ({
           </div>
         ))}
       </div>
-      {true && (
-        <div className={styles["bets-list__mybetsinfo"]}>
-          <div className={styles["bets-list__summary-item"]}>
-            <span className={styles["bets-list__summary-label"]}>
-              {t("betsList.bets")}
-            </span>
-            <span className={styles["bets-list__summary-value"]}>
-              {summary.placed}/{summary.total}
-            </span>
-          </div>
-
-          <div className={styles["bets-list__summary-item"]}>
-            <span className={styles["bets-list__summary-label"]}>
-              {t("betsList.totalBets")}
-            </span>
-            <span className={styles["bets-list__summary-value"]}>
-              {formatAmount(summary.totalBet)} {currency}
-            </span>
-          </div>
-
-          <div
-            className={cx(
-              styles["bets-list__summary-item"],
-              styles["bets-list__summary-item--end"],
-            )}
-          >
-            <span className={styles["bets-list__summary-label"]}>
-              {t("betsList.totalWin")}
-            </span>
-            <span className={styles["bets-list__summary-value"]}>
-              {formatAmount(summary.totalWin)} {currency}
-            </span>
-          </div>
-        </div>
-      )}
+      {/* Shown on both variants, not just My Bets, despite the class name. */}
+      <BetsSummaryBar summary={summary} currency={currency} />
     </div>
   );
 };

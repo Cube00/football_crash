@@ -47,7 +47,8 @@ export interface GameSnapshot {
 
 const IDLE_SLOT: SlotSnapshot = { state: BetState.Idle, amount: 0 };
 const MAX_HISTORY = 30;
-const MAX_BET_ROWS = 100;
+/** Rows the feed keeps. Past this the oldest fall off the bottom. */
+const MAX_BET_ROWS = 50;
 
 /** States a bet can still leave — anything else is its final row. */
 const UNSETTLED: readonly BetState[] = [

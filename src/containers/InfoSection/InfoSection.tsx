@@ -4,8 +4,10 @@ import { Tabs } from "@/components/ui/Tabs";
 import {
   BetsList,
   BetsListVariant,
+  BetsSummaryBar,
   BetStatus,
   MOCK_MY_BETS,
+  MOCK_MY_BETS_SUMMARY,
 } from "@/components/ui/BetsList";
 import type { BetRow } from "@/components/ui/BetsList";
 import { StatsContent } from "@/components/ui/StatsContent";
@@ -57,7 +59,19 @@ export const InfoSection = () => {
             rows={MOCK_MY_BETS}
           />
         )}
-        {activeTab === InfoTab.Stats && <StatsContent />}
+        {activeTab === InfoTab.Stats && (
+          <>
+            <StatsContent />
+            {/* Stats renders no bets list, so it has to bring the bar itself.
+                Mobile only — there it is pinned to the viewport and reads as
+                part of the screen, so losing it on one tab is a hole. */}
+            <BetsSummaryBar
+              className={styles["info-section__summary"]}
+              summary={MOCK_MY_BETS_SUMMARY}
+              currency="USD"
+            />
+          </>
+        )}
       </div>
     </div>
   );
