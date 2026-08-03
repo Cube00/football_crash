@@ -18,6 +18,18 @@
   align-content: start;
 }
 
+/* Same auto-height panel as the bets tabs — see BetsList.module.css. */
+@media screen and (max-width: 1023px) {
+  .stats-content {
+    height: auto;
+  }
+
+  .stats-content__grid {
+    flex: 0 1 auto;
+    max-height: var(--mobile-panel-max);
+  }
+}
+
 /* MultiplierButton is fixed-width by default; in the grid it fills its cell. */
 .stats-content__grid > button {
   width: 100%;

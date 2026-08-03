@@ -42,11 +42,16 @@
 }
 
 /* Pinned to the viewport rather than to whichever panel happens to hold it —
-   the totals stay put while the page scrolls past them. */
+   the totals stay put while the page scrolls past them.
+   Being fixed does not put it on top: with `z-index: auto` it loses to any
+   positioned element that claims a layer, and it floats over the whole page, so
+   it meets plenty of them. Above the multiplier sheet's 20, far below the
+   modals' 10000 — a dialog still covers it. */
 @media screen and (max-width: 1023px) {
   .bets-summary-bar {
     position: fixed;
     bottom: 0;
+    z-index: 30;
     width: 100%;
   }
 }

@@ -16,6 +16,12 @@
      fills it, and neither may own the number alone. */
   --bets-list-summary-height: 56px;
 
+  /* How tall a scrolling panel may grow on mobile before it starts scrolling
+     instead. The panels size to their content there — a seven-row feed should
+     take seven rows of height — so the cap lives on the scroller rather than on
+     the panel around it. */
+  --mobile-panel-max: min(460px, 60vh);
+
   /* colors */
   --color-dark-black-primary: #151419;
   --color-dark-primary: #19181e;

@@ -7,6 +7,7 @@ export { useOnClickOutside } from "./useOnClickOutside";
 export { useElementWidth } from "./useElementWidth";
 export { useAnimationEnabled, useSettings } from "./useSettings";
 export { useWindowSize } from "./useWindowSize";
+export { useCopyToClipboard, COPIED_FEEDBACK_MS } from "./useCopyToClipboard";
 export { useWinNotification, WIN_NOTIFICATION_MS } from "./useWinNotification";
 export {
   useFreeBets,

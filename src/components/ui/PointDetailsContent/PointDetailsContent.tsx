@@ -1,9 +1,12 @@
 import { useTranslation } from "react-i18next";
+import { CopyButton } from "@/components/ui/CopyButton";
+import { useCopyToClipboard } from "@/hooks";
 import styles from "./PointDetailsContent.module.css";
 import type { PointDetailsContentProps } from "./PointDetailsContent.types";
 
 export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
   const { t } = useTranslation();
+  const { copied, copy } = useCopyToClipboard();
   const roundId = point?.roundId ?? "1153219";
   const multiplier = `${(point?.multiplier ?? 24.53).toFixed(2)}x`;
   // Not on the round yet — placeholders until the rounds API lands.
@@ -34,7 +37,11 @@ export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
           <span className={styles["point-details__hash"]}>
             <img src="/assets/icons/Check.svg" alt={t("a11y.check")} />
             <span className={styles["point-details__hash-text"]}>{hash}</span>
-            <img src="/assets/icons/Copy.svg" alt={t("a11y.copy")} />
+            <CopyButton
+              value={hash}
+              copied={copied === "hash"}
+              onCopy={(value) => void copy("hash", value)}
+            />
           </span>
         </div>
       </div>
@@ -47,7 +54,11 @@ export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
           <span className={styles["point-details__seed-text"]}>
             {serverSeed}
           </span>
-          <img src="/assets/icons/Copy.svg" alt={t("a11y.copy")} />
+          <CopyButton
+            value={serverSeed}
+            copied={copied === "seed"}
+            onCopy={(value) => void copy("seed", value)}
+          />
         </span>
       </div>
 

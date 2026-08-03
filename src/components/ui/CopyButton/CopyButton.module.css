@@ -1,0 +1,65 @@
+/* Anchors the note. The wrapper is the size of the button, so the note can be
+   pinned above it without widening the row it sits in — these rows hold hashes
+   that are already truncating. */
+.copy-button {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.copy-button__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-gray-100);
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.copy-button__trigger:hover,
+.copy-button__trigger:focus-visible {
+  color: var(--color-text-white-100);
+}
+
+.copy-button__trigger--copied {
+  color: var(--color-stroke-green);
+}
+
+.copy-button__note {
+  position: absolute;
+  bottom: calc(100% + var(--size-4));
+  right: 0;
+  z-index: 1;
+  padding: var(--size-4) var(--size-8);
+  border-radius: var(--radius-8);
+  background-color: var(--color-gray-primary);
+  color: var(--color-text-white-100);
+  font-family: var(--font-family-base);
+  font-size: var(--size-12);
+  font-weight: 600;
+  line-height: 100%;
+  white-space: nowrap;
+  /* It sits over the row it belongs to; clicks must reach what is underneath. */
+  pointer-events: none;
+  animation: copy-button-note 120ms ease-out both;
+}
+
+@keyframes copy-button-note {
+  from {
+    opacity: 0;
+    transform: translateY(var(--size-4));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy-button__note {
+    animation: none;
+  }
+}

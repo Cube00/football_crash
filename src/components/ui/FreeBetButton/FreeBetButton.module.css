@@ -19,6 +19,8 @@
   justify-content: center;
   gap: var(--size-4);
   position: relative;
+  /* Keeps the layering below private — see BetButton.module.css. */
+  isolation: isolate;
   overflow: hidden;
   width: 100%;
   height: 100%;

@@ -1,4 +1,3 @@
-import { lazy, Suspense, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal } from "@/components/ui/Modal";
@@ -11,66 +10,26 @@ import {
   MODAL_WIDTHS,
 } from "./modals.constants";
 import type { ModalContextValue, ModalPayload } from "./ModalProvider.types";
-// Every body is loaded on demand. None of them can be on screen before the
-// player opens one, and together they are a third of the main bundle — parsed
-// during load for a dialog most sessions never open.
-const named = <T extends string>(key: T) =>
-  <M extends Record<T, React.ComponentType<never>>>(module: M) => ({
-    default: module[key],
-  });
-
-const ProbablyFairContent = lazy(() =>
-  import("@/components/ui/ProbablyFairContent").then(
-    named("ProbablyFairContent"),
-  ),
-);
-const LimitsContent = lazy(() =>
-  import("@/components/ui/LimitsContent").then(named("LimitsContent")),
-);
-const PointDetailsContent = lazy(() =>
-  import("@/components/ui/PointDetailsContent").then(
-    named("PointDetailsContent"),
-  ),
-);
-const BonusBetContent = lazy(() =>
-  import("@/components/ui/BonusBetContent").then(named("BonusBetContent")),
-);
-const BonusSpinContent = lazy(() =>
-  import("@/components/ui/BonusSpinContent").then(named("BonusSpinContent")),
-);
-const FreeBetsContent = lazy(() =>
-  import("@/components/ui/FreeBetsContent").then(named("FreeBetsContent")),
-);
-const ArchiveContent = lazy(() =>
-  import("@/components/ui/ArchiveContent").then(named("ArchiveContent")),
-);
-const HowToPlayContent = lazy(() =>
-  import("@/components/ui/HowToPlayContent").then(named("HowToPlayContent")),
-);
-
-/**
- * Pulls every body down once the tab falls idle.
+/*
+ * The bodies are imported outright, not split behind `lazy`.
  *
- * Splitting the bodies out keeps them from being parsed during load, but on its
- * own it moves the cost to the click: the fetch starts when the player opens
- * the dialog, so the frame paints its header over an empty body until the
- * module lands. Fetching ahead of the click keeps both — the bodies stay out of
- * the critical path, and the modal has its content the frame it opens.
+ * Splitting them looked free, but no amount of prefetching makes a `lazy`
+ * component mount without suspending first: React's lazy has to call its own
+ * loader, and that returns a promise even when the module is already in memory,
+ * so the first open of each dialog always commits the fallback before the
+ * content. That commit is the blank modal — a hole no warming can close.
+ *
+ * The whole set is ~16 kB gzipped against a 116 kB bundle, next to a 377 kB
+ * Phaser chunk. Cheap enough that the dialogs opening finished is worth more.
  */
-const prefetchContents = () => {
-  void Promise.all([
-    import("@/components/ui/ProbablyFairContent"),
-    import("@/components/ui/LimitsContent"),
-    import("@/components/ui/PointDetailsContent"),
-    import("@/components/ui/BonusBetContent"),
-    import("@/components/ui/BonusSpinContent"),
-    import("@/components/ui/FreeBetsContent"),
-    import("@/components/ui/ArchiveContent"),
-    import("@/components/ui/HowToPlayContent"),
-    // A prefetch that fails is not an error — opening the dialog retries it,
-    // and Suspense reports it there.
-  ]).catch(() => {});
-};
+import { ProbablyFairContent } from "@/components/ui/ProbablyFairContent";
+import { LimitsContent } from "@/components/ui/LimitsContent";
+import { PointDetailsContent } from "@/components/ui/PointDetailsContent";
+import { BonusBetContent } from "@/components/ui/BonusBetContent";
+import { BonusSpinContent } from "@/components/ui/BonusSpinContent";
+import { FreeBetsContent } from "@/components/ui/FreeBetsContent";
+import { ArchiveContent } from "@/components/ui/ArchiveContent";
+import { HowToPlayContent } from "@/components/ui/HowToPlayContent";
 
 interface ModalRootProps extends ModalContextValue {
   activeModal: ModalId | null;
@@ -85,17 +44,6 @@ export function ModalRoot({
   close,
 }: ModalRootProps) {
   const { t } = useTranslation();
-
-  // Idle, so the bodies queue behind the game's own boot rather than racing it.
-  useEffect(() => {
-    const idle = window.requestIdleCallback;
-    if (!idle) {
-      const timer = window.setTimeout(prefetchContents, 2000);
-      return () => window.clearTimeout(timer);
-    }
-    const handle = idle(prefetchContents, { timeout: 5000 });
-    return () => window.cancelIdleCallback(handle);
-  }, []);
 
   if (activeModal === null) return null;
 
@@ -147,7 +95,7 @@ export function ModalRoot({
       onClose={close}
       onBack={parent ? () => open(parent) : undefined}
     >
-      <Suspense fallback={null}>{content}</Suspense>
+      {content}
     </Modal>
   );
 }

@@ -41,10 +41,13 @@
    height), so nothing may stretch to a `height: 100%` of an auto-height parent
    — that resolves to auto and collapses the Phaser canvas to nothing. */
 @media (max-width: 1023px) {
+  /* The summary bar is fixed to the viewport, so it covers the foot of the page
+     unless the page ends above it. Anything less than the bar's own height and
+     the last rows sit underneath it — the 10px on top is the air between them. */
   .layout {
     height: auto;
     min-height: 100dvh;
-    padding-bottom: var(--size-40);
+    padding-bottom: calc(var(--bets-list-summary-height) + var(--size-10));
   }
 
   .layout__content {
@@ -59,10 +62,13 @@
     height: auto;
   }
 
+  /* Sized by its content, not pinned to a height the content has to fill. The
+     scroller inside carries the cap (--mobile-panel-max), so a short feed takes
+     a short panel instead of leaving a block of empty rows above the fold. */
   .layout__info {
     order: 2;
     flex: 0 0 auto;
     width: 100%;
-    height: min(560px, 70vh);
+    height: auto;
   }
 }

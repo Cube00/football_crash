@@ -16,6 +16,19 @@
   overflow: hidden;
 }
 
+/* The panel is auto-height on mobile, so `flex: 1` — which bases at 0 — would
+   have nothing to grow into and collapse the tab away. Size from content. */
+@media screen and (max-width: 1023px) {
+  .info-section,
+  .info-section__content {
+    height: auto;
+  }
+
+  .info-section__content {
+    flex: 0 1 auto;
+  }
+}
+
 /* Desktop keeps the bar as a property of the bets list, where it sits inside
    the panel and Stats has its own footer. Only the mobile bar — pinned to the
    viewport, read as part of the screen — carries over to Stats.

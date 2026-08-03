@@ -3,6 +3,8 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
+  /* Keeps the layering below private — see BetButton.module.css. */
+  isolation: isolate;
   overflow: hidden;
   font-family: var(--font-family-base);
   font-weight: 700;

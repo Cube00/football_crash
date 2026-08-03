@@ -83,6 +83,16 @@ export const HowToPlayContent = () => {
             src={block.src}
             width={block.width}
             height={block.height}
+            // Ten screenshots, one of them 2880px wide, against a modal that
+            // opens on its first paragraph. Lazily, only the shots the reader
+            // has actually scrolled to are fetched — whatever is on screen when
+            // the dialog opens still loads at once, since lazy only defers what
+            // is out of view. `width`/`height` above hold each slot open, so
+            // the ones still to come do not shift the text as they land.
+            loading="lazy"
+            // Decoded off the main thread: a 2880px webp decoded inline is a
+            // frame the modal spends not scrolling.
+            decoding="async"
             // Never past its own resolution: a few shots are small crops and
             // stretching them to the design's cap just softens them.
             style={{ maxWidth: Math.min(block.maxWidth, block.width) }}

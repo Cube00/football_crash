@@ -9,7 +9,8 @@
     "playNow": "Play Now",
     "freeBet": "Free Bet",
     "youWin": "You Win",
-    "comingSoon": "{{title}} — coming soon."
+    "comingSoon": "{{title}} — coming soon.",
+    "copied": "Copied"
   },
 
   "header": {

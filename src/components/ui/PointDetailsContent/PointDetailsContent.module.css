@@ -115,28 +115,7 @@
   color: var(--color-stroke-green);
 }
 
-/* Copy button */
-.point-details__copy {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-text-gray-100);
-  cursor: pointer;
-  transition: color 120ms ease;
-}
-
-.point-details__copy:hover {
-  color: var(--color-text-white-100);
-}
-
-.point-details__copy svg {
-  width: var(--size-20);
-  height: var(--size-20);
-}
+/* The copy button styles itself — see CopyButton.module.css. */
 
 .point-details__link {
   align-self: center;

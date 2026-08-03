@@ -1,5 +1,10 @@
+/* `isolation` keeps the glow/label layering below private to the button.
+   Without it those `z-index: 1` children are painted in the root stacking
+   context, where they outrank anything positioned with `z-index: auto` — the
+   label ends up drawn over the fixed summary bar. */
 .bet-button {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   border-radius: var(--radius-16);
   font-family: var(--font-family-base);
