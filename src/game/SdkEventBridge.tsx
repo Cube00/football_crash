@@ -14,6 +14,11 @@ import { GameEvent } from "./events";
  * It relays and nothing else. No derivation, no caching, no state — if the
  * canvas needs something the SDK does not send, the answer is a new SDK event,
  * not a computation here.
+ *
+ * One relay, because one thing listens: the Spine scene reacts to the phase.
+ * Sound plays off the controls themselves today; when it moves onto the round
+ * — a crash sting, a cashout chime — add `crash` and `cashout-done` here and
+ * subscribe to them from the sound module.
  */
 export const SdkEventBridge = () => {
   const client = useKrashClient();
@@ -21,23 +26,16 @@ export const SdkEventBridge = () => {
 
   // The scene can boot mid-round — lazily, or after the menu switches the
   // animation back on — and it only learns the phase from an event. Held in a
-  // ref so answering a sync request never re-subscribes the relays below.
+  // ref so answering a sync request never re-subscribes the relay below.
   const phaseRef = useRef(phase);
   useEffect(() => {
     phaseRef.current = phase;
   }, [phase]);
 
   useEffect(() => {
-    const off = [
-      client.on("tick", (p) => EventBus.emit(GameEvent.Tick, p)),
-      client.on("phase-change", (p) => EventBus.emit(GameEvent.PhaseChange, p)),
-      client.on("crash", (p) => EventBus.emit(GameEvent.Crash, p)),
-      client.on("bet-placed", (p) => EventBus.emit(GameEvent.BetPlaced, p)),
-      client.on("cashout-done", (p) => EventBus.emit(GameEvent.CashoutDone, p)),
-    ];
-    return () => {
-      for (const unsubscribe of off) unsubscribe();
-    };
+    return client.on("phase-change", (payload) =>
+      EventBus.emit(GameEvent.PhaseChange, payload),
+    );
   }, [client]);
 
   useEffect(() => {

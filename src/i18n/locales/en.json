@@ -31,9 +31,6 @@
     "provablyFair": "Provably Fair",
     "limits": "Limits",
     "pointDetails": "Point Details",
-    "bonusBet": "",
-    "bonusSpin": "",
-    "totalWin": "Total Win",
     "betType": "Free bets Management",
     "archive": "Archive",
     "howToPlay": "How to Play",
@@ -65,13 +62,7 @@
     "stopAutoPlayOn": "Stop auto play on",
     "cashIncreasedBy": "Cash Increased by",
     "cashDecreasedBy": "Cash decreased by",
-    "singleWinExceeds": "Single win exceeds",
-    "stopIfCashIncreases": "Stop if cash increases by",
-    "stopIfCashDecreases": "Stop if cash decreases by",
-    "stopOnSingleWin": "Stop on single win of",
-    "startAutoBet": "Start Auto Bet",
-    "stopAutoBet": "Stop Auto Bet",
-    "stopAutoBetRemaining": "Stop Auto Bet ({{count}} left)"
+    "singleWinExceeds": "Single win exceeds"
   },
   "betsList": {
     "player": "Player",
@@ -114,7 +105,6 @@
       "fixed": "Fixed",
       "range": "Range"
     },
-    "activate": "Activate",
     "noneAvailable": "You have no free bets right now.",
     "noneArchived": "No free bets have been played yet.",
     "expiresInDays": "Expires in {{days}}d {{hours}}h",
@@ -127,20 +117,18 @@
     "expiredTitle": "Your free bet has expired",
     "cancelledTitle": "Your free bet was cancelled"
   },
-  "bonus": {
-    "youGet": "You Get",
-    "freeBet": "Free Bet",
-    "availableForDays": "Bonus bet available for {{count}} Days"
-  },
   "limits": {
     "maximumWin": {
       "title": "Maximum Win",
-      "body": "The highest possible multiplier is 25,000x your bet. This is the absolute ceiling—even if the game continues beyond this point (theoretically), your payout caps at 25,000x."
+      "body": "The highest possible multiplier is {{multiplier}}x your bet. This is the absolute ceiling — even if the round continues beyond that point, your payout caps there.",
+      "bodyUnknown": "A maximum payout multiplier applies. However far a round runs, your payout caps at that ceiling."
     },
     "minimumCashOut": {
       "title": "Minimum Cash-Out (Free Bets Only)",
-      "body": "When playing with free bets, a minimum cash-out multiplier applies (typically 1.50x, but configurable). You cannot cash out below this threshold when using promotional free bets."
-    }
+      "body": "When playing with a free bet, you cannot cash out below {{multiplier}}x.",
+      "bodyUnknown": "When playing with a free bet, a minimum cash-out multiplier applies. You cannot cash out below it; each free bet carries its own floor."
+    },
+    "pending": "Exact limits load with the game."
   },
   "howToPlay": {
     "placingBets": {
