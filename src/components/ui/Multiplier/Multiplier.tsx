@@ -3,12 +3,8 @@ import { useTranslation } from "react-i18next";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { Icon } from "../Icon";
 import { useGameHistory } from "@/sdk";
-import {
-  useElementWidth,
-  useOnClickOutside,
-  useOnEscape,
-  useWindowSize,
-} from "@/hooks";
+import { useElementWidth, useOnEscape } from "@/hooks";
+import { useClickOutside, useMediaQuery } from "@/sdk";
 import { useModal, ModalId } from "@/context/ModalProvider";
 import { playSound, Sound } from "@/game/sounds";
 import { cx } from "@/utils";
@@ -17,8 +13,8 @@ import {
   PILL_GAP,
   PILL_WIDTH,
   TOGGLE_WIDTH,
-  TOUCH_MAX_WIDTH,
   TOUCH_MIN_PILLS,
+  TOUCH_QUERY,
   TOUCH_PILL_GAP,
   TOUCH_PILL_MIN_WIDTH,
   TOUCH_TOGGLE_WIDTH,
@@ -52,12 +48,11 @@ export const Multiplier = () => {
   const width = useElementWidth(sheetRef);
   const rowId = useId();
   const { open: openModal } = useModal();
-  const { width: viewport } = useWindowSize();
   const [open, setOpen] = useState(false);
 
   // Two strips, not one that shrinks: on a phone the pills stretch to share the
   // row and the panel behind them goes away, so the count is the column count.
-  const touch = viewport > 0 && viewport <= TOUCH_MAX_WIDTH;
+  const touch = useMediaQuery(TOUCH_QUERY);
   const pill = touch ? TOUCH_PILL_MIN_WIDTH : PILL_WIDTH;
   const gap = touch ? TOUCH_PILL_GAP : PILL_GAP;
   const toggle = touch ? TOUCH_TOGGLE_WIDTH : TOGGLE_WIDTH;
@@ -80,7 +75,7 @@ export const Multiplier = () => {
   // state while rendering is React's supported answer to a changed value.
   if (open && !hasOverflow) setOpen(false);
 
-  useOnClickOutside(sheetRef, () => setOpen(false), open);
+  useClickOutside(sheetRef, () => setOpen(false), open);
   useOnEscape(() => setOpen(false), open);
 
   // Each pill is the entry point to that round's proof: open the details for it

@@ -25,3 +25,11 @@
   font-size: var(--size-14);
   color: var(--color-text-gray-100);
 }
+
+/* Shown only before the game config arrives, so the wording above reading
+   without figures is explained rather than looking unfinished. */
+.limits-block__pending {
+  margin: 0;
+  font-size: var(--size-12);
+  color: var(--color-text-gray-100);
+}

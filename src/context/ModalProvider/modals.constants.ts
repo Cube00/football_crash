@@ -5,9 +5,6 @@ export const ModalId = {
   ProvablyFair: "provably-fair",
   Limits: "limits",
   PointDetails: "point-details",
-  BonusBet: "bonus-bet",
-  BonusSpin: "bonus-spin",
-  TotalWin: "total-win",
   BetType: "bet-type",
   Archive: "archive",
   HowToPlay: "how-to-play",
@@ -17,17 +14,11 @@ export const ModalId = {
 
 export type ModalId = (typeof ModalId)[keyof typeof ModalId];
 
-/**
- * Heading each modal shows, as a translation key. The bonus dialogs carry their
- * heading in their own artwork, so their key resolves to an empty string.
- */
+/** Heading each modal shows, as a translation key. */
 export const MODAL_TITLE_KEYS: Record<ModalId, TranslationKey> = {
   [ModalId.ProvablyFair]: "modals.provablyFair",
   [ModalId.Limits]: "modals.limits",
   [ModalId.PointDetails]: "modals.pointDetails",
-  [ModalId.BonusBet]: "modals.bonusBet",
-  [ModalId.BonusSpin]: "modals.bonusSpin",
-  [ModalId.TotalWin]: "modals.totalWin",
   [ModalId.BetType]: "modals.betType",
   [ModalId.Archive]: "modals.archive",
   [ModalId.HowToPlay]: "modals.howToPlay",
@@ -43,10 +34,7 @@ export const MODAL_PARENTS: Partial<Record<ModalId, ModalId>> = {
   [ModalId.Archive]: ModalId.BetType,
 };
 
-/**
- * Modals that dock to the bottom edge as a full-width sheet on mobile. The
- * bonus dialogs keep their centered card, since their artwork is square.
- */
+/** Modals that dock to the bottom edge as a full-width sheet on mobile. */
 export const MOBILE_SHEET_MODALS: ModalId[] = [
   ModalId.PointDetails,
   ModalId.ProvablyFair,
@@ -60,9 +48,6 @@ export const MODAL_WIDTHS: Partial<Record<ModalId, ModalWidth>> = {
   [ModalId.ProvablyFair]: ModalWidth.Xxl,
   [ModalId.Limits]: ModalWidth.Xl,
   [ModalId.PointDetails]: ModalWidth.Xl,
-  [ModalId.BonusBet]: ModalWidth.Sm,
-  [ModalId.BonusSpin]: ModalWidth.Sm,
-  [ModalId.TotalWin]: ModalWidth.Sm,
   [ModalId.BetType]: ModalWidth.Md,
   [ModalId.Archive]: ModalWidth.Md,
   [ModalId.HowToPlay]: ModalWidth.Xl,

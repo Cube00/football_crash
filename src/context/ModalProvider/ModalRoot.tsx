@@ -25,8 +25,6 @@ import type { ModalContextValue, ModalPayload } from "./ModalProvider.types";
 import { ProbablyFairContent } from "@/components/ui/ProbablyFairContent";
 import { LimitsContent } from "@/components/ui/LimitsContent";
 import { PointDetailsContent } from "@/components/ui/PointDetailsContent";
-import { BonusBetContent } from "@/components/ui/BonusBetContent";
-import { BonusSpinContent } from "@/components/ui/BonusSpinContent";
 import { FreeBetsContent } from "@/components/ui/FreeBetsContent";
 import { ArchiveContent } from "@/components/ui/ArchiveContent";
 import { HowToPlayContent } from "@/components/ui/HowToPlayContent";
@@ -59,12 +57,6 @@ export function ModalRoot({
       break;
     case ModalId.PointDetails:
       content = <PointDetailsContent point={payload} />;
-      break;
-    case ModalId.BonusBet:
-      content = <BonusBetContent />;
-      break;
-    case ModalId.BonusSpin:
-      content = <BonusSpinContent />;
       break;
     case ModalId.BetType:
       content = <FreeBetsContent />;
