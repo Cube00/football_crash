@@ -12,13 +12,11 @@
     "comingSoon": "{{title}} — coming soon.",
     "copied": "Copied"
   },
-
   "header": {
     "balance": "Balance",
     "menu": "Menu",
     "closeMenu": "Close menu"
   },
-
   "menu": {
     "sound": "Sound",
     "music": "Music",
@@ -29,7 +27,6 @@
     "limits": "Limits",
     "chat": "Chat"
   },
-
   "modals": {
     "provablyFair": "Provably Fair",
     "limits": "Limits",
@@ -43,13 +40,11 @@
     "autoBet": "Auto Bet",
     "chat": "Chat"
   },
-
   "infoTabs": {
     "allBets": "All bets",
     "myBets": "My Bets",
     "stats": "Stats"
   },
-
   "bet": {
     "bet": "Bet",
     "cashOut": "Cash Out",
@@ -57,9 +52,12 @@
     "waitingForNextRound": "Waiting for next round",
     "autoBet": "Auto Bet",
     "autoCashOut": "Auto Cash Out",
-    "presetMax": "Max"
+    "presetMax": "Max",
+    "sending": "Sending...",
+    "cashingOut": "Cashing out...",
+    "cancelling": "Cancelling...",
+    "lost": "Lost"
   },
-
   "autoBet": {
     "rounds": "Rounds",
     "betLabel": "Bet:",
@@ -75,7 +73,6 @@
     "stopAutoBet": "Stop Auto Bet",
     "stopAutoBetRemaining": "Stop Auto Bet ({{count}} left)"
   },
-
   "betsList": {
     "player": "Player",
     "bet": "Bet ({{currency}})",
@@ -84,24 +81,20 @@
     "totalBets": "Total Bets",
     "totalWin": "Total win"
   },
-
   "stats": {
     "stats": "Stats",
     "chart": "Chart",
     "rounds": "Rounds"
   },
-
   "game": {
     "nextRoundIn": "Next round in",
     "showAllMultipliers": "Show all multipliers",
     "hideMultipliers": "Hide multipliers"
   },
-
   "stepper": {
     "decrease": "Decrease",
     "increase": "Increase"
   },
-
   "freeBets": {
     "playWithRealMoney": "Play with real money",
     "activeFreeBets": "Active Free Bets",
@@ -110,24 +103,35 @@
     "labels": {
       "type": "Type",
       "betAmount": "Bet Amount",
-      "betPrice": "Bet Price",
       "accrued": "Accrued",
       "minWithdrawal": "Min.Withdrawal",
-      "expirationDate": "Expiration Date"
+      "expirationDate": "Expiration Date",
+      "remaining": "Remaining",
+      "betRange": "Bet Range",
+      "completed": "Completed"
     },
-    "types": {
-      "fullPayout": "Full Payout",
-      "pureProfit": "Pure Profit",
-      "bonusBalance": "Bonus Balance"
-    }
+    "kinds": {
+      "fixed": "Fixed",
+      "range": "Range"
+    },
+    "activate": "Activate",
+    "noneAvailable": "You have no free bets right now.",
+    "noneArchived": "No free bets have been played yet.",
+    "expiresInDays": "Expires in {{days}}d {{hours}}h",
+    "expiresInHours": "Expires in {{hours}}h",
+    "expiresInMinutes": "Expires in {{minutes}}m",
+    "expired": "Expired",
+    "roundsPlayed": "Rounds played",
+    "totalWin": "Total win",
+    "completedTitle": "Free bet finished",
+    "expiredTitle": "Your free bet has expired",
+    "cancelledTitle": "Your free bet was cancelled"
   },
-
   "bonus": {
     "youGet": "You Get",
     "freeBet": "Free Bet",
     "availableForDays": "Bonus bet available for {{count}} Days"
   },
-
   "limits": {
     "maximumWin": {
       "title": "Maximum Win",
@@ -138,7 +142,6 @@
       "body": "When playing with free bets, a minimum cash-out multiplier applies (typically 1.50x, but configurable). You cannot cash out below this threshold when using promotional free bets."
     }
   },
-
   "howToPlay": {
     "placingBets": {
       "title": "Placing Bets",
@@ -244,7 +247,6 @@
       "footer": "Filter and sort your history to track performance, review strategies, and monitor your bankroll management."
     }
   },
-
   "provablyFair": {
     "howItWorks": "How It Works",
     "howItWorksBody": "Our Provably Fair system uses several parameters to ensure complete transparency and fairness. Each round has both hidden and revealed states.",
@@ -274,17 +276,14 @@
     "exampleTitle": "Example:",
     "exampleBody": "SHA512(\"7k9mX2pQ4nR8wL3vB6hJ5tY.2.45.1\") = 8f3a2b9c7d1e6f4a5b8c9d2e3f4a5b6c7d8e9f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a"
   },
-
   "pointDetails": {
     "roundId": "Round ID",
     "serverSeed": "Server Seed",
     "meaningOfProvablyFair": "Meaning of Provably Fair"
   },
-
   "footer": {
     "networkConnection": "Network Connection"
   },
-
   "a11y": {
     "poweredByLogo": "Powered by logo",
     "network": "Network",
@@ -303,5 +302,10 @@
     "historyList": "Multiplier history list",
     "allBets": "All bets list",
     "myBets": "My bets list"
+  },
+  "launch": {
+    "loading": "Connecting...",
+    "failed": "Couldn't start the game",
+    "unknownError": "Please close this window and try again."
   }
 }

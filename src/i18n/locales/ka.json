@@ -12,13 +12,11 @@
     "comingSoon": "{{title}} — მალე.",
     "copied": "დაკოპირდა"
   },
-
   "header": {
     "balance": "ბალანსი",
     "menu": "მენიუ",
     "closeMenu": "მენიუს დახურვა"
   },
-
   "menu": {
     "sound": "ხმა",
     "music": "მუსიკა",
@@ -29,7 +27,6 @@
     "limits": "ლიმიტები",
     "chat": "ჩატი"
   },
-
   "modals": {
     "provablyFair": "დამტკიცებულად სამართლიანი",
     "limits": "ლიმიტები",
@@ -43,13 +40,11 @@
     "autoBet": "ავტო ფსონი",
     "chat": "ჩატი"
   },
-
   "infoTabs": {
     "allBets": "ყველა ფსონი",
     "myBets": "ჩემი ფსონები",
     "stats": "სტატისტიკა"
   },
-
   "bet": {
     "bet": "ფსონი",
     "cashOut": "გატანა",
@@ -57,9 +52,12 @@
     "waitingForNextRound": "ველოდებით შემდეგ რაუნდს",
     "autoBet": "ავტო ფსონი",
     "autoCashOut": "ავტო გატანა",
-    "presetMax": "მაქს."
+    "presetMax": "მაქს.",
+    "sending": "იგზავნება...",
+    "cashingOut": "გააქვს...",
+    "cancelling": "უქმდება...",
+    "lost": "წაგებული"
   },
-
   "autoBet": {
     "rounds": "რაუნდი",
     "betLabel": "ფსონი:",
@@ -75,7 +73,6 @@
     "stopAutoBet": "ავტო ფსონის შეჩერება",
     "stopAutoBetRemaining": "ავტო ფსონის შეჩერება (დარჩა {{count}})"
   },
-
   "betsList": {
     "player": "მოთამაშე",
     "bet": "ფსონი ({{currency}})",
@@ -84,24 +81,20 @@
     "totalBets": "ჯამური ფსონი",
     "totalWin": "ჯამური მოგება"
   },
-
   "stats": {
     "stats": "სტატისტიკა",
     "chart": "გრაფიკი",
     "rounds": "რაუნდი"
   },
-
   "game": {
     "nextRoundIn": "შემდეგი რაუნდი",
     "showAllMultipliers": "ყველა კოეფიციენტის ჩვენება",
     "hideMultipliers": "კოეფიციენტების დამალვა"
   },
-
   "stepper": {
     "decrease": "შემცირება",
     "increase": "გაზრდა"
   },
-
   "freeBets": {
     "playWithRealMoney": "ითამაშე რეალური ფულით",
     "activeFreeBets": "აქტიური უფასო ფსონები",
@@ -110,24 +103,35 @@
     "labels": {
       "type": "ტიპი",
       "betAmount": "ფსონის რაოდენობა",
-      "betPrice": "ფსონის ფასი",
       "accrued": "დარიცხვის თარიღი",
       "minWithdrawal": "მინ. გატანა",
-      "expirationDate": "ვადის ამოწურვა"
+      "expirationDate": "ვადის ამოწურვა",
+      "remaining": "დარჩენილი",
+      "betRange": "ფსონის დიაპაზონი",
+      "completed": "დასრულდა"
     },
-    "types": {
-      "fullPayout": "სრული ანაზღაურება",
-      "pureProfit": "წმინდა მოგება",
-      "bonusBalance": "ბონუს ბალანსი"
-    }
+    "kinds": {
+      "fixed": "ფიქსირებული",
+      "range": "დიაპაზონი"
+    },
+    "activate": "გააქტიურება",
+    "noneAvailable": "უფასო ფსონები ამჟამად არ გაქვთ.",
+    "noneArchived": "უფასო ფსონები ჯერ არ გითამაშიათ.",
+    "expiresInDays": "ვადა იწურება {{days}}დღ {{hours}}სთ-ში",
+    "expiresInHours": "ვადა იწურება {{hours}}სთ-ში",
+    "expiresInMinutes": "ვადა იწურება {{minutes}}წთ-ში",
+    "expired": "ვადაგასული",
+    "roundsPlayed": "ნათამაშები რაუნდი",
+    "totalWin": "ჯამური მოგება",
+    "completedTitle": "უფასო ფსონი დასრულდა",
+    "expiredTitle": "თქვენი უფასო ფსონის ვადა ამოიწურა",
+    "cancelledTitle": "თქვენი უფასო ფსონი გაუქმდა"
   },
-
   "bonus": {
     "youGet": "შენ იღებ",
     "freeBet": "უფასო ფსონი",
     "availableForDays": "ბონუს ფსონი ხელმისაწვდომია {{count}} დღე"
   },
-
   "limits": {
     "maximumWin": {
       "title": "მაქსიმალური მოგება",
@@ -138,7 +142,6 @@
       "body": "უფასო ფსონებით თამაშისას მოქმედებს გატანის მინიმალური კოეფიციენტი (როგორც წესი 1.50x, თუმცა კონფიგურირებადია). სარეკლამო უფასო ფსონების გამოყენებისას ამ ზღვარზე დაბლა გატანა შეუძლებელია."
     }
   },
-
   "howToPlay": {
     "placingBets": {
       "title": "ფსონის განთავსება",
@@ -244,7 +247,6 @@
       "footer": "გაფილტრეთ და დაალაგეთ ისტორია შედეგების თვალყურის სადევნებლად და ბანკროლის სამართავად."
     }
   },
-
   "provablyFair": {
     "howItWorks": "როგორ მუშაობს",
     "howItWorksBody": "ჩვენი Provably Fair სისტემა იყენებს რამდენიმე პარამეტრს სრული გამჭვირვალობისა და სამართლიანობის უზრუნველსაყოფად. თითოეულ რაუნდს აქვს როგორც დამალული, ისე გამჟღავნებული მდგომარეობა.",
@@ -274,17 +276,14 @@
     "exampleTitle": "მაგალითი:",
     "exampleBody": "SHA512(\"7k9mX2pQ4nR8wL3vB6hJ5tY.2.45.1\") = 8f3a2b9c7d1e6f4a5b8c9d2e3f4a5b6c7d8e9f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a"
   },
-
   "pointDetails": {
     "roundId": "რაუნდის ID",
     "serverSeed": "სერვერის Seed",
     "meaningOfProvablyFair": "რას ნიშნავს Provably Fair"
   },
-
   "footer": {
     "networkConnection": "ქსელის კავშირი"
   },
-
   "a11y": {
     "poweredByLogo": "Powered by ლოგო",
     "network": "ქსელი",
@@ -303,5 +302,10 @@
     "historyList": "კოეფიციენტების ისტორიის სია",
     "allBets": "ყველა ფსონის სია",
     "myBets": "ჩემი ფსონების სია"
+  },
+  "launch": {
+    "loading": "მიმდინარეობს დაკავშირება...",
+    "failed": "თამაშის დაწყება ვერ მოხერხდა",
+    "unknownError": "დახურეთ ფანჯარა და სცადეთ თავიდან."
   }
 }

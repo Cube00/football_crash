@@ -5,15 +5,13 @@ import {
   BETS_LIST_DEFAULTS,
   BetsListVariant,
   BetStatus,
-  MOCK_BETS,
-  MOCK_MY_BETS_SUMMARY,
 } from "./BetsList.constants";
 import type { BetsListProps } from "./BetsList.types";
 import { BetsSummaryBar } from "./BetsSummaryBar";
 
 export const BetsList = ({
-  rows = MOCK_BETS,
-  summary = MOCK_MY_BETS_SUMMARY,
+  rows = [],
+  summary,
   currency = BETS_LIST_DEFAULTS.currency,
   variant = BetsListVariant.All,
   className,
@@ -101,8 +99,11 @@ export const BetsList = ({
           </div>
         ))}
       </div>
-      {/* Shown on both variants, not just My Bets, despite the class name. */}
-      <BetsSummaryBar summary={summary} currency={currency} />
+      {/* Shown on both variants, not just My Bets, despite the class name.
+          TODO(sdk): there is no endpoint behind these totals — see
+          `BetsSummary`. Until there is, no caller passes `summary` and the bar
+          does not render. */}
+      {summary && <BetsSummaryBar summary={summary} currency={currency} />}
     </div>
   );
 };

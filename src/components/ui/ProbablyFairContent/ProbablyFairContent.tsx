@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import type { TranslationKey } from "@/i18n/types";
 import { cx } from "@/utils";
+import { useLiveFairness } from "@/hooks";
+import { useGameHistory } from "@/sdk";
 import styles from "./ProbablyFairContent.module.css";
 import {
   FAIRNESS_PARAMETERS,
   HIDDEN_FACTS,
-  HIDDEN_STATE_ROWS,
   REVEALED_FACTS,
-  REVEALED_STATE_ROWS,
 } from "./ProbablyFairContent.constants";
 import type { FairnessFact } from "./ProbablyFairContent.constants";
 
@@ -17,6 +17,9 @@ interface StateRow {
   valueKey?: TranslationKey;
   nowrap?: boolean;
 }
+
+/** Stands in for a value the round has not published yet. */
+const PENDING = "—";
 
 /**
  * One of the round's two states.
@@ -83,6 +86,50 @@ const FactList = ({
  */
 export const ProbablyFairContent = () => {
   const { t } = useTranslation();
+  const live = useLiveFairness();
+  const { items } = useGameHistory();
+  // The most recent finished round is the one whose seed has been revealed.
+  const revealed = items[0];
+
+  /**
+   * Before the round runs, the server has committed to a crash point but not
+   * published it: the hash is the commit, the seed and the crash point stay
+   * hidden. Both tables show the same four fields so a player can hold them
+   * side by side and see exactly what the round handed back.
+   */
+  const hiddenRows: readonly StateRow[] = [
+    {
+      labelKey: "provablyFair.roundNumber",
+      value: live.roundId || PENDING,
+      nowrap: true,
+    },
+    { labelKey: "provablyFair.serverKey", valueKey: "provablyFair.hidden" },
+    { labelKey: "provablyFair.crashPoint", valueKey: "provablyFair.hidden" },
+    {
+      labelKey: "provablyFair.provablyFairHash",
+      value: live.fairnessHash ?? PENDING,
+    },
+  ];
+
+  const revealedRows: readonly StateRow[] = [
+    {
+      labelKey: "provablyFair.roundNumber",
+      value: revealed?.roundId ?? PENDING,
+      nowrap: true,
+    },
+    {
+      labelKey: "provablyFair.serverKey",
+      value: revealed?.serverSeed ?? PENDING,
+    },
+    {
+      labelKey: "provablyFair.crashPoint",
+      value: revealed ? `${revealed.crashAt.toFixed(2)}x` : PENDING,
+    },
+    {
+      labelKey: "provablyFair.provablyFairHash",
+      value: revealed?.fairnessHash ?? PENDING,
+    },
+  ];
 
   return (
     <div className={styles["probably"]}>
@@ -95,7 +142,7 @@ export const ProbablyFairContent = () => {
         <h2 className={styles["probably-beforestarts__label"]}>
           {t("provablyFair.beforeRoundStarts")}
         </h2>
-        <StateTable rows={HIDDEN_STATE_ROWS} />
+        <StateTable rows={hiddenRows} />
       </div>
 
       <div className={styles["probably-begins"]}>
@@ -112,7 +159,7 @@ export const ProbablyFairContent = () => {
         <h2 className={styles["probably-beforestarts__label"]}>
           {t("provablyFair.afterRoundEnds")}
         </h2>
-        <StateTable rows={REVEALED_STATE_ROWS} />
+        <StateTable rows={revealedRows} />
       </div>
 
       <div className={styles["probably-begins"]}>

@@ -4,15 +4,15 @@ import styles from "./FreeBetAmount.module.css";
 import type { FreeBetAmountProps } from "./BetArea.types";
 
 /**
- * Stands in for the stepper while a free bet is staked: the stake is the
- * grant's, not the player's to pick, so the control is a readout — what each
- * bet costs the grant, and how much of the grant is left.
+ * Stands in for the stepper while a fixed grant is bound: the SDK sends that
+ * grant's `betAmount` whatever the input says, so a stepper here would only
+ * offer a choice the server ignores.
  *
- * It is a button, not a panel: the grants list is where the stake was chosen,
- * and this is the only thing on screen that can lead back to it.
+ * It is a button, not a panel: the grants list is where the bet was bound, and
+ * this is the only thing on screen that leads back to it.
  */
 export const FreeBetAmount = ({
-  price,
+  amount,
   currency,
   remaining,
   total,
@@ -30,7 +30,7 @@ export const FreeBetAmount = ({
     {...rest}
   >
     <span className={styles["free-bet-amount__price"]}>
-      {price} {currency}
+      {amount} {currency}
     </span>
     <span className={styles["free-bet-amount__count"]}>
       {remaining}/{total}

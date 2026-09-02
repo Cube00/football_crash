@@ -1,0 +1,47 @@
+.launch-gate {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-16);
+  padding: var(--size-24);
+  text-align: center;
+  background: var(--color-bg-primary, #151419);
+  font-family: var(--font-family-base);
+}
+
+.launch-gate__spinner {
+  width: var(--size-32);
+  height: var(--size-32);
+  border-radius: 50%;
+  border: 3px solid var(--color-text-white-20, rgba(255, 255, 255, 0.2));
+  border-top-color: var(--color-text-white-100, #fff);
+  animation: launch-gate-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launch-gate__spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+@keyframes launch-gate-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.launch-gate__title {
+  margin: 0;
+  font-size: var(--size-18);
+  font-weight: 700;
+  color: var(--color-text-white-100, #fff);
+}
+
+.launch-gate__text {
+  margin: 0;
+  font-size: var(--size-14);
+  color: var(--color-text-white-60, rgba(255, 255, 255, 0.6));
+}

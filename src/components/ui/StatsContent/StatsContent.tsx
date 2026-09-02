@@ -1,14 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { Size } from "@/constants";
 import { Tabs, TabsVariant } from "../Tabs";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { MultiplierDistribution } from "../MultiplierDistribution";
+import { useGameHistory } from "@/sdk";
 import styles from "./StatsContent.module.css";
 import {
-  MOCK_MULTIPLIERS,
-  MOCK_ROUNDS,
   MULTIPLIER_THRESHOLDS,
   ROUNDS_OPTIONS,
   STATS_DEFAULTS,
@@ -22,14 +21,27 @@ const variantFor = (multiplier: number): MultiplierButtonVariant =>
   MultiplierButtonVariant.White;
 
 export const StatsContent = ({
-  multipliers = MOCK_MULTIPLIERS,
-  roundsHistory = MOCK_ROUNDS,
+  multipliers,
+  roundsHistory,
   rounds,
   onRoundsChange,
   className,
   ...rest
 }: StatsContentProps) => {
   const { t } = useTranslation();
+  const { items, fetch } = useGameHistory();
+
+  // Both views read the same finished rounds: the grid shows each crash as a
+  // pill, the chart plots them oldest-first. Props still win, so a caller can
+  // pass a different window without this hook fighting it.
+  const crashes = useMemo(() => items.map((item) => item.crashAt), [items]);
+  const pills = multipliers ?? crashes;
+  const chart = roundsHistory ?? [...crashes].reverse();
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
+
   const [activeTab, setActiveTab] = useState<string>(StatsTab.Stats);
   const [internalRounds, setInternalRounds] = useState<number>(
     STATS_DEFAULTS.rounds,
@@ -57,7 +69,7 @@ export const StatsContent = ({
 
       {activeTab === StatsTab.Stats ? (
         <div className={styles["stats-content__grid"]}>
-          {multipliers.map((multiplier, index) => (
+          {pills.map((multiplier, index) => (
             <MultiplierButton
               key={index}
               label={`${multiplier.toFixed(2)}x`}
@@ -67,7 +79,7 @@ export const StatsContent = ({
           ))}
         </div>
       ) : (
-        <MultiplierDistribution data={roundsHistory.slice(-activeRounds)} />
+        <MultiplierDistribution data={chart.slice(-activeRounds)} />
       )}
 
       <div className={styles["stats-content__footer"]}>

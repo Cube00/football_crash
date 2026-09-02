@@ -1,8 +1,8 @@
 import { useCallback, useSyncExternalStore } from "react";
 import { settingsStore } from "@/game/settingsStore";
-import type { Settings } from "@/game/persistence";
+import type { Settings } from "@/game/settingsStore";
 
-/** Selector hooks over the {@link settingsStore}, matching `useGame`'s shape. */
+/** Selector hooks over the {@link settingsStore}. */
 function useSelector<T>(selector: (settings: Settings) => T): T {
   const getSnapshot = useCallback(
     () => selector(settingsStore.getSnapshot()),

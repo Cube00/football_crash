@@ -1,10 +1,10 @@
 import type { HTMLAttributes } from "react";
 
 export interface StatsContentProps extends HTMLAttributes<HTMLDivElement> {
-  /** Recent multipliers shown as pills on the Stats tab. */
-  multipliers?: number[];
-  /** Multiplier per round, oldest first — plotted on the Chart tab. */
-  roundsHistory?: number[];
+  /** Overrides the pills on the Stats tab. Defaults to the server's history. */
+  multipliers?: readonly number[];
+  /** Overrides the Chart tab's series, oldest first. */
+  roundsHistory?: readonly number[];
   rounds?: number;
   onRoundsChange?: (rounds: number) => void;
 }

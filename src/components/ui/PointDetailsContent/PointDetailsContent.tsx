@@ -1,18 +1,21 @@
 import { useTranslation } from "react-i18next";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { formatDateTime } from "@/utils";
 import { useCopyToClipboard } from "@/hooks";
 import styles from "./PointDetailsContent.module.css";
 import type { PointDetailsContentProps } from "./PointDetailsContent.types";
 
 export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { copied, copy } = useCopyToClipboard();
-  const roundId = point?.roundId ?? "1153219";
-  const multiplier = `${(point?.multiplier ?? 24.53).toFixed(2)}x`;
-  // Not on the round yet — placeholders until the rounds API lands.
-  const date = "01 Feb, 2025  4:00";
-  const hash = "5435a2567s424k12310afed4";
-  const serverSeed = "5435a2567s424k12310afed4459sa21467s";
+
+  // Every field is the round's own. A pill is only ever built from a finished
+  // round, so the seed has been revealed by the time this can be opened.
+  const roundId = point?.roundId ?? "";
+  const multiplier = point ? `${point.crashAt.toFixed(2)}x` : "";
+  const date = formatDateTime(point?.timestamp, i18n.language);
+  const hash = point?.fairnessHash ?? "";
+  const serverSeed = point?.serverSeed ?? "";
 
   return (
     <div className={styles["point-details"]}>

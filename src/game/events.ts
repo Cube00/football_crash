@@ -1,164 +1,65 @@
-import type { BetSlot, BetState, GamePhase } from "./enums";
+import type {
+  BetPlacedPayload,
+  CashoutDonePayload,
+  CrashPayload,
+  PhaseChangePayload,
+  TickPayload,
+} from "@/sdk";
 
 /**
- * Every event name that flows across the {@link EventBus}. Names are grouped
- * by origin:
+ * Names carried on the {@link EventBus} — the skin's own bus, which exists for
+ * one reason: the canvas and the sound layer must stay out of the React render
+ * cycle.
  *
- * - `engine:*` — pushed by the local fake crash engine (stands in for what a
- *   real server would broadcast). Consumed by React hooks and the Phaser scene.
- * - `cmd:*` — commands sent by the UI to the engine (place/cashout/cancel).
- * - the rest — internal React ↔ Phaser bridge signals.
+ * Two groups:
  *
- * The engine layer is deliberately the only place these are produced, so
- * swapping in a real backend later means re-emitting the same names from a
- * socket handler and nothing downstream changes.
+ * - `sfs:*` — SDK events, relayed verbatim by {@link SdkEventBridge}. The SDK's
+ *   integration guide calls for exactly this: subscribe once with
+ *   `client.on(...)` near the root and re-emit onto a local bus, so Phaser never
+ *   holds a React subscription. These are **relays, not sources** — nothing in
+ *   this app may emit an `sfs:*` event except the bridge.
+ * - the rest — React ↔ Phaser plumbing that is genuinely ours (scene lifecycle,
+ *   layout, resize). The SDK has no opinion on these.
+ *
+ * Everything the old local engine used to publish here (`engine:*`) and every
+ * command the UI used to send it (`cmd:*`) is gone: the SDK owns round state and
+ * is commanded through its own client methods, not through this bus.
  */
 export const GameEvent = {
-  // ── engine → app ──────────────────────────────────────────────
-  /** Per-frame round update: multiplier, phase, round id, remaining ms. */
-  Tick: "engine:tick",
-  /** Crash flag flipped (true at crash, false when a new round opens). */
-  CrashState: "engine:crash-state",
-  /** Multiplier display should reset to 1.00 for a fresh round. */
-  PhaseReset: "engine:phase-reset",
-  /** A new betting round opened — the point new bets start arriving from. */
-  NewBettingRound: "engine:new-betting-round",
-  /** A finished round's crash multiplier, prepended to the history pills. */
-  CrashHistoryItem: "engine:crash-history-item",
-  /** The current (live) round id changed, or null between rounds. */
-  CurrentRound: "engine:current-round",
-  /** Account balance update. */
-  Balance: "engine:balance",
-  /** Acknowledgement that a placed bet was accepted. */
-  BetPlaced: "engine:bet-placed",
-  /** Acknowledgement that a cashout succeeded with payout details. */
-  CashoutDone: "engine:cashout-done",
-  /** Acknowledgement that a pending bet was cancelled and refunded. */
-  CancelBetOk: "engine:cancel-bet-ok",
-  /** A bet (own or another player's) changed state — feeds the bets list. */
-  BetUpdate: "engine:bet-update",
+  // ── SDK → skin (relayed by SdkEventBridge) ────────────────────
+  /** Round update: multiplier, phase, round id, remaining ms. */
+  Tick: "sfs:tick",
+  /** Phase changed. Drives the Spine animation. */
+  PhaseChange: "sfs:phase-change",
+  /** The round crashed, at this multiplier. */
+  Crash: "sfs:crash",
+  /** A bet of the player's own was accepted. */
+  BetPlaced: "sfs:bet-placed",
+  /** A cashout of the player's own succeeded. */
+  CashoutDone: "sfs:cashout-done",
 
-  // ── app → engine (commands) ───────────────────────────────────
-  /** UI asks the engine to place a bet. */
-  CmdPlaceBet: "cmd:place-bet",
-  /** UI asks the engine to cash out an active bet. */
-  CmdCashout: "cmd:cashout",
-  /** UI asks the engine to cancel a pending bet. */
-  CmdCancelBet: "cmd:cancel-bet",
-
-  // ── React ↔ Phaser bridge ─────────────────────────────────────
-  /** Phaser scene finished creating and can receive sync events. */
+  // ── React ↔ Phaser bridge (ours) ──────────────────────────────
+  /** The Phaser scene finished creating and can receive sync events. */
   SceneReady: "scene-ready",
-  /** Game phase changed; the Phaser scene should react. */
-  GamePhaseChange: "game-phase-change",
-  /** React asks the engine to re-broadcast the current phase. */
+  /** The scene asks to be told the current phase — it may have booted mid-round. */
   RequestPhaseSync: "request-phase-sync",
   /** React tells Phaser whether the layout is mobile. */
   SetMobile: "set-mobile",
-  /** Phaser canvas should recompute its dimensions after a layout change. */
+  /** The canvas should recompute its dimensions after a layout change. */
   GameResize: "game-resize",
 } as const;
 
 export type GameEvent = (typeof GameEvent)[keyof typeof GameEvent];
 
-// ─── Payload shapes ────────────────────────────────────────────
-
-export interface TickPayload {
-  multiplier: number;
-  phase: GamePhase;
-  roundId: string;
-  remainingMs: number;
-}
-
-export interface CrashStatePayload {
-  crashed: boolean;
-  /** Present on the crashing tick — the final multiplier. */
-  multiplier?: number;
-}
-
-export interface CrashHistoryItemPayload {
-  id: string;
-  roundId: string;
-  multiplier: number;
-}
-
-export interface CurrentRoundPayload {
-  roundId: string;
-}
-
-export interface BalancePayload {
-  balance: number;
-}
-
-// ── Commands: UI → engine ──
-
-export interface CmdPlaceBetPayload {
-  slot: BetSlot;
-  amount: number;
-  currency: string;
-  /** When set, the engine auto-cashes the bet once the tick reaches it. */
-  autoCashoutAt?: number;
-  /** Stakes a free bet grant instead of the balance. */
-  freeBetId?: string;
-}
-
-export interface CmdCashoutPayload {
-  slot: BetSlot;
-}
-
-export interface CmdCancelBetPayload {
-  slot: BetSlot;
-}
-
-// ── Acks: engine → UI ──
-
-export interface BetPlacedPayload {
-  slot: BetSlot;
-  amount: number;
-  currency: string;
-  betId: string;
-  balance: number;
-  /** The grant this bet spent a ticket from, when it was a free bet. */
-  freeBetId?: string;
-}
-
-export interface CashoutDonePayload {
-  slot: BetSlot;
-  multiplier: number;
-  payout: number;
-  betAmount: number;
-  balance: number;
-  /** True when triggered by an auto-cashout target rather than a manual tap. */
-  auto: boolean;
-}
-
-export interface CancelBetOkPayload {
-  slot: BetSlot;
-  betId: string;
-  balance: number;
-  /** Set when the cancelled bet had spent a ticket, so it can be given back. */
-  freeBetId?: string;
-}
-
-/**
- * A single row in the live per-round bets list. Emitted both for the player's
- * own bets and for fake bot players, so the list is populated the same way a
- * real broadcast would populate it.
- */
-export interface BetUpdatePayload {
-  betId: string;
-  /** Masked display name, e.g. `G****t`. */
-  username: string;
-  amount: number;
-  currency: string;
-  status: BetState;
-  /** Multiplier the bet cashed out at, when it has been cashed out. */
-  cashedOutAt?: number;
-  /** Payout credited on cashout. */
-  payout?: number;
-  slot?: BetSlot;
-  /** True for the current player's own bets. */
-  own?: boolean;
-  /** Set when the bet was staked from a free bet grant. */
-  freeBetId?: string;
+/** Payload carried by each bus event, for the typed emitter. */
+export interface GameEventPayloads {
+  [GameEvent.Tick]: TickPayload;
+  [GameEvent.PhaseChange]: PhaseChangePayload;
+  [GameEvent.Crash]: CrashPayload;
+  [GameEvent.BetPlaced]: BetPlacedPayload;
+  [GameEvent.CashoutDone]: CashoutDonePayload;
+  [GameEvent.SceneReady]: void;
+  [GameEvent.RequestPhaseSync]: void;
+  [GameEvent.SetMobile]: boolean;
+  [GameEvent.GameResize]: void;
 }

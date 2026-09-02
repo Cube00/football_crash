@@ -53,6 +53,45 @@
   background: var(--color-btn-freebet);
 }
 
+/* ── In-flight and terminal variants ──────────────────────────────────────
+   The SDK reports a slot's transient states as their own variants rather than
+   as a flag on the settled one, so each keeps the colour of the action it is
+   part of — a bet being sent is still a bet — and reads as busy through the
+   shared disabled rule below. `lost` is the exception: it is not a paused
+   action but the end of one, so it drops to neutral. */
+
+.bet-button--sending {
+  background: var(--color-btn-green);
+}
+
+.bet-button--cashing-out {
+  background: var(--color-btn-orange);
+}
+
+.bet-button--cancel-waiting,
+.bet-button--cancelling {
+  background: var(--color-btn-red);
+}
+
+.bet-button--lost {
+  background: var(--color-gray-secondary);
+}
+
+.bet-button--lost .bet-button__label,
+.bet-button--lost .bet-button__money {
+  color: var(--color-text-gray-100);
+}
+
+/* Every variant can arrive disabled — the SDK disables the whole panel while
+   the feed is frozen, whatever state the slot itself is in. */
+.bet-button:disabled {
+  cursor: not-allowed;
+}
+
+.bet-button:disabled:not(.bet-button--lost) {
+  opacity: 0.55;
+}
+
 .bet-button--bet::after,
 .bet-button--cashout::after,
 .bet-button--cancel::after,

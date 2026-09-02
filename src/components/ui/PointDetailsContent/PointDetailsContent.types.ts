@@ -1,6 +1,6 @@
-import type { CrashHistoryItemPayload } from "@/game/events";
+import type { GameHistoryItem } from "@/sdk";
 
 export interface PointDetailsContentProps {
-  /** The round whose pill was tapped. Sample data stands in when absent. */
-  point?: CrashHistoryItemPayload;
+  /** The finished round whose pill was tapped. */
+  point?: GameHistoryItem;
 }

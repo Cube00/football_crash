@@ -1,2 +1,2 @@
 export { FreeBetsContent } from "./FreeBetsContent";
-export { FreeBetLabel } from "./FreeBetsContent.constants";
+export { FreeBetLabel, KIND_LABEL_KEYS } from "./FreeBetsContent.constants";

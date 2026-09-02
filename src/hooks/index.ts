@@ -8,9 +8,8 @@ export { useElementWidth } from "./useElementWidth";
 export { useAnimationEnabled, useSettings } from "./useSettings";
 export { useWindowSize } from "./useWindowSize";
 export { useCopyToClipboard, COPIED_FEEDBACK_MS } from "./useCopyToClipboard";
-export { useWinNotification, WIN_NOTIFICATION_MS } from "./useWinNotification";
-export {
-  useFreeBets,
-  useActiveFreeBet,
-  useFreeBetsRemaining,
-} from "./useFreeBets";
+export { useRoundCountdown } from "./useRoundCountdown";
+export { useRoundBets } from "./useRoundBets";
+export { useLiveFairness } from "./useFairness";
+export { useWinNotice } from "./useWinNotice";
+export type { WinNotice } from "./useWinNotice";

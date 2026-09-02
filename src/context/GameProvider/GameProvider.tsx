@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { useAmbient } from "@/hooks";
-import { crashEngine } from "@/game/engine/crashEngine";
-import { startFakeBets } from "@/game/engine/fakeBets";
-import { gameStore } from "@/game/store";
-import { freeBetStore } from "@/game/freeBetStore";
+import { SdkEventBridge } from "@/game/SdkEventBridge";
 import { preloadSoundsOnFirstGesture } from "@/game/sounds";
 
 interface GameProviderProps {
@@ -12,33 +9,30 @@ interface GameProviderProps {
 }
 
 /**
- * Boots the local crash engine once for the app and wires it to the reactive
- * store. Store + fake bots connect *before* the engine starts so they catch the
- * very first round's events. Everything reads game state through the store
- * hooks, so no React context value is needed here.
+ * Everything the skin owns for the life of the page: the audio layer, and the
+ * relay that feeds SDK events to the canvas.
+ *
+ * It used to boot a local crash engine and two stores here. All of that is the
+ * SDK's now — round state arrives through `KrashProvider` and is read with
+ * hooks, so there is nothing left to start and no context value to hand down.
+ *
+ * TODO(sdk): `KrashProvider` mounts *outside* this, in `main.tsx`, because
+ * `SdkEventBridge` needs a client to subscribe to.
  */
 export const GameProvider = ({ children }: GameProviderProps) => {
-  // The beach bed runs for the life of the page, like the engine.
+  // The beach bed runs as long as the page does.
   useAmbient();
 
   useEffect(() => {
     // Click sounds are fetched on the first gesture, not here — see
     // `preloadSoundsOnFirstGesture`.
-    const stopSoundWarmup = preloadSoundsOnFirstGesture();
-
-    const disconnectStore = gameStore.connect();
-    const disconnectFreeBets = freeBetStore.connect();
-    const stopFakeBets = startFakeBets();
-    crashEngine.start();
-
-    return () => {
-      stopSoundWarmup();
-      crashEngine.stop();
-      stopFakeBets();
-      disconnectFreeBets();
-      disconnectStore();
-    };
+    return preloadSoundsOnFirstGesture();
   }, []);
 
-  return children;
+  return (
+    <>
+      <SdkEventBridge />
+      {children}
+    </>
+  );
 };

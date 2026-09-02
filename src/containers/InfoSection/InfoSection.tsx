@@ -1,19 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs } from "@/components/ui/Tabs";
 import {
   BetsList,
   BetsListVariant,
-  BetsSummaryBar,
   BetStatus,
-  MOCK_MY_BETS,
-  MOCK_MY_BETS_SUMMARY,
 } from "@/components/ui/BetsList";
 import type { BetRow } from "@/components/ui/BetsList";
 import { StatsContent } from "@/components/ui/StatsContent";
-import { useBets } from "@/hooks/useGame";
-import { BetState } from "@/game/enums";
-import type { BetUpdatePayload } from "@/game/events";
+import { BetState, useGameConfig, useMyBets } from "@/sdk";
+import type { BetUpdatePayload, MyHistoryRound } from "@/sdk";
+import { FALLBACK_CURRENCY } from "@/game/display";
+import { useRoundBets } from "@/hooks";
 import styles from "./InfoSection.module.css";
 import { INFO_TABS, InfoTab } from "./InfoSection.constants";
 
@@ -27,17 +25,37 @@ const toRow = (bet: BetUpdatePayload): BetRow => ({
   id: bet.betId,
   player: bet.username,
   bet: bet.amount,
-  status: statusFor(bet.status),
+  status: statusFor(bet.state),
   multiplier: bet.cashedOutAt,
   cashout: bet.payout,
   own: bet.own,
 });
 
+/** The player's own settled bets, as returned by `useMyBets()`. */
+const toMyRow = (round: MyHistoryRound): BetRow => ({
+  id: round.betId,
+  bet: round.amount,
+  status: statusFor(round.state),
+  multiplier: round.cashedOutAt,
+  cashout: round.payout,
+  own: true,
+});
+
 export const InfoSection = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>(InfoTab.AllBets);
-  const bets = useBets();
+  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
+  const bets = useRoundBets();
   const rows = useMemo(() => bets.map(toRow), [bets]);
+
+  const { rounds: myRounds, fetch: fetchMyBets } = useMyBets();
+  const myRows = useMemo(() => myRounds.map(toMyRow), [myRounds]);
+
+  // The server does not push the player's own history — it answers a request,
+  // so ask when the tab that shows it is opened.
+  useEffect(() => {
+    if (activeTab === InfoTab.MyBets) fetchMyBets();
+  }, [activeTab, fetchMyBets]);
 
   const tabs = useMemo(
     () => INFO_TABS.map(({ labelKey, value }) => ({ label: t(labelKey), value })),
@@ -50,28 +68,16 @@ export const InfoSection = () => {
 
       <div className={styles["info-section__content"]}>
         {activeTab === InfoTab.AllBets && (
-          <BetsList currency="USD" rows={rows} />
+          <BetsList currency={currency} rows={rows} />
         )}
         {activeTab === InfoTab.MyBets && (
           <BetsList
-            currency="USD"
+            currency={currency}
             variant={BetsListVariant.My}
-            rows={MOCK_MY_BETS}
+            rows={myRows}
           />
         )}
-        {activeTab === InfoTab.Stats && (
-          <>
-            <StatsContent />
-            {/* Stats renders no bets list, so it has to bring the bar itself.
-                Mobile only — there it is pinned to the viewport and reads as
-                part of the screen, so losing it on one tab is a hole. */}
-            <BetsSummaryBar
-              className={styles["info-section__summary"]}
-              summary={MOCK_MY_BETS_SUMMARY}
-              currency="USD"
-            />
-          </>
-        )}
+        {activeTab === InfoTab.Stats && <StatsContent />}
       </div>
     </div>
   );
