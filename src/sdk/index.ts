@@ -8,6 +8,8 @@
  *
  * Rules for this folder:
  *   1. Shapes and constants only — no round loop, no RNG, no balance maths.
+ *      `dom.ts` is the one exception and says why in its own header: browser
+ *      utilities have no server state to fake, so they are implemented.
  *   2. Signatures must match the SDK's exactly. A convenient deviation here is
  *      a rewrite of every call site later.
  *   3. Anything the integration docs do not specify is marked `UNDOCUMENTED`
@@ -16,3 +18,4 @@
 export * from "./types";
 export * from "./client";
 export * from "./hooks";
+export * from "./dom";

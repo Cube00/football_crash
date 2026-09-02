@@ -15,9 +15,18 @@ Then:
 1. `types.ts` → `export * from "@krash/sdk";`
 2. `client.ts` → delete; `KrashClient` comes from the SDK.
 3. `hooks.ts` → `export { … } from "@krash/react";`
-4. Mount `KrashProvider` in `main.tsx` (see `docs/SDK-INTEGRATION.md`).
+4. `dom.ts` → delete; `export { useMediaQuery, useClickOutside } from "@krash/react";`
+5. Mount `KrashProvider` in `main.tsx`.
 
 No component, container or hook outside this folder should need editing.
+
+## `dom.ts` is the one implemented file
+
+`useMediaQuery` and `useClickOutside` read the browser, not the server. There is
+no session behind them and nothing to fake, so they are written out rather than
+stubbed — an inert version would break the mobile layout and stop popovers
+closing, which is a bug dressed up as emptiness. They replaced the skin's own
+`useWindowSize` / `BREAKPOINT` / `useOnClickOutside`.
 
 ## What must never appear here
 
