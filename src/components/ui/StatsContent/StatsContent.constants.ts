@@ -28,31 +28,3 @@ export const MULTIPLIER_THRESHOLDS = [
   { min: 2, variant: MultiplierButtonVariant.LightBlue },
   { min: 0, variant: MultiplierButtonVariant.White },
 ];
-
-const PATTERN = [1.12, 2.4, 11.5, 34.12, 56.4, 1.12];
-
-export const MOCK_MULTIPLIERS: number[] = Array.from(
-  { length: 120 },
-  (_, index) => PATTERN[index % PATTERN.length],
-);
-
-/** Seeded so the mock history stays put across re-renders. */
-const randomFor = (seed: number) => () => {
-  seed = (seed + 0x6d2b79f5) | 0;
-  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-};
-
-/** Crash multipliers follow a 1/(1-u) tail: mostly low, rarely huge. */
-const crashMultiplier = (random: () => number) => {
-  const value = 0.99 / (1 - random());
-  return Math.min(Math.max(Math.round(value * 100) / 100, 1), 150);
-};
-
-const random = randomFor(20260717);
-
-export const MOCK_ROUNDS: number[] = Array.from(
-  { length: Math.max(...ROUNDS_OPTIONS) },
-  () => crashMultiplier(random),
-);

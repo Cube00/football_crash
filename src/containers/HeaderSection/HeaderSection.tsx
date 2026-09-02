@@ -4,12 +4,12 @@ import { Balance } from "@/components/ui/Balance";
 import { MenuButton } from "@/components/ui/MenuButton";
 import { Menu, MENU_ITEMS, MenuItemId } from "@/components/ui/Menu";
 import { useOnEscape, useSettings } from "@/hooks";
-import { useBalance } from "@/hooks/useGame";
+import { useBalance, useGameConfig } from "@/sdk";
 import { useModal, ModalId } from "@/context/ModalProvider";
-import { GAME_CONFIG } from "@/game/config";
+import { FALLBACK_CURRENCY } from "@/game/display";
 import { settingsStore } from "@/game/settingsStore";
 import { playSound, Sound } from "@/game/sounds";
-import type { Settings } from "@/game/persistence";
+import type { Settings } from "@/game/settingsStore";
 import styles from "./HeaderSection.module.css";
 
 /** Which menu rows open which modal. Rows left out are toggles. */
@@ -27,6 +27,7 @@ const MENU_MODALS: Partial<Record<string, ModalId>> = {
  */
 export const HeaderSection = () => {
   const balance = useBalance();
+  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
   const { open } = useModal();
   const [menuOpen, setMenuOpen] = useState(false);
   // Shared, not local: the game area reads `animation` to decide whether to run
@@ -64,7 +65,7 @@ export const HeaderSection = () => {
   return (
     <Header>
       <div className={styles["header-section"]} ref={rootRef}>
-        <Balance amount={balance} currency={GAME_CONFIG.currency} />
+        <Balance amount={balance} currency={currency} />
         <MenuButton
           open={menuOpen}
           onClick={() => setMenuOpen((wasOpen) => !wasOpen)}

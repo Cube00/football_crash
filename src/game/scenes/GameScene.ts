@@ -10,7 +10,8 @@ import type {
 } from "@esotericsoftware/spine-phaser-v3";
 import { EventBus } from "../EventBus";
 import { GameEvent } from "../events";
-import { GamePhase } from "../enums";
+import { GamePhase } from "@/sdk";
+import type { PhaseChangePayload } from "@/sdk";
 import {
   aimBoneTranslation,
   bonePoseAt,
@@ -225,7 +226,7 @@ export class GameScene extends Scene {
     this.layout();
     this.scale.on("resize", this.layout, this);
 
-    EventBus.on(GameEvent.GamePhaseChange, this.handlePhaseChange, this);
+    EventBus.on(GameEvent.PhaseChange, this.handlePhaseChange, this);
 
     this.events.once("shutdown", this.teardown, this);
     this.events.once("destroy", this.teardown, this);
@@ -524,7 +525,7 @@ export class GameScene extends Scene {
 
   // ── Event handlers ───────────────────────────────────────
 
-  private handlePhaseChange(phase: GamePhase) {
+  private handlePhaseChange({ phase }: PhaseChangePayload) {
     switch (phase) {
       case GamePhase.BettingOpen:
         this.enterIdle();
@@ -548,6 +549,6 @@ export class GameScene extends Scene {
   private teardown() {
     this.clearHandoff();
     this.scale.off("resize", this.layout, this);
-    EventBus.off(GameEvent.GamePhaseChange, this.handlePhaseChange, this);
+    EventBus.off(GameEvent.PhaseChange, this.handlePhaseChange, this);
   }
 }

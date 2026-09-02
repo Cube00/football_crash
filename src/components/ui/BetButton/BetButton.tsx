@@ -1,20 +1,32 @@
 import { cx } from "@/utils";
+import { BetButtonVariant } from "@/sdk";
 import { playSound, Sound } from "@/game/sounds";
 import styles from "./BetButton.module.css";
-import { BetButtonVariant } from "./BetButton.constants";
 import type { BetButtonProps } from "./BetButton.types";
 
-/** Placing, cashing out and cancelling each have their own voice. */
-const VARIANT_SOUND: Record<BetButtonVariant, Sound> = {
+/**
+ * Placing, cashing out and cancelling each have their own voice. The
+ * in-flight and terminal variants are silent: the click that started them
+ * already played, and `Lost` was never a click at all.
+ */
+const VARIANT_SOUND: Partial<Record<BetButtonVariant, Sound>> = {
   [BetButtonVariant.Bet]: Sound.Bet,
   [BetButtonVariant.Freebet]: Sound.Bet,
   [BetButtonVariant.Cashout]: Sound.Cashout,
   [BetButtonVariant.Cancel]: Sound.Cancel,
 };
 
+/**
+ * The primary control of a bet slot.
+ *
+ * It renders the variant it is given and never works one out. The SDK computes
+ * `slotState.buttonVariant` and `slotState.isButtonDisabled` from phase, bet
+ * state, in-flight flags and the freeze detector; duplicating any part of that
+ * here is how the button and the bet drift apart.
+ */
 export const BetButton = ({
   label,
-  variant,
+  variant = BetButtonVariant.Bet,
   size,
   className,
   currency,
@@ -34,7 +46,8 @@ export const BetButton = ({
     <button
       className={classes}
       onClick={(event) => {
-        playSound(VARIANT_SOUND[variant ?? BetButtonVariant.Bet]);
+        const sound = VARIANT_SOUND[variant];
+        if (sound) playSound(sound);
         onClick?.(event);
       }}
       {...rest}

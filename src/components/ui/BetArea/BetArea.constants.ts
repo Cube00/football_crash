@@ -1,26 +1,19 @@
 import type { TranslationKey } from "@/i18n/types";
-
-export const BET_AREA_DEFAULTS = {
-  amount: 1,
-  multiplier: 2,
-  currency: "USD",
-} as const;
-
-/** Highest stake, applied by the "Max" chip. */
-export const MAX_BET_AMOUNT = 9999;
+import { MAX_STAKE_SHORTCUT, QUICK_STAKES } from "@/game/display";
 
 /**
  * Quick-select chips shown under the amount stepper. Each chip carries the
  * amount it sets and how to label it — a plain numeral, or a translation key
  * for the word chips.
+ *
+ * TODO(sdk): `GameConfig` may carry the operator's own quick stakes. If it
+ * does, build this from `useGameConfig()` and keep these only as the fallback.
  */
 export const AMOUNT_PRESETS: ReadonlyArray<{
   label?: string;
   labelKey?: TranslationKey;
   value: number;
 }> = [
-  { label: "2", value: 2 },
-  { label: "4", value: 4 },
-  { label: "6", value: 6 },
-  { labelKey: "bet.presetMax", value: MAX_BET_AMOUNT },
+  ...QUICK_STAKES.map((value) => ({ label: String(value), value })),
+  { labelKey: "bet.presetMax", value: MAX_STAKE_SHORTCUT },
 ];

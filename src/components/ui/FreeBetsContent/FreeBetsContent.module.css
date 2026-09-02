@@ -79,3 +79,13 @@
 .free-bets__footer .free-bets__play {
   border-radius: var(--radius-8);
 }
+
+/* Shown when the server grants nothing — the list is legitimately empty rather
+   than still loading, since the SDK seeds it on join. */
+.free-bets__empty {
+  margin: 0;
+  padding: var(--size-16) 0;
+  font-size: var(--size-14);
+  color: var(--color-text-gray-100);
+  text-align: center;
+}

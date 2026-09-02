@@ -1,9 +1,10 @@
 import type { ButtonHTMLAttributes } from "react";
 import type { Size } from "@/constants";
-import type { BetButtonVariant } from "./BetButton.constants";
+import type { BetButtonVariant } from "@/sdk";
 
 export interface BetButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Comes from `slotState.buttonVariant` — never derived in the UI. */
   variant?: BetButtonVariant;
   size?: Size;
   label?: string;

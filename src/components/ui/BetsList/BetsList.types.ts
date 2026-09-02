@@ -15,6 +15,14 @@ export interface BetRow {
   own?: boolean;
 }
 
+/**
+ * The round totals bar.
+ *
+ * TODO(sdk): nothing in the SDK produces these. `useMyBets()` returns settled
+ * rounds and a `total`, but not staked-versus-won totals for the current round.
+ * Confirm with the integration team whether an endpoint exists; until then no
+ * caller can fill this in and the bar stays unmounted.
+ */
 export interface BetsSummary {
   /** Bets placed in this round. */
   placed: number;

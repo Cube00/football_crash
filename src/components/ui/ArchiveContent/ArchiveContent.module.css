@@ -57,3 +57,11 @@
   white-space: nowrap;
   color: var(--color-text-green-100);
 }
+
+.archive__empty {
+  margin: 0;
+  padding: var(--size-16) 0;
+  font-size: var(--size-14);
+  color: var(--color-text-gray-100);
+  text-align: center;
+}

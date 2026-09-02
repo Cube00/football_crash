@@ -2,7 +2,7 @@ import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { Icon } from "../Icon";
-import { useCrashHistory } from "@/hooks/useGame";
+import { useGameHistory } from "@/sdk";
 import {
   useElementWidth,
   useOnClickOutside,
@@ -40,7 +40,10 @@ const pillsThatFit = (width: number, pill: number, gap: number) =>
 
 export const Multiplier = () => {
   const { t } = useTranslation();
-  const history = useCrashHistory();
+  // TODO(sdk): confirm `items` grows on `crash-history-item` — the SDK emits
+  // that after every crash, but the docs only tie `game-history` to an explicit
+  // `getHistory()`. If it does not, prepend from the event here.
+  const { items: history } = useGameHistory();
   const items = history.slice(0, MAX_MULTIPLIERS);
 
   // The sheet, not the outer box: its content width is the room the pills and
@@ -84,10 +87,10 @@ export const Multiplier = () => {
   // and fold the strip back up, so the modal isn't stacked over an open panel.
   const renderPill = (item: (typeof items)[number]) => (
     <MultiplierButton
-      key={item.id}
-      label={item.multiplier.toFixed(2)}
+      key={item.roundId}
+      label={item.crashAt.toFixed(2)}
       size="large"
-      variant={variantFor(item.multiplier)}
+      variant={variantFor(item.crashAt)}
       aria-haspopup="dialog"
       onClick={() => {
         playSound(Sound.SmallButton);

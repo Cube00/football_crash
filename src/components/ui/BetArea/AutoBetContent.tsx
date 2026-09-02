@@ -4,13 +4,11 @@ import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
 import { Stepper, StepperSize } from "../Stepper";
 import { Checkbox } from "../Checkbox";
-import { ROUND_OPTIONS } from "@/game/autoplay";
-import type { StopCondition } from "@/game/autoplay";
-import type { UseAutoPlayReturn } from "@/hooks/useAutoPlay";
+import type { AutoPlayReturn, StopCondition } from "@/sdk";
 import styles from "./AutoBetContent.module.css";
 
 interface AutoBetContentProps {
-  autoPlay: UseAutoPlayReturn;
+  autoPlay: AutoPlayReturn;
   /** Current per-round stake, for the Bet / Total readout. */
   betAmount: number;
   currency: string;
@@ -38,7 +36,8 @@ export const AutoBetContent = ({
   onClose,
 }: AutoBetContentProps) => {
   const { t } = useTranslation();
-  const { config, updateConfig, isActive, reset, start, stop } = autoPlay;
+  const { config, updateConfig, isActive, reset, start, stop, selectRounds, roundOptions } =
+    autoPlay;
   const total = betAmount * config.rounds;
 
   const setStop = (key: StopKey, patch: Partial<StopCondition>) =>
@@ -57,7 +56,7 @@ export const AutoBetContent = ({
   return (
     <div className={styles["auto-bet"]}>
       <div className={styles["auto-bet__rounds"]}>
-        {ROUND_OPTIONS.map((option) => (
+        {roundOptions.map((option) => (
           <button
             key={option}
             type="button"
@@ -67,7 +66,7 @@ export const AutoBetContent = ({
             )}
             onClick={() => {
               playSound(Sound.SmallButton);
-              updateConfig({ rounds: option });
+              selectRounds(option);
             }}
           >
             <span className={styles["auto-bet__round-value"]}>{option}</span>

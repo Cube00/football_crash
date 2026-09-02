@@ -8,14 +8,22 @@ import { WinNotification } from "@/components/ui/WinNotification";
 import { useModal, ModalId } from "@/context/ModalProvider";
 import {
   useAnimationEnabled,
-  useFreeBetsRemaining,
-  useWinNotification,
-  WIN_NOTIFICATION_MS,
+  useRoundCountdown,
+  useWinNotice,
 } from "@/hooks";
-import { usePhase } from "@/hooks/useGame";
-import { useTick } from "@/hooks/useTick";
-import { GamePhase } from "@/game/enums";
-import { ROUND_TIMINGS } from "@/game/config";
+import {
+  GamePhase,
+  useFreerounds,
+  useGameConfig,
+  useMultiplier,
+  usePhase,
+} from "@/sdk";
+import {
+  FALLBACK_CURRENCY,
+  PHASE_DISPLAY,
+  WIN_NOTIFICATION_MS,
+} from "@/game/display";
+import { remainingBets } from "@/game/freerounds";
 import styles from "./GameStage.module.css";
 import {
   STILL_BACKGROUND,
@@ -46,9 +54,16 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
   const animated = useAnimationEnabled();
   const { open } = useModal();
   const phase = usePhase();
-  const { tick, remainingMs } = useTick();
-  const { win, dismiss } = useWinNotification();
-  const freeBets = useFreeBetsRemaining();
+  const multiplier = useMultiplier();
+  const remainingMs = useRoundCountdown();
+  const { win, dismiss } = useWinNotice();
+  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
+  // Bets left across every grant the player holds — what the badge counts.
+  const { grants } = useFreerounds();
+  const freeBets = grants.reduce(
+    (sum, grant) => sum + remainingBets(grant),
+    0,
+  );
 
   const betting = phase === GamePhase.BettingOpen;
   const crashed = phase === GamePhase.Crashed;
@@ -75,7 +90,9 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
       {crashed && (
         <div
           className={styles["game-stage__crash"]}
-          style={{ "--crash-ms": `${ROUND_TIMINGS.crashedMs}ms` } as CSSProperties}
+          style={
+            { "--crash-ms": `${PHASE_DISPLAY.crashedMs}ms` } as CSSProperties
+          }
           aria-hidden="true"
         />
       )}
@@ -83,10 +100,10 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
       {win && (
         <div className={styles["game-stage__notice"]}>
           <WinNotification
-            key={win.betId}
+            key={win.key}
             className={styles["game-stage__win"]}
             amount={win.amount}
-            currency={win.currency}
+            currency={currency}
             durationMs={WIN_NOTIFICATION_MS}
             onClose={dismiss}
           />
@@ -97,10 +114,13 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
         {betting ? (
           <CountdownBar
             remainingMs={remainingMs}
-            totalMs={ROUND_TIMINGS.bettingMs}
+            totalMs={PHASE_DISPLAY.bettingMs}
           />
         ) : (
-          <MultiplierValue value={tick} crashed={phase === GamePhase.Crashed} />
+          <MultiplierValue
+            value={multiplier.toFixed(2)}
+            crashed={phase === GamePhase.Crashed}
+          />
         )}
       </div>
 
