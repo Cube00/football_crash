@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Modal, ModalWidth } from "@/components/ui/Modal";
-import { FreeroundEndReason, useFreerounds, useGameConfig } from "@/sdk";
-import { FALLBACK_CURRENCY } from "@/game/display";
+import { FreeroundEndReason, useFreerounds } from "@/sdk";
+import { useMoney } from "@/hooks";
 import styles from "./FreeBetCompleted.module.css";
 
 /** Why the grant ended decides the heading — finished, ran out of time, pulled. */
@@ -25,7 +25,7 @@ const TITLE_KEYS = {
 export const FreeBetCompleted = () => {
   const { t } = useTranslation();
   const { lastCompleted, acknowledgeCompleted } = useFreerounds();
-  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
+  const { currency, format } = useMoney();
 
   if (!lastCompleted) return null;
 
@@ -42,7 +42,7 @@ export const FreeBetCompleted = () => {
     >
       <div className={styles["free-bet-completed"]}>
         <p className={styles["free-bet-completed__win"]}>
-          {lastCompleted.totalWin.toFixed(2)}
+          {format(lastCompleted.totalWin)}
           <span className={styles["free-bet-completed__currency"]}>
             {currency}
           </span>

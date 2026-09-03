@@ -10,6 +10,13 @@ import type { FreeroundGrant, FreeroundState, SlotSnapshot } from "@/sdk";
  */
 
 /**
+ * Floats divide badly: `0.7 / 0.1` is `6.999…`, and a badge that reads 6 when
+ * seven bets are left is a support ticket. The docs' own formula carries this
+ * nudge for the same reason.
+ */
+const EPSILON = 1e-9;
+
+/**
  * Bets still on the grant.
  *
  * A grant is a wallet, not a book of tickets, so the count is a division. Works
@@ -18,12 +25,22 @@ import type { FreeroundGrant, FreeroundState, SlotSnapshot } from "@/sdk";
  */
 export const remainingBets = (state: FreeroundState | FreeroundGrant): number =>
   state.betAmount > 0
-    ? Math.floor(state.balanceRemaining / state.betAmount)
+    ? Math.floor(state.balanceRemaining / state.betAmount + EPSILON)
     : 0;
 
-/** Bets the grant started with — what is left plus what has been played. */
+/**
+ * Bets the grant started with.
+ *
+ * From `balanceInitial`, not from what is left plus rounds played: a cancelled
+ * bet gives the stake back and decrements `roundsPlayed`, and on a range grant
+ * the rounds played need not have cost one bet each. The server publishes the
+ * opening balance for exactly this, so the pair below always divides the same
+ * number two ways.
+ */
 export const totalBets = (state: FreeroundState | FreeroundGrant): number =>
-  remainingBets(state) + state.roundsPlayed;
+  state.betAmount > 0
+    ? Math.floor(state.balanceInitial / state.betAmount + EPSILON)
+    : 0;
 
 /**
  * Whether this slot should be locked out of starting another free bet.
@@ -57,16 +74,21 @@ export function isSlotFreebetLocked(
  *
  * Fixed grants ignore the player's input entirely — the SDK sends `betAmount`
  * whatever the field says — so showing anything else would be a lie about what
- * the next bet costs. Range grants clamp the player's choice instead.
+ * the next bet costs.
+ *
+ * Range grants are the opposite: the SDK sends the input **unchanged**, with no
+ * clamp of any kind, so the bounds have to be applied here or the server
+ * rejects the bet. The ceiling is the grant's own balance as well as its
+ * `betMax` — a grant with less left than `betMax` can only stake what it has.
  */
 export function freebetStake(
   state: FreeroundState,
   inputAmount: number,
 ): number {
-  if (state.kind === "range") {
-    return Math.min(Math.max(inputAmount, state.betMin), state.betMax);
-  }
-  return state.betAmount;
+  if (state.kind !== "range") return state.betAmount;
+
+  const ceiling = Math.min(state.betMax, state.balanceRemaining);
+  return Math.min(Math.max(inputAmount, state.betMin), ceiling);
 }
 
 export interface ExpiryParts {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@/utils";
 import { Size } from "@/constants";
@@ -13,16 +13,17 @@ import {
   BetButtonVariant,
   FreeroundKind,
   useAutoPlay,
+  useBalance,
   useBettingSlot,
   useFreerounds,
   useGameConfig,
   useMultiplier,
 } from "@/sdk";
-import { FALLBACK_CURRENCY } from "@/game/display";
+import { useClientConfig, useMoney } from "@/hooks";
 import { freebetStake, remainingBets, totalBets } from "@/game/freerounds";
 import { FreeBetAmount } from "./FreeBetAmount";
 import styles from "./BetArea.module.css";
-import { AMOUNT_PRESETS } from "./BetArea.constants";
+import { DEFAULT_BET_STEP, FALLBACK_QUICK_STAKES } from "./BetArea.constants";
 import type { BetAreaProps } from "./BetArea.types";
 
 /** What the primary button shows and does for the variant the SDK reports. */
@@ -38,12 +39,10 @@ interface ButtonFace {
 
 /** Variants that are a settled or in-flight action rather than an offer. */
 const COMMITTED: readonly BetButtonVariant[] = [
-  BetButtonVariant.Sending,
   BetButtonVariant.Cancel,
   BetButtonVariant.CancelWaiting,
   BetButtonVariant.Cashout,
   BetButtonVariant.CashingOut,
-  BetButtonVariant.Cancelling,
   BetButtonVariant.Lost,
 ];
 
@@ -56,8 +55,10 @@ export const BetArea = ({
   const { t } = useTranslation();
   const { open } = useModal();
   const config = useGameConfig();
-  const currency = config?.currency ?? FALLBACK_CURRENCY;
+  const clientConfig = useClientConfig();
+  const { currency, format } = useMoney();
   const multiplier = useMultiplier();
+  const balance = useBalance();
 
   const {
     slotState,
@@ -71,9 +72,9 @@ export const BetArea = ({
   } = useBettingSlot(slot);
 
   // The panel runs on `useBettingSlot` — it is the hook that sends
-  // `autoCashoutAt` with the bet and holds the target to a grant's floor. The
-  // configuration dialog needs the round presets and Reset, which live on
-  // `useAutoPlay`; both read the same slice, so the two stay in step.
+  // `autoCashoutAt` with the bet. The configuration dialog needs the round
+  // presets and Reset, which live on `useAutoPlay`; both read the same engine,
+  // so the two stay in step.
   const autoPlay = useAutoPlay(slot);
 
   const { state: freeround } = useFreerounds();
@@ -84,8 +85,41 @@ export const BetArea = ({
 
   const { buttonVariant, isButtonDisabled, bet, betInputAmount } = slotState;
 
+  const minBet = config?.minBet ?? 0;
+  const maxBet = config?.maxBet;
+  const step = clientConfig?.betStep ?? DEFAULT_BET_STEP;
+
+  /**
+   * The stake chips.
+   *
+   * `speedButtons` is the operator's list — exactly three, each with a label
+   * that is only a label and a value that everything is computed from. `Max`
+   * closes the row and is a calculation, not a preset: as much as the player
+   * has, capped by the table maximum and floored at the minimum, so a zero
+   * balance still offers a legal bet rather than nothing.
+   */
+  const presets = useMemo(() => {
+    const quick = clientConfig?.speedButtons?.length
+      ? clientConfig.speedButtons.map((button) => ({
+          key: button.key,
+          label: button.title,
+          value: button.value,
+        }))
+      : FALLBACK_QUICK_STAKES.map((value) => ({
+          key: String(value),
+          label: String(value),
+          value,
+        }));
+
+    const ceiling = maxBet ?? Number.POSITIVE_INFINITY;
+    const max = Math.max(minBet, Math.min(ceiling, balance));
+
+    return [...quick, { key: "max", label: t("bet.presetMax"), value: max }];
+  }, [clientConfig, minBet, maxBet, balance, t]);
+
   // What the next bet will actually cost: a bound grant dictates the stake for
-  // fixed grants and bounds it for range ones.
+  // fixed grants and bounds it — by its own balance as well as `betMax` — for
+  // range ones. The SDK clamps neither, so an unclamped amount is a rejection.
   const stake = freeround
     ? freebetStake(freeround, betInputAmount)
     : betInputAmount;
@@ -93,62 +127,82 @@ export const BetArea = ({
   // The slot is committed once the button is anything but an offer to bet: the
   // stake and the auto settings are what that bet was struck on, so they freeze
   // until it resolves.
-  const committed = COMMITTED.includes(buttonVariant);
+  const committed = COMMITTED.includes(buttonVariant) || slotState.isSending;
   const inputsDisabled = committed || isAutoPlayActive;
 
   const settledAmount = bet?.amount ?? stake;
   const liveCashout = (bet?.amount ?? 0) * multiplier;
 
   /**
+   * A grant's floor is the server's rule, and the SDK does not enforce it: a
+   * cashout below `minCashout` is sent and comes back an error. Holding the
+   * button is the only thing that keeps that from happening.
+   */
+  const belowFreebetFloor =
+    onFreeBet &&
+    freeround != null &&
+    Boolean(bet?.freeroundGrantId) &&
+    multiplier < freeround.minCashout;
+
+  /**
    * The button is rendered, not reasoned about. `buttonVariant` and
    * `isButtonDisabled` come from the SDK's `computeButtonVariant()`, which
    * already folds in phase, bet state, in-flight requests and the freeze
    * detector — everything this component used to work out for itself.
+   *
+   * `Freebet` is the one variant the skin supplies: the SDK never returns it,
+   * and its documented place is standing in for `Bet` while a grant is bound.
    */
+  const face: BetButtonVariant =
+    onFreeBet && buttonVariant === BetButtonVariant.Bet
+      ? BetButtonVariant.Freebet
+      : buttonVariant;
+
   const button: ButtonFace = (() => {
-    switch (buttonVariant) {
+    switch (face) {
       case BetButtonVariant.Cashout:
         return {
           label: t("bet.cashOut"),
-          amount: liveCashout.toFixed(2),
+          amount: format(liveCashout),
           onClick: cashout,
         };
       case BetButtonVariant.CashingOut:
         return {
           label: t("bet.cashingOut"),
-          amount: liveCashout.toFixed(2),
+          amount: format(liveCashout),
         };
       case BetButtonVariant.Cancel:
         return {
           label: t("bet.cancel"),
-          amount: settledAmount.toFixed(2),
-          onClick: cancelBet,
-        };
-      case BetButtonVariant.Cancelling:
-        return {
-          label: t("bet.cancelling"),
-          amount: settledAmount.toFixed(2),
+          amount: format(settledAmount),
+          // Sent but not yet acknowledged: the SDK shows Cancel disabled, so
+          // the player can see the bet went out without being able to pull it.
+          onClick: slotState.isSending ? undefined : cancelBet,
         };
       case BetButtonVariant.CancelWaiting:
+        // Enabled in FLYING and CRASHED, and a click has two jobs: drop the
+        // queued bet and stop the run that would queue the next one.
         return {
           label: t("bet.cancel"),
           text: t("bet.waitingForNextRound"),
+          onClick: () => {
+            onStopAutoPlay();
+            cancelBet();
+          },
         };
-      case BetButtonVariant.Sending:
-        return { label: t("bet.sending"), amount: stake.toFixed(2) };
       case BetButtonVariant.Lost:
-        return { label: t("bet.lost"), amount: settledAmount.toFixed(2) };
+        return { label: t("bet.lost"), amount: format(settledAmount) };
       case BetButtonVariant.Freebet:
         return {
           label: t("common.freeBet"),
-          amount: stake.toFixed(2),
+          amount: format(stake),
           onClick: () => onBet(stake),
         };
       case BetButtonVariant.Bet:
       default:
         return {
           label: t("bet.bet"),
-          amount: stake.toFixed(2),
+          amount: format(stake),
           onClick: () => onBet(stake),
         };
     }
@@ -188,7 +242,7 @@ export const BetArea = ({
           {freeround && !rangeFreeBet ? (
             <FreeBetAmount
               className={styles["bet-area__stepper"]}
-              amount={String(freeround.betAmount)}
+              amount={format(freeround.betAmount)}
               currency={currency}
               remaining={remainingBets(freeround)}
               total={totalBets(freeround)}
@@ -199,19 +253,23 @@ export const BetArea = ({
             <Stepper
               className={styles["bet-area__stepper"]}
               value={betInputAmount}
-              min={freeround?.betMin ?? config?.minBet ?? 0}
-              max={freeround?.betMax ?? config?.maxBet}
-              step={1}
+              min={freeround?.betMin ?? minBet}
+              max={
+                freeround
+                  ? Math.min(freeround.betMax, freeround.balanceRemaining)
+                  : maxBet
+              }
+              step={step}
               disabled={inputsDisabled}
               onValueChange={onBetAmountChange}
             />
           )}
 
           <div className={styles["bet-area__presets"]}>
-            {AMOUNT_PRESETS.map((preset) => (
+            {presets.map((preset) => (
               <AmountButton
-                key={preset.value}
-                label={preset.labelKey ? t(preset.labelKey) : preset.label!}
+                key={preset.key}
+                label={preset.label}
                 active={betInputAmount === preset.value}
                 disabled={inputsDisabled || onFreeBet}
                 onClick={() => onBetAmountChange(preset.value)}
@@ -222,14 +280,16 @@ export const BetArea = ({
 
         <BetButton
           className={styles["bet-area__bet"]}
-          variant={buttonVariant}
+          variant={face}
           size={Size.Web}
           label={button.label}
           amount={button.amount}
           text={button.text}
           currency={currency}
           onClick={button.onClick}
-          disabled={isButtonDisabled || freebetLocked}
+          disabled={
+            isButtonDisabled || freebetLocked || belowFreebetFloor || !button.onClick
+          }
         />
       </div>
 
@@ -272,7 +332,7 @@ export const BetArea = ({
           value={autoCashout.multiplier}
           /* A bound grant sets the floor: the server refuses a cashout below
              `minCashout`, so offering a lower target would only ever produce a
-             rejected bet. */
+             rejected bet. The SDK does not apply this itself. */
           min={freeround?.minCashout ?? 1.01}
           step={0.5}
           precision={2}
@@ -292,7 +352,6 @@ export const BetArea = ({
         <AutoBetContent
           autoPlay={autoPlay}
           betAmount={stake}
-          currency={currency}
           onClose={closeAutoModal}
         />
       </Modal>

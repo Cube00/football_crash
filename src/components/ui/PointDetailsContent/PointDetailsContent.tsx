@@ -11,9 +11,13 @@ export const PointDetailsContent = ({ point }: PointDetailsContentProps) => {
 
   // Every field is the round's own. A pill is only ever built from a finished
   // round, so the seed has been revealed by the time this can be opened.
+  //
+  // `crashAt` is the multiplier, not a time — the round's clock is
+  // `startTimeMs`, when it began. Confusing the two is on the SDK's own list of
+  // common mistakes.
   const roundId = point?.roundId ?? "";
   const multiplier = point ? `${point.crashAt.toFixed(2)}x` : "";
-  const date = formatDateTime(point?.timestamp, i18n.language);
+  const date = formatDateTime(point?.startTimeMs, i18n.language);
   const hash = point?.fairnessHash ?? "";
   const serverSeed = point?.serverSeed ?? "";
 

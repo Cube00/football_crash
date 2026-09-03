@@ -1,13 +1,23 @@
-import { settingsStore } from "./settingsStore";
-
 /**
  * UI sound effects.
  *
  * Playback is a plain module function rather than a hook: the controls that
  * make noise are leaf components, and every one of them would otherwise have to
- * thread the `sound` setting down from somewhere. `playSound` reads the setting
- * straight off the store at the moment of the click.
+ * thread the `sound` setting down from somewhere.
+ *
+ * The setting itself is the SDK's — `useSettings()` from `SettingsProvider`,
+ * which owns the three switches and their persistence. A React context cannot
+ * be read from a module function, so {@link setSoundEnabled} mirrors it here,
+ * which is the arrangement the SDK's own guide describes (a ref updated from
+ * the hook, read by the player). One writer only: `useSoundSettings`.
  */
+
+let soundEnabled = true;
+
+/** Mirrors `useSettings().settings.sound` for the module functions below. */
+export function setSoundEnabled(enabled: boolean) {
+  soundEnabled = enabled;
+}
 export const Sound = {
   /** Every small control — menu, toggles, steppers, presets. */
   SmallButton: "smallButton",
@@ -86,7 +96,7 @@ export function preloadSounds() {
 /** Warms the pools on the first pointer or key press, then gets out of the way. */
 export function preloadSoundsOnFirstGesture(): () => void {
   const warm = () => {
-    if (settingsStore.getSnapshot().sound) preloadSounds();
+    if (soundEnabled) preloadSounds();
     document.removeEventListener("pointerdown", warm);
     document.removeEventListener("keydown", warm);
   };
@@ -101,7 +111,7 @@ export function preloadSoundsOnFirstGesture(): () => void {
 }
 
 export function playSound(sound: Sound) {
-  if (!settingsStore.getSnapshot().sound) return;
+  if (!soundEnabled) return;
 
   const entry = pool(sound);
   if (!entry) return;

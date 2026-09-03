@@ -6,23 +6,15 @@ import { FreeBetButton } from "@/components/ui/FreeBetButton";
 import { MultiplierValue } from "@/components/ui/MultiplierValue";
 import { WinNotification } from "@/components/ui/WinNotification";
 import { useModal, ModalId } from "@/context/ModalProvider";
-import {
-  useAnimationEnabled,
-  useRoundCountdown,
-  useWinNotice,
-} from "@/hooks";
+import { useMoney, useRoundCountdown, useWinNotice } from "@/hooks";
 import {
   GamePhase,
   useFreerounds,
-  useGameConfig,
   useMultiplier,
   usePhase,
+  useSettings,
 } from "@/sdk";
-import {
-  FALLBACK_CURRENCY,
-  PHASE_DISPLAY,
-  WIN_NOTIFICATION_MS,
-} from "@/game/display";
+import { CRASH_FLASH_MS, WIN_NOTIFICATION_MS } from "@/game/display";
 import { remainingBets } from "@/game/freerounds";
 import styles from "./GameStage.module.css";
 import {
@@ -51,13 +43,16 @@ const PhaserGame = lazy(() =>
  * are never trapped inside the canvas.
  */
 export const GameStage = ({ className, ...rest }: GameStageProps) => {
-  const animated = useAnimationEnabled();
+  // The canvas switch is one of the SDK's three settings, alongside sound and
+  // music — it owns the value, this decides what to do with it.
+  const { settings } = useSettings();
+  const animated = settings.animation;
   const { open } = useModal();
   const phase = usePhase();
   const multiplier = useMultiplier();
-  const remainingMs = useRoundCountdown();
+  const { remainingMs, totalMs } = useRoundCountdown();
   const { win, dismiss } = useWinNotice();
-  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
+  const { currency, decimals } = useMoney();
   // Bets left across every grant the player holds — what the badge counts.
   const { grants } = useFreerounds();
   const freeBets = grants.reduce(
@@ -91,7 +86,7 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
         <div
           className={styles["game-stage__crash"]}
           style={
-            { "--crash-ms": `${PHASE_DISPLAY.crashedMs}ms` } as CSSProperties
+            { "--crash-ms": `${CRASH_FLASH_MS}ms` } as CSSProperties
           }
           aria-hidden="true"
         />
@@ -104,6 +99,7 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
             className={styles["game-stage__win"]}
             amount={win.amount}
             currency={currency}
+            decimals={decimals}
             durationMs={WIN_NOTIFICATION_MS}
             onClose={dismiss}
           />
@@ -112,10 +108,7 @@ export const GameStage = ({ className, ...rest }: GameStageProps) => {
 
       <div className={styles["game-stage__hud"]}>
         {betting ? (
-          <CountdownBar
-            remainingMs={remainingMs}
-            totalMs={PHASE_DISPLAY.bettingMs}
-          />
+          <CountdownBar remainingMs={remainingMs} totalMs={totalMs} />
         ) : (
           <MultiplierValue
             value={multiplier.toFixed(2)}

@@ -92,17 +92,27 @@ Also on: `noUnusedLocals`, `noUnusedParameters`,
 
 ## State
 
-Game state is read through selector hooks over external stores — there is no
-context for it, and adding one would be a step backwards:
+Game state is the SDK's, read through its hooks and imported from one place:
 
 ```ts
-const phase = usePhase();          // hooks/useGame.ts
-const slot = useSlot(BetSlot.Slot1);
-const { multiplier } = useTick();  // the high-frequency one, kept out of the store
+import { usePhase, useMultiplier, useBetting, BetSlot } from "@/sdk";
+
+const phase = usePhase();                          // re-renders on phase changes
+const multiplier = useMultiplier();                // ~10×/sec in FLYING
+const { slotState, placeBet } = useBetting(BetSlot.Slot1);
 ```
 
-Writes go one way only, through `gameActions` (`game/actions.ts`), which emits
-`cmd:*` events. A component never mutates engine state directly.
+Two rules follow from how those hooks subscribe:
+
+- **Take the narrowest hook that answers the question.** `useMultiplier()` in a
+  layout component re-renders the subtree ten times a second; put it in the leaf
+  that draws the number.
+- **Writes go through the same hooks** (`placeBet`, `cashout`, `cancelBet`,
+  `setBetAmount`) — a component never derives game state and never keeps its own
+  copy of it. For the canvas and the sound layer, use `client.on(...)` instead,
+  so Phaser never takes part in a React render.
+
+Skin state — modals, the open menu, a tab — stays local or in `context/`.
 
 **The React Compiler is enabled**, so components are auto-memoised. Two habits
 matter because of it:
@@ -116,12 +126,15 @@ matter because of it:
 
 ## Persistence
 
-One localStorage key, one module: `game/persistence.ts`. It stores bet amounts,
-auto-play config and the menu settings.
+The skin persists nothing. Bet amounts, the single/double layout, the auto-play
+config and the three menu settings are all stored by the SDK, keyed by user and
+game (or by session token, for the settings). `.claude/sdk-docs/02-configuration.md`
+lists every key it writes and, just as usefully, what it writes but never reads
+back: pending bets and active bets are not restored after a reload.
 
-Runtime state is deliberately never persisted — no active bets, no "auto-play is
-running" flag, no staked free bet. A reload should return you to a clean table
-with your preferences intact.
+Runtime state is deliberately never persisted anywhere — no active bets, no
+"auto-play is running" flag, no bound free bet. A reload returns you to a clean
+table with your preferences intact, and the server re-states the rest.
 
 ---
 

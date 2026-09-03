@@ -1,14 +1,19 @@
 /**
- * Formats an ISO timestamp for display.
+ * Formats a timestamp for display.
  *
  * The SDK hands over `expiresAt` / `accruedAt` / `completedAt` as ISO strings
  * (its own parser already smooths over the server sending epoch millis or a
- * native Date), so everything the UI has to do is present them. Returns an
- * empty string for anything unparseable rather than printing "Invalid Date".
+ * native Date), and round times — `startTimeMs`, `crash-history-item`'s
+ * `timestamp` — as epoch milliseconds. Both are accepted here so a caller never
+ * has to convert one into the other first. Returns an empty string for anything
+ * unparseable rather than printing "Invalid Date".
  */
-export function formatDateTime(iso: string | undefined, locale: string): string {
-  if (!iso) return "";
-  const date = new Date(iso);
+export function formatDateTime(
+  value: string | number | undefined,
+  locale: string,
+): string {
+  if (value === undefined || value === "") return "";
+  const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
   return new Intl.DateTimeFormat(locale, {

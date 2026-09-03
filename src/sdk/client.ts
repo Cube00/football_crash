@@ -1,7 +1,9 @@
 import type {
+  BetLayout,
   BetSlot,
   GameEventMap,
   GameEventName,
+  LaunchSession,
   PlaceBetOptions,
 } from "./types";
 
@@ -10,7 +12,12 @@ import type {
  *
  * TEMPORARY — see `types.ts`. Once `@krash/react` is installed, `useKrashClient()`
  * returns the real client and this interface can be replaced by the SDK's own.
- * The interface itself is written to match, so callers do not change.
+ * Signatures are transcribed from `.claude/sdk-docs/16-krashclient-api.md`, so
+ * callers do not change.
+ *
+ * Not mirrored here, because nothing in the skin needs them yet: `launch`,
+ * `destroy`, `store`, `clientConfig`, `getAutoPlay`, `getLaunchService`. Add a
+ * method when a call site appears — not before.
  */
 export interface KrashClient {
   /** Subscribe to a typed event. Returns an unsubscribe function. */
@@ -24,18 +31,33 @@ export interface KrashClient {
     handler: (payload: GameEventMap[E]) => void,
   ): void;
 
+  /* Betting */
   placeBet(slot: BetSlot, amount: number, options?: PlaceBetOptions): void;
   cashout(slot: BetSlot): void;
   cancelBet(slot: BetSlot): void;
+  /** The input value, unvalidated and persisted. Auto-play bets read it. */
+  setBetInputAmount(slot: BetSlot, amount: number): void;
+  setBetLayout(layout: BetLayout): void;
+  /** Clears `winAmount`/`winTimestamp` — the win toast closing. */
+  clearWin(): void;
 
+  /** Required after `engine.start()`: `start` does not touch the store. */
+  notifyAutoPlayChanged(): void;
+
+  /* Free rounds */
   bindFreeround(grantId: string): void;
   unbindFreeround(): void;
+  /** Heavy server-side; the response holds AVAILABLE grants only. */
   getFreerounds(): void;
   getFreeroundHistory(page?: number, pageSize?: number): void;
   acknowledgeFreeroundSummary(): void;
 
-  getHistory(): void;
-  getMyHistory(): void;
+  /* History — both answer with an event, neither writes the store */
+  getHistory(limit?: number): void;
+  getMyHistory(limit?: number, offset?: number): void;
+
+  /** The launch session; `sessionToken` for `fetchRecoveryBets`. */
+  getSession(): LaunchSession | null;
 }
 
 const noop = () => {};
@@ -53,6 +75,10 @@ export const placeholderClient: KrashClient = {
   placeBet: noop,
   cashout: noop,
   cancelBet: noop,
+  setBetInputAmount: noop,
+  setBetLayout: noop,
+  clearWin: noop,
+  notifyAutoPlayChanged: noop,
   bindFreeround: noop,
   unbindFreeround: noop,
   getFreerounds: noop,
@@ -60,4 +86,5 @@ export const placeholderClient: KrashClient = {
   acknowledgeFreeroundSummary: noop,
   getHistory: noop,
   getMyHistory: noop,
+  getSession: () => null,
 };

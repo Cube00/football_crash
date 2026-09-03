@@ -1,6 +1,5 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./locales/en.json";
 import ka from "./locales/ka.json";
 
@@ -21,23 +20,25 @@ export const resources = {
   ka: { translation: ka },
 } as const;
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: DEFAULT_LANGUAGE,
-    supportedLngs: SUPPORTED_LANGUAGES,
-    // React escapes for us; escaping again would mangle currency and names.
-    interpolation: { escapeValue: false },
-    detection: {
-      // `?lng=ka` wins, so a lobby can hand the game its language in the URL;
-      // the player's own choice is remembered after that.
-      order: ["querystring", "localStorage", "navigator"],
-      lookupQuerystring: "lng",
-      lookupLocalStorage: "football-crash:lang",
-      caches: ["localStorage"],
-    },
-  });
+/**
+ * No language detector.
+ *
+ * Choosing the language is the SDK's: the lobby hands the game a `?lang` in the
+ * launch URL, `LaunchService` reads it for the session and `LanguageProvider`
+ * reads it for the UI, keeping the parameter in step from then on. A second
+ * detector here — on a different parameter, with its own localStorage memory —
+ * could only disagree with that, and the disagreement would be silent.
+ *
+ * i18next therefore starts on the fallback and is switched by
+ * `I18nLanguageProvider` on its first render, before anything is painted.
+ */
+i18n.use(initReactI18next).init({
+  resources,
+  lng: DEFAULT_LANGUAGE,
+  fallbackLng: DEFAULT_LANGUAGE,
+  supportedLngs: SUPPORTED_LANGUAGES,
+  // React escapes for us; escaping again would mangle currency and names.
+  interpolation: { escapeValue: false },
+});
 
 export default i18n;

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { TranslationKey } from "@/i18n/types";
 import { cx } from "@/utils";
 import { playSound, Sound } from "@/game/sounds";
+import { useMoney } from "@/hooks";
 import { Stepper, StepperSize } from "../Stepper";
 import { Checkbox } from "../Checkbox";
 import type { AutoPlayReturn, StopCondition } from "@/sdk";
@@ -11,7 +12,6 @@ interface AutoBetContentProps {
   autoPlay: AutoPlayReturn;
   /** Current per-round stake, for the Bet / Total readout. */
   betAmount: number;
-  currency: string;
   /** Closes the modal after Start. */
   onClose: () => void;
 }
@@ -32,10 +32,10 @@ const STOP_FIELDS: Array<{ key: StopKey; labelKey: TranslationKey }> = [
 export const AutoBetContent = ({
   autoPlay,
   betAmount,
-  currency,
   onClose,
 }: AutoBetContentProps) => {
   const { t } = useTranslation();
+  const { currency, format } = useMoney();
   const { config, updateConfig, isActive, reset, start, stop, selectRounds, roundOptions } =
     autoPlay;
   const total = betAmount * config.rounds;
@@ -81,13 +81,13 @@ export const AutoBetContent = ({
         <span className={styles["auto-bet__summary-item"]}>
           {t("autoBet.betLabel")}{" "}
           <span className={styles["auto-bet__amount"]}>
-            {betAmount.toFixed(2)} {currency}
+            {format(betAmount)} {currency}
           </span>
         </span>
         <span className={styles["auto-bet__summary-item"]}>
           {t("autoBet.totalLabel")}{" "}
           <span className={styles["auto-bet__amount"]}>
-            {total.toFixed(2)} {currency}
+            {format(total)} {currency}
           </span>
         </span>
       </div>

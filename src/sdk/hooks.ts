@@ -18,6 +18,7 @@ import type {
   FreeroundSummaryPayload,
   GameConfig,
   GameHistoryItem,
+  LaunchSession,
   MyHistoryRound,
   PlaceBetOptions,
   SlotSnapshot,
@@ -39,40 +40,78 @@ import type {
  *     } from "@krash/react";
  *
  * and every consumer keeps working untouched. That is the whole point of the
- * signatures being exact.
+ * signatures being exact — they are transcribed from
+ * `.claude/sdk-docs/06-hooks-reference.md`.
  *
  * Do not add logic here. A stub that starts computing is a second engine, and
- * a second engine is what we just spent this pass deleting.
+ * a second engine is what we spent two passes deleting. Browser-only utilities
+ * are the exception and live in `dom.ts` / `contexts.tsx`, which say why.
+ *
+ * Hooks the SDK ships and the skin does not use yet — `useKrashGame`,
+ * `useCurrencyMode`, `useIsMultiCurrency`, `useHasActiveBets` — are left out on
+ * purpose. Mirror one when a call site appears.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
+/**
+ * Whether the real packages are behind this barrel.
+ *
+ * The one place the skin is allowed to ask. It exists because a gate that waits
+ * for server state — `LaunchGate` waiting for `GameConfig` — would wait forever
+ * against a placeholder that has no server to answer it. Flip it to `true` (or
+ * delete it together with the branch it guards) as part of the install.
+ */
+export const SDK_INSTALLED = false;
+
 /* ── Provider ────────────────────────────────────────────────────────── */
 
-export interface KrashStateSnapshot {
+/**
+ * What `useKrashState()` returns.
+ *
+ * `launchStatus` reaching `Ready` means the REST launch finished and the socket
+ * connect *started* — not that the game is playable. The loader gate also needs
+ * a connected socket and a `GameConfig` (`01-getting-started.md`).
+ */
+export interface KrashProviderState {
+  client: KrashClient;
   launchStatus: LaunchStatus;
+  session: LaunchSession | null;
   launchError: string | null;
-  /** Set once the session is exchanged. */
-  sessionToken: string | null;
-  username: string | null;
+  /** `session.mode === 'demo'`; before the session, read from the URL. */
+  isDemo: boolean;
+  /** From the launch URL, read once on mount. */
+  lobbyUrl: string | null;
+  exitUrl: string | null;
+  /**
+   * New demo session + relaunch. Never call it in a real-money session — it
+   * swaps the player into demo; use `location.reload()` there.
+   */
+  relaunchDemo: () => Promise<void>;
 }
 
-const KRASH_STATE: KrashStateSnapshot = Object.freeze({
+const noop = () => {};
+
+const KRASH_STATE: KrashProviderState = Object.freeze({
+  client: placeholderClient,
   /**
    * `Ready`, not `Loading`, so the skin renders while the SDK is absent. Once
    * `KrashProvider` is mounted this becomes the real launch status and the
-   * loader gate in `App` starts doing its job.
+   * loader gate in `LaunchGate` starts doing its job.
    */
   launchStatus: LaunchStatus.Ready,
+  session: null,
   launchError: null,
-  sessionToken: null,
-  username: null,
+  isDemo: false,
+  lobbyUrl: null,
+  exitUrl: null,
+  relaunchDemo: () => Promise.resolve(),
 });
 
 export function useKrashClient(): KrashClient {
   return placeholderClient;
 }
 
-export function useKrashState(): KrashStateSnapshot {
+export function useKrashState(): KrashProviderState {
   return KRASH_STATE;
 }
 
@@ -95,6 +134,7 @@ export function useCrashedAt(): number | null {
   return null;
 }
 
+/** `null` until the `game-config` response arrives. */
 export function useGameConfig(): GameConfig | null {
   return null;
 }
@@ -120,28 +160,33 @@ export function useConnectionStatus(): ConnectionStatus {
 
 export interface WinDisplay {
   winAmount: number | null;
-  winTimestamp: number | null;
+  /** `Date.now()` at the cashout; `0` when there is no win. */
+  winTimestamp: number;
   clearWin: () => void;
 }
 
-const noop = () => {};
-
 const WIN_DISPLAY: WinDisplay = Object.freeze({
   winAmount: null,
-  winTimestamp: null,
+  winTimestamp: 0,
   clearWin: noop,
 });
 
-/** The player's most recent cashout, for the win notice. */
+/**
+ * The player's most recent cashout. One value shared by both slots — on a
+ * simultaneous double cashout only the last payout lands here.
+ */
 export function useWinDisplay(): WinDisplay {
   return WIN_DISPLAY;
 }
 
 /* ── Betting ─────────────────────────────────────────────────────────── */
 
+/** The SDK's own starting input amount (`BettingEngine.ts:30`). */
+const DEFAULT_BET_INPUT_AMOUNT = 5;
+
 const IDLE_SLOT: SlotSnapshot = Object.freeze({
   bet: null,
-  betInputAmount: 0,
+  betInputAmount: DEFAULT_BET_INPUT_AMOUNT,
   hasPendingBet: false,
   betFailed: false,
   buttonVariant: BetButtonVariant.Bet,
@@ -197,9 +242,10 @@ export interface BettingSlotReturn {
   updateAutoPlayConfig: (partial: Partial<AutoPlayConfig>) => void;
 }
 
+/** The engine's own defaults (`AutoPlayEngine.ts:15-22`). */
 export const DEFAULT_AUTO_PLAY_CONFIG: AutoPlayConfig = Object.freeze({
   isEnabled: false,
-  rounds: 20,
+  rounds: 0,
   autoCashOut: { enabled: false, multiplier: 2 },
   stopOnCashDecrease: { enabled: false, amount: 0 },
   stopOnCashIncrease: { enabled: false, amount: 0 },
@@ -210,8 +256,9 @@ export const DEFAULT_AUTO_PLAY_CONFIG: AutoPlayConfig = Object.freeze({
  * Betting + auto-play + auto-cashout for one slot.
  *
  * Preferred over `useBetting` wherever the panel also owns an auto-cashout
- * control: this is the hook that sends `autoCashoutAt` on placement and holds
- * the multiplier to a bound grant's `minCashout` floor.
+ * control: this is the hook that sends `autoCashoutAt` on placement. It does
+ * **not** know about a grant's `minCashout` — holding the target above that
+ * floor is the skin's job.
  */
 export function useBettingSlot(slot: BetSlot): BettingSlotReturn {
   return useMemo(
@@ -235,8 +282,6 @@ export function useBettingSlot(slot: BetSlot): BettingSlotReturn {
       onStopAutoPlay: noop,
       updateAutoPlayConfig: noop,
     }),
-    // `slot` is listed because the real hook is per-slot; the placeholder has
-    // no slot-specific value to return yet, so the linter sees it as unused.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [slot],
   );
@@ -261,17 +306,20 @@ export function useBetLayout(): BetLayoutReturn {
 export interface AutoPlayReturn {
   config: AutoPlayConfig;
   isActive: boolean;
-  /** Rounds left; counts down. */
+  /** Rounds left; counts down. The engine's own counter counts up. */
   currentRound: number;
   totalRounds: number;
   remainingRounds: number;
   /** Preset round counts offered in the UI. */
   roundOptions: readonly number[];
+  /** Also syncs the button variant; in BETTING_OPEN it bets within 20 ms. */
   start: (rounds: number) => void;
   stop: (reason?: AutoPlayStopReason) => void;
+  /** Shallow merge — always spread the nested objects. */
   updateConfig: (partial: Partial<AutoPlayConfig>) => void;
   /** Sets the round count without starting. */
   selectRounds: (rounds: number) => void;
+  /** Everything to default except `autoCashOut`; emits no stop event. */
   reset: () => void;
 }
 
@@ -292,8 +340,6 @@ export function useAutoPlay(slot: BetSlot): AutoPlayReturn {
       selectRounds: noop,
       reset: noop,
     }),
-    // `slot` is listed because the real hook is per-slot; the placeholder has
-    // no slot-specific value to return yet, so the linter sees it as unused.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [slot],
   );
@@ -305,15 +351,17 @@ export interface FreeroundsReturn {
   /** The bound grant — the only place to read its kind, amounts and floor. */
   state: FreeroundState | null;
   isActive: boolean;
-  /** AVAILABLE + IN_PROGRESS. */
+  /** The server returns AVAILABLE only; the SDK mirrors the active one in. */
   grants: readonly FreeroundGrant[];
   history: readonly FreeroundHistoryEntry[];
   /** Set from `freeround-summary` only — this is what opens the modal. */
   lastCompleted: FreeroundSummaryPayload | null;
   bind: (grantId: string) => void;
   unbind: () => void;
+  /** Heavy — call it when the picker opens, not on a timer. */
   refresh: () => void;
   loadHistory: (page?: number, pageSize?: number) => void;
+  /** Mandatory on close, or the next summary for this grant is deduped away. */
   acknowledgeCompleted: () => void;
 }
 
@@ -341,9 +389,18 @@ export function useFreerounds(): FreeroundsReturn {
 
 export interface GameHistoryReturn {
   items: readonly GameHistoryItem[];
-  fetch: () => void;
+  /** `GetHistory { limit }`; the response replaces the whole list. */
+  fetch: (limit?: number) => void;
 }
 
+/**
+ * The crash history, as the server last answered it.
+ *
+ * It has **no cache and no live growth**: every instance starts empty, sees
+ * only the `game-history` events after its own mount, and does not react to
+ * `crash-history-item`. Merging the live crashes in is the skin's job — see
+ * `useCrashHistory`.
+ */
 const GAME_HISTORY: GameHistoryReturn = Object.freeze({
   items: Object.freeze([]) as readonly GameHistoryItem[],
   fetch: noop,
@@ -355,10 +412,12 @@ export function useGameHistory(): GameHistoryReturn {
 
 export interface MyBetsReturn {
   rounds: readonly MyHistoryRound[];
+  /** Total rows on the server, for paging. */
   total: number;
-  fetch: () => void;
+  fetch: (limit?: number, offset?: number) => void;
 }
 
+/** Module-level cache in the real hook — a remount shows the last data at once. */
 const MY_BETS: MyBetsReturn = Object.freeze({
   rounds: Object.freeze([]) as readonly MyHistoryRound[],
   total: 0,

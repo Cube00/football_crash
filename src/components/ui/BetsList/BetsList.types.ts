@@ -18,15 +18,15 @@ export interface BetRow {
 /**
  * The round totals bar.
  *
- * TODO(sdk): nothing in the SDK produces these. `useMyBets()` returns settled
- * rounds and a `total`, but not staked-versus-won totals for the current round.
- * Confirm with the integration team whether an endpoint exists; until then no
- * caller can fill this in and the bar stays unmounted.
+ * There is no endpoint behind these and there is not meant to be: the SDK's
+ * feed chapter has the footer counted from the rows the client already holds —
+ * how many of this round's bets have cashed out, and what they took. The
+ * caller computes it from the same list it passes as `rows`.
  */
 export interface BetsSummary {
-  /** Bets placed in this round. */
+  /** Bets that have cashed out. */
   placed: number;
-  /** Total bets available. */
+  /** Bets in the round. */
   total: number;
   /** Total amount staked. */
   totalBet: number;
@@ -38,5 +38,7 @@ export interface BetsListProps extends HTMLAttributes<HTMLDivElement> {
   rows?: BetRow[];
   summary?: BetsSummary;
   currency?: string;
+  /** The operator's `currencyMinorUnits`. */
+  decimals?: number;
   variant?: BetsListVariant;
 }

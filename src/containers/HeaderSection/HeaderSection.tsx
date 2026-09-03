@@ -1,15 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Header } from "@/components/layout";
 import { Balance } from "@/components/ui/Balance";
 import { MenuButton } from "@/components/ui/MenuButton";
 import { Menu, MENU_ITEMS, MenuItemId } from "@/components/ui/Menu";
-import { useOnEscape, useSettings } from "@/hooks";
-import { useBalance, useGameConfig } from "@/sdk";
+import { useMoney, useOnEscape } from "@/hooks";
+import { useBalance, useClickOutside, useSettings } from "@/sdk";
+import type { GameSettings } from "@/sdk";
 import { useModal, ModalId } from "@/context/ModalProvider";
-import { FALLBACK_CURRENCY } from "@/game/display";
-import { settingsStore } from "@/game/settingsStore";
 import { playSound, Sound } from "@/game/sounds";
-import type { Settings } from "@/game/settingsStore";
 import styles from "./HeaderSection.module.css";
 
 /** Which menu rows open which modal. Rows left out are toggles. */
@@ -27,29 +25,22 @@ const MENU_MODALS: Partial<Record<string, ModalId>> = {
  */
 export const HeaderSection = () => {
   const balance = useBalance();
-  const currency = useGameConfig()?.currency ?? FALLBACK_CURRENCY;
+  const { currency, decimals } = useMoney();
   const { open } = useModal();
   const [menuOpen, setMenuOpen] = useState(false);
-  // Shared, not local: the game area reads `animation` to decide whether to run
-  // the canvas at all.
-  const settings = useSettings();
+  // The three switches are the SDK's: it owns their defaults, the
+  // `?extraParams` override the operator can launch with, and their storage.
+  const { settings, updateSetting } = useSettings();
   const rootRef = useRef<HTMLDivElement>(null);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
   useOnEscape(closeMenu, menuOpen);
-
-  // Dismiss on any press outside the menu or its button.
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) closeMenu();
-    };
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [menuOpen, closeMenu]);
+  // The root holds the button as well as the menu, so a press on the button
+  // reaches its own toggle instead of being read as "outside".
+  useClickOutside(rootRef, closeMenu, menuOpen);
 
   const handleToggle = (id: string, checked: boolean) => {
-    settingsStore.set(id as keyof Settings, checked);
+    updateSetting(id as keyof GameSettings, checked);
     // The Toggle plays its own click, but not this one: at the moment it fired,
     // sound was still off. Answer after the setting lands so switching sound on
     // is confirmed the same way switching it off is.
@@ -65,7 +56,7 @@ export const HeaderSection = () => {
   return (
     <Header>
       <div className={styles["header-section"]} ref={rootRef}>
-        <Balance amount={balance} currency={currency} />
+        <Balance amount={balance} currency={currency} decimals={decimals} />
         <MenuButton
           open={menuOpen}
           onClick={() => setMenuOpen((wasOpen) => !wasOpen)}

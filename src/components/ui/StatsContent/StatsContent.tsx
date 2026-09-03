@@ -5,7 +5,8 @@ import { Size } from "@/constants";
 import { Tabs, TabsVariant } from "../Tabs";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { MultiplierDistribution } from "../MultiplierDistribution";
-import { useGameHistory } from "@/sdk";
+import { ConnectionState, useConnectionStatus } from "@/sdk";
+import { useCrashHistory } from "@/hooks";
 import styles from "./StatsContent.module.css";
 import {
   MULTIPLIER_THRESHOLDS,
@@ -20,43 +21,43 @@ const variantFor = (multiplier: number): MultiplierButtonVariant =>
   MULTIPLIER_THRESHOLDS.find(({ min }) => multiplier >= min)?.variant ??
   MultiplierButtonVariant.White;
 
-export const StatsContent = ({
-  multipliers,
-  roundsHistory,
-  rounds,
-  onRoundsChange,
-  className,
-  ...rest
-}: StatsContentProps) => {
+/**
+ * Crash statistics: the same finished rounds as a grid of pills and as a
+ * distribution across multiplier bands.
+ *
+ * The window is the server's, not a slice taken here. `getHistory(limit)` is
+ * how many rounds to send, so the rounds selector asks for a new list rather
+ * than trimming the one it has — a client-side slice can only ever shrink what
+ * arrived, and what arrives by default is fifty.
+ *
+ * The bands and their percentages are the skin's: no endpoint computes them,
+ * and the SDK says so plainly.
+ */
+export const StatsContent = ({ className, ...rest }: StatsContentProps) => {
   const { t } = useTranslation();
-  const { items, fetch } = useGameHistory();
-
-  // Both views read the same finished rounds: the grid shows each crash as a
-  // pill, the chart plots them oldest-first. Props still win, so a caller can
-  // pass a different window without this hook fighting it.
-  const crashes = useMemo(() => items.map((item) => item.crashAt), [items]);
-  const pills = multipliers ?? crashes;
-  const chart = roundsHistory ?? [...crashes].reverse();
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
+  const { rounds: history, fetch } = useCrashHistory();
+  const { state } = useConnectionStatus();
 
   const [activeTab, setActiveTab] = useState<string>(StatsTab.Stats);
-  const [internalRounds, setInternalRounds] = useState<number>(
-    STATS_DEFAULTS.rounds,
+  const [rounds, setRounds] = useState<number>(STATS_DEFAULTS.rounds);
+
+  // Also on reconnect: JoinCrashOk re-requests the default fifty, which would
+  // silently shrink a window the player had widened.
+  useEffect(() => {
+    if (state === ConnectionState.Connected) fetch(rounds);
+  }, [fetch, rounds, state]);
+
+  const crashes = useMemo(
+    () => history.map((round) => round.crashAt),
+    [history],
   );
-  const activeRounds = rounds ?? internalRounds;
+  // The grid reads newest first, the chart oldest first.
+  const chart = useMemo(() => [...crashes].reverse(), [crashes]);
 
   const tabs = useMemo(
     () => STATS_TABS.map(({ labelKey, value }) => ({ label: t(labelKey), value })),
     [t],
   );
-
-  const selectRounds = (next: number) => {
-    setInternalRounds(next);
-    onRoundsChange?.(next);
-  };
 
   return (
     <div className={cx(styles["stats-content"], className)} {...rest}>
@@ -69,17 +70,17 @@ export const StatsContent = ({
 
       {activeTab === StatsTab.Stats ? (
         <div className={styles["stats-content__grid"]}>
-          {pills.map((multiplier, index) => (
+          {history.map((round) => (
             <MultiplierButton
-              key={index}
-              label={`${multiplier.toFixed(2)}x`}
-              variant={variantFor(multiplier)}
+              key={round.roundId}
+              label={`${round.crashAt.toFixed(2)}x`}
+              variant={variantFor(round.crashAt)}
               size={Size.Web}
             />
           ))}
         </div>
       ) : (
-        <MultiplierDistribution data={chart.slice(-activeRounds)} />
+        <MultiplierDistribution data={chart} />
       )}
 
       <div className={styles["stats-content__footer"]}>
@@ -93,10 +94,10 @@ export const StatsContent = ({
               key={option}
               className={cx(
                 styles["stats-content__round"],
-                option === activeRounds &&
-                  styles["stats-content__round--active"],
+                option === rounds && styles["stats-content__round--active"],
               )}
-              onClick={() => selectRounds(option)}
+              aria-pressed={option === rounds}
+              onClick={() => setRounds(option)}
             >
               {option}
             </button>

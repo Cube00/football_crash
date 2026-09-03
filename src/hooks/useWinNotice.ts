@@ -11,21 +11,24 @@ export interface WinNotice {
 /**
  * The player's most recent cashout, held for {@link WIN_NOTIFICATION_MS}.
  *
- * The win itself comes from the SDK (`useWinDisplay`); all this adds is the
- * dismissal timer, which is a presentation decision the SDK has no view on.
+ * The win itself comes from the SDK (`useWinDisplay`), which also clears it at
+ * the next `BETTING_OPEN`. All this adds is the dismissal timer, which is a
+ * presentation decision the SDK has no view on.
+ *
+ * `winTimestamp` is the identity of a win, not decoration: two cashouts of the
+ * same amount are two notices, and only the timestamp tells them apart.
  */
 export function useWinNotice(): {
   win: WinNotice | null;
   dismiss: () => void;
 } {
   const { winAmount, winTimestamp, clearWin } = useWinDisplay();
-  const [dismissed, setDismissed] = useState<number | null>(null);
+  const [dismissed, setDismissed] = useState(0);
 
-  const showing =
-    winAmount != null && winTimestamp != null && dismissed !== winTimestamp;
+  const showing = winAmount != null && dismissed !== winTimestamp;
 
   useEffect(() => {
-    if (!showing || winTimestamp == null) return;
+    if (!showing) return;
     const timer = setTimeout(() => {
       setDismissed(winTimestamp);
       clearWin();
@@ -38,7 +41,7 @@ export function useWinNotice(): {
     clearWin();
   }, [winTimestamp, clearWin]);
 
-  if (!showing || winAmount == null || winTimestamp == null) {
+  if (!showing || winAmount == null) {
     return { win: null, dismiss };
   }
   return { win: { key: winTimestamp, amount: winAmount }, dismiss };

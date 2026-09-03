@@ -12,7 +12,6 @@
   "dependencies": {
     "@esotericsoftware/spine-phaser-v3": "~4.2.95",
     "i18next": "^26.3.6",
-    "i18next-browser-languagedetector": "^8.2.1",
     "phaser": "^3.90.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

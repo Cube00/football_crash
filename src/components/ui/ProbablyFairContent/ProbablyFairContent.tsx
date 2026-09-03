@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import type { TranslationKey } from "@/i18n/types";
 import { cx } from "@/utils";
-import { useLiveFairness } from "@/hooks";
-import { useGameHistory } from "@/sdk";
+import { useCrashHistory, useLiveFairness } from "@/hooks";
+
 import styles from "./ProbablyFairContent.module.css";
 import {
   FAIRNESS_PARAMETERS,
@@ -87,9 +87,11 @@ const FactList = ({
 export const ProbablyFairContent = () => {
   const { t } = useTranslation();
   const live = useLiveFairness();
-  const { items } = useGameHistory();
-  // The most recent finished round is the one whose seed has been revealed.
-  const revealed = items[0];
+  // The most recent finished round is the one whose seed has been revealed —
+  // and it has to be the merged history, or the round that just crashed is
+  // missing from it until the server is asked again.
+  const { rounds } = useCrashHistory();
+  const revealed = rounds[0];
 
   /**
    * Before the round runs, the server has committed to a crash point but not
