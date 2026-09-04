@@ -33,8 +33,11 @@ export type MenuItem = MenuToggleItem | MenuActionItem;
 export interface MenuProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "onToggle"> {
   items: readonly MenuItem[];
-  /** Current state of every toggle row, keyed by item id. */
-  toggles: Readonly<Record<string, boolean>>;
+  /**
+   * Current state of every toggle row, keyed by item id — the SDK's
+   * `GameSettings` as it stands, whose keys are the toggle rows' ids.
+   */
+  toggles: Readonly<Partial<Record<string, boolean>>>;
   onToggle: (id: string, checked: boolean) => void;
   onSelect: (id: string) => void;
 }

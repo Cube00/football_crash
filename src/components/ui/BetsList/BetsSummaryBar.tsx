@@ -4,16 +4,17 @@ import styles from "./BetsSummaryBar.module.css";
 import { BETS_LIST_DEFAULTS } from "./BetsList.constants";
 import type { BetsSummary } from "./BetsList.types";
 
-/** Formats an amount as `1.436.24` — dot-grouped thousands, two decimals. */
-const formatAmount = (value: number) => {
-  const [whole, fraction] = value.toFixed(2).split(".");
+/** Formats an amount as `1.436.24` — dot-grouped thousands, operator decimals. */
+const formatAmount = (value: number, decimals: number) => {
+  const [whole, fraction] = value.toFixed(decimals).split(".");
   const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `${grouped}.${fraction}`;
+  return fraction ? `${grouped}.${fraction}` : grouped;
 };
 
 interface BetsSummaryBarProps {
   summary: BetsSummary;
   currency?: string;
+  decimals?: number;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ interface BetsSummaryBarProps {
 export const BetsSummaryBar = ({
   summary,
   currency = BETS_LIST_DEFAULTS.currency,
+  decimals = BETS_LIST_DEFAULTS.decimals,
   className,
 }: BetsSummaryBarProps) => {
   const { t } = useTranslation();
@@ -48,7 +50,7 @@ export const BetsSummaryBar = ({
           {t("betsList.totalBets")}
         </span>
         <span className={styles["bets-summary-bar__value"]}>
-          {formatAmount(summary.totalBet)} {currency}
+          {formatAmount(summary.totalBet, decimals)} {currency}
         </span>
       </div>
 
@@ -62,7 +64,7 @@ export const BetsSummaryBar = ({
           {t("betsList.totalWin")}
         </span>
         <span className={styles["bets-summary-bar__value"]}>
-          {formatAmount(summary.totalWin)} {currency}
+          {formatAmount(summary.totalWin, decimals)} {currency}
         </span>
       </div>
     </div>

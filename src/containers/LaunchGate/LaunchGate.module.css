@@ -45,3 +45,11 @@
   font-size: var(--size-14);
   color: var(--color-text-white-60, rgba(255, 255, 255, 0.6));
 }
+
+/* Only shown when the lobby handed us a URL to go back to. */
+.launch-gate__link {
+  font-size: var(--size-14);
+  font-weight: 700;
+  color: var(--color-text-white-100, #fff);
+  text-decoration: underline;
+}

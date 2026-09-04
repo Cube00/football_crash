@@ -19,8 +19,8 @@ import type { RefObject } from "react";
  *
  *     export { useMediaQuery, useClickOutside } from "@krash/react";
  *
- * The signatures below match the ones the integration docs list, so no call
- * site changes.
+ * Signatures match `.claude/sdk-docs/06-hooks-reference.md`, so no call site
+ * changes.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
@@ -32,6 +32,12 @@ const MATCH_MEDIA_UNSUPPORTED = () => false;
  * Replaces the skin's old `useWindowSize` + `BREAKPOINT` table, which measured
  * the window and compared numbers by hand. The queries passed in must stay in
  * step with the `@media` rules in the CSS Modules — same values, same units.
+ *
+ * The SDK's version is `useState(false)` + an effect, so it reports `false` on
+ * the first render and the real value on the second. This one subscribes
+ * instead and is right immediately; anything that would flash under the SDK's
+ * version must not depend on the difference. For the device class use
+ * `useDevice()` — it decides synchronously on both sides of the seam.
  */
 export function useMediaQuery(query: string): boolean {
   const subscribe = (onChange: () => void) => {
@@ -46,38 +52,42 @@ export function useMediaQuery(query: string): boolean {
       ? window.matchMedia(query).matches
       : false;
 
-  return useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    MATCH_MEDIA_UNSUPPORTED,
-  );
+  return useSyncExternalStore(subscribe, getSnapshot, MATCH_MEDIA_UNSUPPORTED);
 }
 
 /**
- * Calls `handler` when a pointer press lands outside `ref`, while `enabled`.
+ * Calls `handler` when a press lands outside `ref`, while `enabled`.
  *
- * Listens on `pointerdown` rather than `click` so the dismissal fires before
- * the press turns into a click on whatever was underneath.
- *
- * TODO(sdk): the docs write this as `useClickOutside(ref, handler, ?, ?)` —
- * two further parameters they do not name. Only the first three are used here;
- * check the real signature on install.
+ * `mousedown` + `touchstart`, as the SDK does: the dismissal fires before the
+ * press turns into a click on whatever was underneath. `excludeRefs` is for
+ * elements that are visually outside the panel but must not close it — a
+ * trigger button that does its own toggling, typically. Memoise both `handler`
+ * and the array, or the listener re-registers on every render.
  */
-export function useClickOutside(
-  ref: RefObject<HTMLElement | null>,
-  handler: () => void,
+export function useClickOutside<T extends HTMLElement>(
+  ref: RefObject<T | null>,
+  handler: (event: MouseEvent | TouchEvent) => void,
   enabled = true,
+  excludeRefs?: RefObject<HTMLElement | null>[],
 ) {
   useEffect(() => {
     if (!enabled) return;
 
-    const handlePointerDown = (event: PointerEvent) => {
-      const el = ref.current;
-      if (el && !el.contains(event.target as Node)) handler();
+    const onPress = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (ref.current?.contains(target)) return;
+      if (excludeRefs?.some((excluded) => excluded.current?.contains(target))) {
+        return;
+      }
+      handler(event);
     };
 
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () =>
-      document.removeEventListener("pointerdown", handlePointerDown);
-  }, [ref, handler, enabled]);
+    document.addEventListener("mousedown", onPress);
+    document.addEventListener("touchstart", onPress);
+    return () => {
+      document.removeEventListener("mousedown", onPress);
+      document.removeEventListener("touchstart", onPress);
+    };
+  }, [ref, handler, enabled, excludeRefs]);
 }

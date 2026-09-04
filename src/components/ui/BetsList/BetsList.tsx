@@ -13,6 +13,7 @@ export const BetsList = ({
   rows = [],
   summary,
   currency = BETS_LIST_DEFAULTS.currency,
+  decimals = BETS_LIST_DEFAULTS.decimals,
   variant = BetsListVariant.All,
   className,
   ...rest
@@ -71,7 +72,7 @@ export const BetsList = ({
                 styles["bets-list__bet"],
               )}
             >
-              {row.bet.toFixed(2)}
+              {row.bet.toFixed(decimals)}
               {row.status === BetStatus.CashedOut && row.multiplier != null && (
                 <span className={styles["bets-list__badge"]}>
                   {row.multiplier.toFixed(2)}x
@@ -86,7 +87,7 @@ export const BetsList = ({
               )}
             >
               {row.cashout != null
-                ? row.cashout.toFixed(3)
+                ? row.cashout.toFixed(decimals)
                 : BETS_LIST_DEFAULTS.emptyValue}
               {isMyBets && row.status === BetStatus.CashedOut && (
                 <img
@@ -99,11 +100,14 @@ export const BetsList = ({
           </div>
         ))}
       </div>
-      {/* Shown on both variants, not just My Bets, despite the class name.
-          TODO(sdk): there is no endpoint behind these totals — see
-          `BetsSummary`. Until there is, no caller passes `summary` and the bar
-          does not render. */}
-      {summary && <BetsSummaryBar summary={summary} currency={currency} />}
+      {/* Shown on both variants, not just My Bets, despite the class name. */}
+      {summary && (
+        <BetsSummaryBar
+          summary={summary}
+          currency={currency}
+          decimals={decimals}
+        />
+      )}
     </div>
   );
 };

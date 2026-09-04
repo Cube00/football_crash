@@ -16,5 +16,7 @@ export type BetStatus = (typeof BetStatus)[keyof typeof BetStatus];
 
 export const BETS_LIST_DEFAULTS = {
   currency: "USD",
+  /** Only until `game-config` arrives with the operator's minor units. */
+  decimals: 2,
   emptyValue: "-",
 } as const;

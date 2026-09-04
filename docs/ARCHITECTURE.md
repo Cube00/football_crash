@@ -1,28 +1,40 @@
 # Architecture
 
-How the canvas, events, engine and sprites fit together.
+How the canvas, events, SDK and sprites fit together.
 
-A crash game with a Spine-animated canvas, a local engine standing in for a
-server, and one event bus between them. Nothing calls across the layers
-directly — which is the point, and the reason the engine can be deleted and
-replaced by a socket handler that emits the same names.
+A crash game skin: the round loop, the money and the rules belong to the Krash
+SDK, and this repo draws them. There is one seam (`src/sdk`) and one event bus
+between React and the canvas.
 
 ---
 
 ## The shape of it
 
 ```
-crashEngine ──▶ EventBus ──▶ gameStore · freeBetStore ──▶ hooks · UI
-                   │
-                   └───────▶ GameScene (Phaser + Spine)
+@krash/react ──▶ hooks (useBalance, usePhase, useBetting …) ──▶ components
+      │
+      └── client.on(...) ──▶ SdkEventBridge ──▶ EventBus ──▶ GameScene (Phaser + Spine)
 
-BetArea buttons ──▶ gameActions (cmd:*) ──▶ EventBus ──▶ crashEngine
+BetArea buttons ──▶ useBetting().placeBet / cashout / cancelBet ──▶ SDK
 ```
 
-The engine never imports React, the scene never imports the store, and
-components never touch the engine. The canvas and the DOM subscribe to the
-_same_ phase events, so the boy throws the ball on the beat the multiplier
-starts climbing without either side knowing the other exists.
+Nothing in the skin computes game state. The canvas never holds a React
+subscription, the components never touch the socket, and both sides read the
+same phase — so the boy throws the ball on the beat the multiplier starts
+climbing without either side knowing the other exists.
+
+---
+
+## The seam
+
+`src/sdk/` stands in for `@krash/sdk` + `@krash/react`, which are not installed
+yet. Everything game-related is imported from `@/sdk` and nowhere else, so
+installing the packages is a change to five files and nothing else. The folder's
+own README explains which parts are inert and which are implemented, and why.
+
+The integration documentation lives in `.claude/sdk-docs/`. Its `panels/`
+chapters are the authority on where a piece of logic belongs: each one ends with
+a split between what the SDK does and what is the skin's.
 
 ---
 
@@ -35,87 +47,70 @@ starts climbing without either side knowing the other exists.
 > `Phaser.Events.EventEmitter` would pull the whole Phaser bundle into the main
 > chunk and defeat the lazy-loading below.
 
-Names are grouped by direction, and the grouping is the contract:
+The bus carries two kinds of name, and the grouping is the contract:
 
-| Direction       | Prefix      | Carries                                                                                                            |
-| --------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| engine → app    | `engine:*`  | `Tick`, `CrashState`, `Balance`, `BetPlaced`, `CashoutDone`, `BetUpdate`, `NewBettingRound`, `CrashHistoryItem`     |
-| app → engine    | `cmd:*`     | `CmdPlaceBet`, `CmdCashout`, `CmdCancelBet` — emitted only through `gameActions`                                    |
-| React ↔ Phaser  | —           | `GamePhaseChange`, `SceneReady`, `RequestPhaseSync`, `GameResize`                                                   |
+| Direction        | Prefix   | Carries                                        |
+| ---------------- | -------- | ---------------------------------------------- |
+| SDK → skin       | `sfs:*`  | `PhaseChange`, relayed verbatim by `SdkEventBridge` |
+| React ↔ Phaser   | —        | `SceneReady`, `RequestPhaseSync`               |
+
+`sfs:*` names are **relays, not sources**: only the bridge may emit one. This is
+the arrangement the SDK's canvas chapter prescribes — one subscription near the
+root, re-emitted on a plain emitter.
 
 `RequestPhaseSync` earns its place: the canvas loads lazily and can boot
-mid-round, so on `create()` the scene asks the engine to re-broadcast the
-current phase instead of assuming it started at a round boundary.
+mid-round, so on `create()` the scene asks for the current phase instead of
+assuming it started at a round boundary.
+
+Only what something actually consumes is listed. The bus used to carry a dozen
+`engine:*` and `cmd:*` names for a local engine; that engine is gone. Adding a
+name back is a line in each file when a consumer appears — the sound layer will
+want `crash` and `cashout-done`.
 
 ---
 
-## The engine
+## The round
 
-`game/engine/crashEngine.ts` is a singleton class owning the round loop, the
-crash point and the balance. Four states on a fixed cadence:
-
-| Phase             | Duration | What happens                                        |
-| ----------------- | -------- | --------------------------------------------------- |
-| `BETTING_OPEN`    | 6000 ms  | stakes accepted, multiplier parked at 1.00×          |
-| `BETTING_CLOSING` | 800 ms   | lock-in; the throw's wind-up fills it                |
-| `FLYING`          | variable | until the multiplier reaches the crash point         |
-| `CRASHED`         | 3000 ms  | live bets lost, result pushed to the history strip   |
-
-### Three clocks, on purpose
-
-- `setTimeout` drives phase transitions.
-- A 100 ms `setInterval` runs during betting, purely so the countdown animates.
-- `requestAnimationFrame` drives the flight.
-
-The multiplier is a function of wall-clock time, recomputed every frame from
-`now() - flyStart` and never accumulated, so a dropped frame can't drift it:
+The SDK owns it. The server sends a `tick` roughly every 100 ms carrying the
+phase, the multiplier, the round id and how much of the phase is left; the SDK
+turns that into a phase change, a crash, a crash-history item and a store
+update. Four phases, in a fixed cycle:
 
 ```
-multiplier = e^(0.15 · elapsedSeconds)   // ~2× at 4.6s, ~10× at 15s
+BETTING_OPEN → BETTING_CLOSING → FLYING → CRASHED → BETTING_OPEN → …
 ```
 
-### The draw
-
-The crash point is drawn once, up front, before anyone has bet:
-
-```
-2% of rounds  → instant bust at 1.00×
-otherwise     → 0.97 / (1 − random)      // capped at 1000×
-```
-
-That is the standard crash curve: ~97% RTP, median around 1.9×.
-
-### Bets
-
-Two slots, one array, states running `Queued → Placed → Active → Won | Lost`.
-Two behaviours do the heavy lifting:
-
-- **Pre-bets.** Betting outside the window doesn't fail — it parks a `Queued`
-  bet that the next window promotes, re-checking affordability before charging
-  anything.
-- **Auto-cashout** settles at the _target_ multiplier, not the current one, so a
-  fast frame can't pay more than was asked for.
+**The durations are not ours and are not fixed.** Nothing in the skin may
+hardcode a phase length: the countdown bar measures itself against the first
+tick of each betting window, because that tick is the only statement of how long
+the window is. Details in `.claude/sdk-docs/03-game-phases.md`.
 
 ---
 
 ## State in React
 
-Three external stores read through `useSyncExternalStore`. No context
-providers, no prop drilling.
+No stores. Every value is an SDK hook, and each one subscribes to a single slice
+so a change re-renders only what reads it:
 
-| Store           | Holds                                                       | Written by                       |
-| --------------- | ----------------------------------------------------------- | -------------------------------- |
-| `gameStore`     | phase, balance, crash history, bets feed, per-slot bet state | engine events                    |
-| `freeBetStore`  | grants and which one is staked                              | engine events + the grants modal |
-| `settingsStore` | sound, music, animation switches                            | the menu, through to localStorage |
+| Read                      | Hook                                        |
+| ------------------------- | ------------------------------------------- |
+| balance                   | `useBalance()`                              |
+| phase, multiplier         | `usePhase()`, `useMultiplier()`             |
+| a bet slot                | `useBetting(slot)` / `useBettingSlot(slot)` |
+| auto-play                 | `useAutoPlay(slot)`                         |
+| free bets                 | `useFreerounds()`                           |
+| crash history             | `useGameHistory()`, merged by `useCrashHistory` |
+| limits, currency, presets | `useGameConfig()`, `useMoney()`             |
+| sound / music / animation | `useSettings()`                             |
 
-`gameStore` keeps sub-object identity when nothing changed, so a selector hook
-only re-renders its own consumers. The bets feed is newest-first and capped at
-100 rows; it spans rounds rather than clearing, so older bets stay in the list.
+Three of the skin's own hooks exist because the SDK deliberately leaves the
+shape to us — the countdown (`useRoundCountdown`), the live bets feed
+(`useRoundBets`) and the merged crash history (`useCrashHistory`). Each says so
+in its header, with the chapter that settles it.
 
-> **The one exception.** The live multiplier is deliberately not in the store —
-> it changes ~60×/sec and would thrash every subscriber. `useTick` subscribes to
-> `Tick` directly, so only the components that render the number re-render.
+> **The live multiplier.** `useMultiplier()` re-renders its consumer on every
+> FLYING tick, so it is called in the leaf that draws the number and nowhere
+> else. The canvas takes ticks off the EventBus instead.
 
 ---
 
@@ -218,17 +213,26 @@ back up.
 
 ## Free bets
 
-A grant carries a per-bet price, a granted total, how many are spent, a payout
-flavour and a minimum cash-out. One grant is staked at a time and both slots
+A grant is a wallet, not a book of tickets: a balance the server debits when it
+accepts a bet, with a per-bet amount (fixed grants) or a range (range grants)
+and a minimum cash-out multiplier. One grant is bound at a time and both slots
 share it — it is a choice of wallet, not of slot.
 
-Tickets are spent on **placement**, which is why cancelling returns one and
-cashing out does not. A free bet skips the funds check and the debit entirely;
-settlement then follows the grant — Full Payout credits stake × multiplier, Pure
-Profit credits only what the stake earned. When the last ticket goes, the store
-unstakes the grant and any auto-play run stops rather than falling through to
-real money. Every session opens on real money; staking is always a deliberate
-act.
+All of the accounting is the SDK's: attaching the grant to a bet, the balance
+after each placement, giving it back on a cancel, closing the grant out when it
+is spent and stopping auto-play so the next round cannot reach for real money.
+The skin holds the parts the SDK documents as its own:
+
+- the X/Y badge — a division of the grant's balance, never a tally we keep;
+- clamping a range grant's stake to `[betMin, min(betMax, balanceRemaining)]`,
+  because the SDK sends whatever it is given;
+- holding the cashout button below the grant's `minCashout`, for the same reason;
+- locking a slot when the grant has no unreserved bet left for it;
+- the `Freebet` face of the bet button, which the SDK never returns itself.
+
+`game/freerounds.ts` holds those formulas and nothing else. See
+`.claude/sdk-docs/11-freerounds.md` for the full lifecycle, and its "what the
+SDK does not do" table for the division of labour.
 
 ---
 
@@ -236,29 +240,35 @@ act.
 
 `playSound()` is a plain module function, not a hook — the noisy controls are
 leaf components and would otherwise all have to thread the setting down from
-somewhere. It reads `settingsStore` at click time, pools three `Audio` clips per
-sound so rapid taps don't cut each other off, and starts each clip at a measured
-offset because the assets open with 40–110 ms of silence that reads as input lag.
+somewhere. The setting itself belongs to the SDK's `SettingsProvider`; because a
+module function cannot read a context, `useSoundSettings` mirrors `sound` into
+the module and runs the music bed off `music`. One writer, mounted once.
+
+It pools three `Audio` clips per sound so rapid taps don't cut each other off,
+and starts each clip at a measured offset because the assets open with 40–110 ms
+of silence that reads as input lag.
 
 ---
 
 ## One round, end to end
 
-1. `enterBettingOpen()` emits `PhaseReset`, `NewBettingRound`,
-   `GamePhaseChange`. The store clears the slots, the bot generator spawns 6–14
-   fake players, the scene freezes the throw on frame 0, the countdown starts.
-2. You press Bet. `gameActions.placeBet` → `cmd:place-bet` → the engine debits
-   the balance (or spends a free-bet ticket) → `BetPlaced` + `BetUpdate`. The
-   button becomes Cancel.
-3. `BETTING_CLOSING`: the scene starts the throw, so the ball is already
-   airborne before the number moves.
-4. `FLYING`: bets go Active, the rAF loop ticks the multiplier, `useTick`
-   re-renders the big number, the ball hands off to the juggle at the apex.
-5. You cash out. `CashoutDone` + `BetUpdate(Won)` → balance credited, and the
-   win notice shows for four seconds.
-6. The multiplier reaches the crash point. Remaining bets are lost, the result is
-   pushed onto the history strip, the catch plays, the camera flashes. Three
-   seconds later, back to step one.
+1. The server's first `BETTING_OPEN` tick arrives. The SDK clears both slots,
+   sends any pending bets and starts auto-play's next round; `SdkEventBridge`
+   relays the phase to the canvas, which freezes the throw on frame 0; the
+   countdown bar takes its full width from that tick's `remainingMs`.
+2. You press Bet. `useBettingSlot().onBet` → the SDK sends `PlaceBet` and marks
+   the slot as sending; on the server's `BetPlaced` the button becomes Cancel.
+3. `BETTING_CLOSING`: every button is disabled by the SDK's own variant
+   calculation, and the scene starts the throw — the ball is airborne before the
+   number moves.
+4. `FLYING`: placed bets go Active, ticks drive the multiplier, the ball hands
+   off to the juggle at the apex.
+5. You cash out — or the server does it for you, if auto-cashout was sent with
+   the bet. Either way it is one `CashoutDone`: the balance updates, the slot
+   shows Won, and the win notice runs for four seconds.
+6. `CRASHED`: remaining bets are lost, the SDK emits the finished round, the
+   strip and the statistics pick it up, the catch plays and the camera flashes.
+   Then back to step one.
 
 ---
 
@@ -266,18 +276,21 @@ offset because the assets open with 40–110 ms of silence that reads as input l
 
 | Path                            | Role                                              |
 | ------------------------------- | ------------------------------------------------- |
-| `game/EventBus.ts`              | the emitter everything meets on                   |
-| `game/events.ts`                | event names and payload shapes                    |
-| `game/engine/crashEngine.ts`    | round loop, crash draw, balance, bets             |
-| `game/engine/fakeBets.ts`       | bot players for the live list                     |
-| `game/store.ts`                 | engine events folded into a React snapshot        |
-| `game/freeBetStore.ts`          | grants and the staked one                         |
-| `game/config.ts`                | timings, curve, crash distribution                |
+| `sdk/`                          | the seam: types, client, hooks, contexts, DOM utils |
+| `game/EventBus.ts`              | the emitter React and Phaser meet on              |
+| `game/events.ts`                | bus names and payload shapes                      |
+| `game/SdkEventBridge.tsx`       | the one place SDK events reach the bus            |
+| `game/freerounds.ts`            | free-bet display formulas and the slot lock       |
+| `game/display.ts`               | the two timings the picture needs                 |
+| `game/sounds.ts`                | clip pools, the music bed                         |
 | `game/main.ts`                  | Phaser boot, DPR and scale mode                   |
 | `game/scenes/GameScene.ts`      | the choreography, layout and framing              |
 | `game/spineRetarget.ts`         | moving a clip between rig exports                 |
 | `containers/GameStage/`         | canvas or still image, plus the HUD over it       |
-| `hooks/useTick.ts`              | the high-frequency subscription                   |
-| `hooks/useAutoPlay.ts`          | the auto-bet loop, driven off phase events        |
+| `hooks/useRoundCountdown.ts`    | the betting window, off the tick event            |
+| `hooks/useRoundBets.ts`         | the live bets feed, off `bet-update`              |
+| `hooks/useCrashHistory.ts`      | server history merged with live crashes           |
+| `hooks/useMoney.ts`             | currency code and the operator's decimals         |
 
-Timings, curve constants and bot counts all live in `game/config.ts`.
+Nothing in this table decides a bet, a phase or a payout. That all lives behind
+`@/sdk`.

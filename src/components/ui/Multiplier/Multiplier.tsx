@@ -2,9 +2,8 @@ import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { MultiplierButton, MultiplierButtonVariant } from "../MultiplierButton";
 import { Icon } from "../Icon";
-import { useGameHistory } from "@/sdk";
-import { useElementWidth, useOnEscape } from "@/hooks";
 import { useClickOutside, useMediaQuery } from "@/sdk";
+import { useCrashHistory, useElementWidth, useOnEscape } from "@/hooks";
 import { useModal, ModalId } from "@/context/ModalProvider";
 import { playSound, Sound } from "@/game/sounds";
 import { cx } from "@/utils";
@@ -36,11 +35,11 @@ const pillsThatFit = (width: number, pill: number, gap: number) =>
 
 export const Multiplier = () => {
   const { t } = useTranslation();
-  // TODO(sdk): confirm `items` grows on `crash-history-item` — the SDK emits
-  // that after every crash, but the docs only tie `game-history` to an explicit
-  // `getHistory()`. If it does not, prepend from the event here.
-  const { items: history } = useGameHistory();
-  const items = history.slice(0, MAX_MULTIPLIERS);
+  // `useGameHistory()` on its own would go stale the moment a round crashes —
+  // it only ever updates on a server answer. `useCrashHistory` merges the live
+  // `crash-history-item` events into that list, which is the skin's job.
+  const { rounds } = useCrashHistory();
+  const items = rounds.slice(0, MAX_MULTIPLIERS);
 
   // The sheet, not the outer box: its content width is the room the pills and
   // the chevron actually share, padding already taken off.

@@ -14,6 +14,7 @@ import type { WinNotificationProps } from "./WinNotification.types";
 export const WinNotification = ({
   amount,
   currency,
+  decimals = 2,
   durationMs = 4000,
   onClose,
   className,
@@ -41,7 +42,7 @@ export const WinNotification = ({
       </span>
 
       <span className={styles["win-notification__amount"]}>
-        {amount.toFixed(2)} {currency}
+        {amount.toFixed(decimals)} {currency}
       </span>
 
       <button

@@ -70,7 +70,8 @@
     "cashout": "Cashout ({{currency}})",
     "bets": "Bets",
     "totalBets": "Total Bets",
-    "totalWin": "Total win"
+    "totalWin": "Total win",
+    "you": "You"
   },
   "stats": {
     "stats": "Stats",
@@ -120,7 +121,7 @@
   "limits": {
     "maximumWin": {
       "title": "Maximum Win",
-      "body": "The highest possible multiplier is {{multiplier}}x your bet. This is the absolute ceiling — even if the round continues beyond that point, your payout caps there.",
+      "body": "The most a single round can pay you is {{amount}} {{currency}}. However far a round runs, your payout caps there.",
       "bodyUnknown": "A maximum payout multiplier applies. However far a round runs, your payout caps at that ceiling."
     },
     "minimumCashOut": {
@@ -294,6 +295,7 @@
   "launch": {
     "loading": "Connecting...",
     "failed": "Couldn't start the game",
-    "unknownError": "Please close this window and try again."
+    "unknownError": "Please close this window and try again.",
+    "backToLobby": "Back to lobby"
   }
 }
